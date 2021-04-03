@@ -1,0 +1,381 @@
+@extends('layouts.app')
+
+@section('title', 'Cardvest - Personal Profile')
+@section('content')
+<div class="page-content">
+  <div class="container">
+    <div class="row">
+      <div class="main-content col-lg-8">
+        <div class="content-area card">
+          <div class="card-innr">
+            <div class="card-head">
+              <h4 class="card-title">Place an Order</h4>
+            </div>
+            <ul class="nav nav-tabs nav-tabs-line" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#sell-card" id="sell-toggle">Sell Card</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#buy-card" id="buy-toggle">Buy Card</a>
+              </li>
+            </ul><!-- .nav-tabs-line -->
+            <div class="tab-content" id="profile-details">
+              <div class="tab-pane fade show active" id="sell-card">
+                <div class="card-head">
+                  <h4 class="card-title">Trade Details</h4>
+                </div>
+                <div class="card-text">
+                  <p>Provide more information needed to complete your trade.</p>
+                </div>
+                <form action="{{ route('transaction.store') }}" method="post" id="sell-form"
+                  enctype="multipart/form-data">
+                  @csrf
+                  <div class="gaps-1x"></div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <span>
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Category</label>
+                          <div class="select-wrapper">
+                            <select class="select select-block select-bordered" name="category" id="gift-card-category"
+                              required>
+                              <option value="">Select</option>
+                              @foreach($categories as $category)
+                              <option value="{{ $category->id }}">{{ $category->name }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                          <span class="error"></span>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="col-md-6">
+                      <span>
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Gift Card</label>
+                          <div class="select-wrapper">
+                            <select name="card_id" id="gift-card" class="select select-block select-bordered" required>
+                              <option value="">Select</option>
+                            </select>
+                          </div>
+                          <span class="error"></span>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <span>
+                        <div class="input-item input-with-label"><label class="input-item-label">Amount</label> <input
+                            type="number" id="gift-card-amount" placeholder="Enter amount" inputmode="numeric"
+                            name="amount" disabled="disabled" required class="input-bordered"> <span
+                            class="error"></span>
+                        </div>
+                      </span>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">File Upload</label>
+                        <div class="relative"><em class="input-file-icon fas fa-upload"></em>
+                          <input type="file" id="file-01" multiple="multiple" name="images[]" accept="image/*"
+                            class="input-bordered">
+                        </div>
+                        <div class="text-info"><i class="fa fa-info-circle"></i> You can upload multiple files at once
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="input-item">
+                        <input type="checkbox" name="to_bank" id="bank_account_direct"
+                          class="input-checkbox input-checkbox-md">
+                        <label for="bank_account_direct">
+                          Send directly to my bank account
+                        </label>
+                      </div>
+                    </div>
+                    <div class="col-md-6" id="banks" style="display: none;">
+                      <span>
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Bank Account</label>
+                          <div class="select-wrapper">
+                            <select class="select select-block select-bordered" id="bank" disabled name="bank">
+                              <option value="">Select</option>
+                              @foreach($banks as $bank)
+                              <option value="{{ $bank->id }}">{{ $bank->bankname }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                          <span class="error"></span>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">Calculated Amount</label>
+                        <div class="content-area card border-primary ">
+                          <div class="card-header"></div>
+                          <ul class="list-group list-group-flush">
+                            <!---->
+                            <li class="list-group-item"><strong>Total:</strong> <span
+                                class="float-right text-primary font-weight-bold" id="gift-card-equiv">NGN 0.00</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">Comments (optional)</label>
+                        <textarea placeholder="Comments" name="comment"
+                          class="input-bordered input-textarea"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+              </div><!-- .tab-pane -->
+
+              <div class="tab-pane fade" id="buy-card">
+                <div class="card-head">
+                  <h4 class="card-title">Trade Details</h4>
+                </div>
+                <div class="card-text">
+                  <p>Provide more information needed to complete your trade.</p>
+                </div>
+                <form action="{{ route('transaction.buy') }}" method="post" id="buy-form" enctype="multipart/form-data">
+                  @csrf
+                  <div class="gaps-1x"></div>
+                  <div class="row">
+                    <div class="col-md-6">
+                      <span>
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Gift Card</label>
+                          <div class="select-wrapper">
+                            <select name="card_id" id="buy-gift-card" class="select select-block select-bordered"
+                              required>
+                              <option>Select</option>
+                              @foreach($cardsToBuy as $card)
+                              <option value="{{ $card->id }}" data-rate="{{ $card->rate }}">
+                                {{ $card->name." - ".$card->rate."/$" }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                          <span class="error"></span>
+                        </div>
+                      </span>
+                    </div>
+
+                    <div class="col-md-6">
+                      <span>
+                        <div class="input-item input-with-label"><label class="input-item-label">Amount</label> <input
+                            type="number" id="buy-gift-card-amount" placeholder="Enter amount" inputmode="numeric"
+                            name="amount" disabled="disabled" required class="input-bordered"> <span
+                            class="error"></span>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">Calculated Amount</label>
+                        <div class="content-area card border-primary ">
+                          <div class="card-header"></div>
+                          <ul class="list-group list-group-flush">
+                            <!---->
+                            <li class="list-group-item"><strong>Total:</strong> <span
+                                class="float-right text-primary font-weight-bold" id="buy-gift-card-equiv">NGN
+                                0.00</span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">Comments (optional)</label>
+                        <textarea placeholder="Comments" name="comment"
+                          class="input-bordered input-textarea"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+
+              </div><!-- .tab-pane -->
+            </div><!-- .tab-content -->
+          </div><!-- .card-innr -->
+        </div><!-- .card -->
+
+      </div><!-- .col -->
+      <div class="aside sidebar-right col-lg-4">
+        <div class="account-info card">
+          <div class="card-innr">
+            <div class="card-head">
+              <span class="card-sub-title text-primary font-mid">To complete Order</span>
+            </div>
+            <div class="card-text" id="buy-detail">
+              <p>Continue with payment through Flutterwave </p>
+            </div>
+            <div class="pay-buttons">
+              <div class="pay-button" id="sell-submit"><a href="#" class="btn btn-primary btn-between w-100"
+                  onclick="event.preventDefault();document.getElementById('sell-form').submit()">Place Order <em
+                    class="ti ti-arrow-right"></em></a></div>
+              <!-- <div class="pay-button-sap">or</div> -->
+              <div class="pay-button" id="buy-submit" style="display: none;"><a href="#"
+                  onclick="event.preventDefault();document.getElementById('buy-form').submit()"
+                  class="btn btn-primary btn-between w-100">Make Online Payment <em class="ti ti-arrow-right"></em></a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- .col -->
+    </div><!-- .container -->
+  </div><!-- .container -->
+</div><!-- .page-content -->
+@endsection()
+
+@push('scripts')
+<script>
+$(document).ready(function() {
+
+  let categories = @json($categories);
+  let cardBox = $('#gift-card');
+  let cardCategoryBox = $('#gift-card-category');
+  let amountBox = $('#gift-card-amount');
+  let totalBox = $('#gift-card-equiv');
+
+  let cardBuyBox = $('#buy-gift-card');
+  let amountBuyBox = $('#buy-gift-card-amount');
+  amountBuyBox.prop('disabled', true)
+  let totalBuyBox = $('#buy-gift-card-equiv');
+
+  let currentCategory = null
+
+  amountBox.attr('disabled', true)
+
+  cardCategoryBox.change(function() {
+    var id = this.value
+    loadCard(categories, id)
+  });
+
+  amountBox.keyup(function() {
+    var amt = Number(this.value)
+    var id = cardBox.val()
+
+    var curCard = currentCategory.cards.find((card) => {
+      return card.id === Number(id)
+    })
+    // console.log(curCard);
+    var rate = curCard.rate
+    calculateRate(amt, rate)
+  });
+
+  let loadCard = function(categories, id) {
+    if (id === undefined || id < 1 || id === '') {
+      return
+    }
+
+    // Find the category in the categories array
+    currentCategory = categories.find((cat) => {
+      return cat.id === Number(id)
+    })
+
+
+
+    var cardOptions = `<option>Select</option>`
+    // Load the category cards into the card select input
+    currentCategory.cards.forEach((card) => {
+      cardOptions += `<option value="${card.id}">${card.name} - (${card.rate}/$)</option>`
+    })
+
+    cardBox.empty().append(cardOptions)
+    amountBox.val("")
+    amountBox.attr('disabled', false)
+    // console.log(cardOptions)
+  }
+
+  // For the BUy Card 
+  // ********************************* //
+  var buyRate = undefined
+
+  cardBuyBox.change(function() {
+    var selected = $(this).find('option:selected')
+    buyRate = Number(selected.data('rate'))
+    amountBuyBox.prop('disabled', false)
+
+    console.log(buyRate)
+  })
+
+  amountBuyBox.keyup(function() {
+    if (buyRate == undefined) return
+    var amount = this.value
+
+    calculateRate(amount, buyRate, totalBuyBox)
+  })
+
+
+  // ******************************** //
+
+  // ****************************** //
+  // bank accounts
+  let bankToggle = $('#bank_account_direct')
+  let banksBox = $('#banks')
+  let bankInput = $('#bank')
+
+  bankToggle.click(function() {
+    var isChecked = this.checked
+
+    if (isChecked) {
+      banksBox.show()
+      bankInput.prop('disabled', false)
+    } else {
+      banksBox.hide()
+      bankInput.prop('disabled', true)
+    }
+  })
+
+  let calculateRate = function(amount, rate, element = null) {
+    // console.log(rate)
+    var total = Number(amount) * rate
+
+    // create a formatter
+    var formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'NGN'
+    })
+
+    if (element === null)
+      totalBox.text(formatter.format(total))
+    else
+      element.text(formatter.format(total))
+  }
+});
+
+//  ****************************** //
+// Payment
+
+let sellCard = $('#sell-toggle');
+let buyCard = $('#buy-toggle');
+let sellSubmit = $('#sell-submit');
+let buySubmit = $('#buy-submit');
+let buyDetails = $('#buy-detail');
+buySubmit.hide()
+buyDetails.hide()
+
+sellCard.click(function() {
+  sellSubmit.show()
+  buySubmit.hide()
+})
+
+buyCard.click(function() {
+  sellSubmit.hide()
+  buySubmit.show()
+})
+</script>
+@endpush

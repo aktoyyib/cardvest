@@ -1,0 +1,49 @@
+:root {
+  --primary: #235643;
+  --primary-dark: #1c4938;
+  --accent: #f59d1f;
+}
+
+.color-primary {
+  color: var(--primary) !important;
+}
+
+.color-accent {
+  color: var(--accent) !important;
+}
+
+
+.h-full {
+  min-height: 100vh !important;
+}
+
+.recovery-code {
+  background-color: #dedede !important;
+	gap: 0.25rem;
+}
+
+.recovery-code div {
+	padding: 0.25rem 0;
+	color: #000;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+.card-token {
+  background-image: linear-gradient(45deg, var(--primary) 0%, var(--accent) 500%) !important;
+  color: #fff;
+}
+
+.card-token .card-sub-title {
+  color: var(--accent);
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.invalid-feedback {
+  display: block !important;
+}
+
+.page-item.active .page-link {
+  background-color: var(--primary);
+  border-color: var(--primary-dark);
+}
