@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="Fully featured and complete ICO Dashboard template for ICO backend management.">
   <!-- Fav Icon  -->
-  <link rel="shortcut icon" href="images/favicon.png">
+  <link rel="shortcut icon" href="{{ asset('images/logo-sm.png') }}">
   <!-- Site Title  -->
   <title>Cardvest - Buy & Sell Gift Cards</title>
   <!-- Vendor Bundle CSS -->
