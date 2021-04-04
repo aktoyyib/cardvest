@@ -3,10 +3,10 @@
 @section('title', 'Cardvest Sign In')
 @section('content')
 <div class="container-fluid">
-  <div class="row h-full align-items-center" style="background: url(../images/ath-gfx.png) #1c4938 no-repeat;">
+  <div class="row h-full align-items-center" style="background: #1c4938 no-repeat;">
     <div class="col-md-8 col-lg-5 mx-auto">
       <div class="d-flex justify-content-center">
-        <a href="./" class="page-ath-logo"><img src="images/logo.png" srcset="images/logo2x.png 2x" alt="logo"></a>
+        <a href="/" class="page-ath-logo"><img src="{{ asset('images/logo.png') }}" alt="logo"></a>
       </div>
       <div class="bg-white radius-secondary p-4 p-md-5 mt-3">
         <h2 class="page-ath-heading">Sign in</h2>
