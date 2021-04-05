@@ -47,3 +47,7 @@
   background-color: var(--primary);
   border-color: var(--primary-dark);
 }
+
+.fa-2x {
+  font-size: 1.6em !important;
+}

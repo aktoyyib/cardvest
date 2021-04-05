@@ -13,7 +13,7 @@ class Transaction extends Model
         'id',
     ];
 
-    protected $with = ['card'];
+    protected $with = ['card', 'bank'];
 
     public function getDate()
     {
@@ -70,7 +70,7 @@ class Transaction extends Model
             case 'pending':
                 $label = 'progress';
                 break;
-            case 'rejected':
+            case 'rejected' || 'rejected':
                 $label = 'canceled';
                 break;
             case 'succeed':
@@ -96,6 +96,11 @@ class Transaction extends Model
     public function card()
     {
         return $this->belongsTo(Card::class);
+    }
+
+    public function bank()
+    {
+        return $this->belongsTo(Bank::class);
     }
 
     public function scopeDesc($query)

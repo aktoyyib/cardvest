@@ -217,7 +217,7 @@ class TransactionService
             $ref = $this->createReference('transfer');
 
             // Create Transaction from request data
-            $request->merge(['amount' => $amount, 'type'=> 'deposit', 'role' => $role, 'balance' => $sender->balance(), 'reference' => $ref, 'recipient' => $recipient->id, 'status' => 'succeed']);
+            $request->merge(['amount' => $amount, 'type'=> 'deposit', 'role' => $role, 'balance' => $sender->balance(), 'reference' => $ref, 'recipient' => $recipient->id, 'status' => 'succeed', 'unit' => null]);
             // dd($request);
             $transfer = Transaction::create($request->all());
             

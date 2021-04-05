@@ -7,6 +7,12 @@ use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletController;
 
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\UserController as Users;
+use App\Http\Controllers\Admin\TransactionController as Transactions;
+use App\Http\Controllers\Admin\WithdrawalController as Withdrawals;
+use App\Http\Controllers\Admin\WalletController as Wallets;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,4 +47,16 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('wallet', [WalletController::class, 'index'])->name('wallet.index');
     Route::post('wallet/bank/add', [WalletController::class, 'store'])->name('wallet.store');
     Route::delete('wallet/bank/remove/{bank}', [WalletController::class, 'destroy'])->name('wallet.removebank');
+});
+
+Route::group(['prefix' => 'admin'], function() {
+    
+    // Admin Dashboard
+    Route::get('dashboard', AdminController::class)->name('admin.dashboard');
+
+    Route::resource('users', Users::class)->only('index', 'show');
+    
+    Route::resource('transactions', Transactions::class);
+
+    Route::resource('withdrawals', Withdrawals::class);
 });

@@ -80,4 +80,20 @@ class User extends Authenticatable
     {
         $query->where('email', $username)->orWhere('username', $username);
     }
+
+    public function getId() {
+        return "CV".str_pad($this->id,  6, "0", STR_PAD_LEFT);
+    }
+
+    public function getInitials() {
+        return strtoupper(substr($this->username, 0, 1).substr($this->email, 0, 1));
+    }
+
+    public function getTotalSold() {
+        return $this->transactions()->cardSale()->sum('amount');
+    }
+
+    public function getTotalBought() {
+        return $this->transactions()->cardPurchase()->sum('amount');
+    }
 }
