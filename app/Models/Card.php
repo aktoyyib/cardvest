@@ -9,6 +9,8 @@ class Card extends Model
 {
     use HasFactory;
 
+    protected $guarded = ['id'];
+
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -17,5 +19,20 @@ class Card extends Model
     public function transactions()
     {
         return $this->hasMany(Transaction::class);
+    }
+
+    public function scopeSale($query)
+    {
+        return $query->where('type', 'sell');
+    }
+
+    public function scopeBuy($query)
+    {
+        return $query->where('type', 'buy');
+    }
+
+    public function scopeAlpha($query)
+    {
+        return $query->orderBy('name', 'asc');
     }
 }

@@ -21,15 +21,12 @@
               <input type="hidden" name="role" value="admin">
               <div class="input-item input-with-label">
                 <label class="input-item-label">Enter amount to send</label>
-                <input class="input-bordered input-with-hint" type="number" min="0" step="0.01" name="amount"
-                  placeholder="Amount" required>
+                <input class="input-bordered" type="number" min="0" step="0.01" name="amount" placeholder="Amount"
+                  required>
               </div>
               <div class="input-item input-with-label">
                 <label class="input-item-label">Enter users email address</label>
-                <div class="select-wrapper">
-                  <input class="input-bordered input-with-hint" type="email" name="email" placeholder="Email Address"
-                    required>
-                </div>
+                <input class="input-bordered" type="email" name="email" placeholder="Email Address" required>
               </div>
 
               <div class="token-buy text-center">

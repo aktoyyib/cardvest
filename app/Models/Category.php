@@ -11,8 +11,15 @@ class Category extends Model
 
     protected $with = ['cards'];
 
+    protected $guarded = ['id'];
+
     public function cards()
     {
         return $this->hasMany(Card::class)->where('type', 'sell');
+    }
+
+    public function all_cards()
+    {
+        return $this->hasMany(Card::class);
     }
 }

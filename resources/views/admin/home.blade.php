@@ -63,28 +63,13 @@
               </div>
               <div class="token-balance-text">
                 <span class="lead"><span>{{ $categories }}</span></span>
-                <h6 class="card-sub-title"><a href="{{ route('withdrawals.index') }}">Card Categories</a></h6>
+                <h6 class="card-sub-title"><a href="{{ route('categories.index') }}">Card Categories</a></h6>
               </div>
             </div>
           </div>
         </div>
       </div><!-- .col -->
 
-      <div class="col-lg-4">
-        <div class="token-statistics card card-token height-auto">
-          <div class="card-innr">
-            <div class="token-balance token-balance-with-icon">
-              <div class="token-balance-icon">
-                <span class="fa fa-gift fa-2x"></span>
-              </div>
-              <div class="token-balance-text">
-                <span class="lead"><span>{{ $cards }}</span></span>
-                <h6 class="card-sub-title"><a href="{{ route('withdrawals.index') }}">Gift Cards</a></h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div><!-- .col -->
 
       <div class="col-lg-4">
         <div class="token-statistics card card-token height-auto">
@@ -95,7 +80,7 @@
               </div>
               <div class="token-balance-text">
                 <span class="lead"><span>Payout</span></span>
-                <h6 class="card-sub-title"><a href="{{ route('withdrawals.index') }}">Credit Users</a></h6>
+                <h6 class="card-sub-title"><a href="{{ route('transactions.create') }}">Credit Users</a></h6>
               </div>
             </div>
           </div>

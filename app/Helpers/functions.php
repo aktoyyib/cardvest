@@ -26,3 +26,32 @@ if (!function_exists('random_color')) {
       return $background[array_rand($background, 1)];
   }
 }
+
+if (!function_exists('to_money')) {
+  function to_money($value) {
+      return number_format($value, 2, '.', $sep = ',');
+  }
+}
+
+if(!function_exists('get_description')) {
+  function get_description($key) {
+    $label = 'success';
+    
+    switch ($key) {
+      case 'sell':
+          $label = 'success';
+          break;
+      case 'buy':
+          $label = 'danger';
+          break;
+      case 'payout':
+          $label = 'warning';
+          break;
+      default:
+          # code...
+          break;
+    }
+
+    return $label;
+  }
+}

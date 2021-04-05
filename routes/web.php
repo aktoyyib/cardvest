@@ -11,7 +11,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UserController as Users;
 use App\Http\Controllers\Admin\TransactionController as Transactions;
 use App\Http\Controllers\Admin\WithdrawalController as Withdrawals;
-use App\Http\Controllers\Admin\WalletController as Wallets;
+use App\Http\Controllers\Admin\CategoryController as Categories;
+use App\Http\Controllers\Admin\CardController as Cards;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +53,7 @@ Route::group(['middleware' => ['auth']], function () {
 Route::group(['prefix' => 'admin'], function() {
     
     // Admin Dashboard
+    Route::get('', AdminController::class)->name('admin.dashboard');
     Route::get('dashboard', AdminController::class)->name('admin.dashboard');
 
     Route::resource('users', Users::class)->only('index', 'show');
@@ -59,4 +61,8 @@ Route::group(['prefix' => 'admin'], function() {
     Route::resource('transactions', Transactions::class);
 
     Route::resource('withdrawals', Withdrawals::class);
+
+    Route::resource('categories', Categories::class);
+
+    Route::resource('cards', Cards::class);
 });
