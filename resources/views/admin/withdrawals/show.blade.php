@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Cardvest Withdrawal '.{{ $withdrawal->reference }})
+@section('title', 'Cardvest Withdrawal ')
 @section('content')
 <div class="page-content">
   <div class="container-fluid">
