@@ -78,3 +78,26 @@ if(!function_exists('get_state')) {
     return $label;
   }
 }
+
+if(!function_exists('get_state_general')) {
+  function get_state_general($key) {
+    $label = 'success';
+    
+    switch ($key) {
+      case 'succeed':
+          $label = 'success';
+          break;
+      case 'failed':
+          $label = 'danger';
+          break;
+      case 'pending':
+          $label = 'warning';
+          break;
+      default:
+          # code...
+          break;
+    }
+
+    return $label;
+  }
+}
