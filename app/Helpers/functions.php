@@ -58,7 +58,7 @@ if(!function_exists('get_description')) {
 
 if(!function_exists('get_state')) {
   function get_state($key) {
-    $label = 'success';
+    $label = 'canceled';
     
     switch ($key) {
       case 'succeed':
