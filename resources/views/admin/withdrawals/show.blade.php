@@ -91,8 +91,6 @@
                 </div>
               </li>
 
-
-              @endif
             </ul>
 
             <div class="gaps-3x"></div>
