@@ -78,9 +78,23 @@ class WithdrawalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Withdrawal $withdrawal)
     {
-        //
+        $p_s = array('failed', 'pending', 'succeed');
+
+        if (!in_array($request->payment_status, $p_s)) {
+            $request->merge(['payment_status' => $transaction->payment_status]);
+        }
+
+        $request->validate([
+            'admin_comment' => 'nullable|string',
+            'payment_status' => 'nullable|in:failed,pending,succeed'
+        ]);
+
+
+        $withdrawal->update($request->all());
+
+        return back()->with('info', 'Withdrawal updated successfully!');
     }
 
     /**

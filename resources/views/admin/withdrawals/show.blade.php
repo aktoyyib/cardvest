@@ -134,7 +134,6 @@
               </li>
               @endif
             </ul>
-            @endif
           </div><!-- .card-innr -->
         </div><!-- .card -->
       </div>
