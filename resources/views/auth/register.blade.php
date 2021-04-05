@@ -64,7 +64,7 @@
           </div>
           <div class="input-item text-left">
             <input class="input-checkbox input-checkbox-md" name="terms" id="term-condition" type="checkbox">
-            <label for="term-condition">I agree to Cardvest's <a href="regular-page.html">Privacy Policy</a> &amp; <a
+            <label for="term-condition">I agree to Cardvest's <a href="https://cardvest.ng/terms-and-conditions/">Privacy Policy</a> &amp; <a
                 href="regular-page.html"> Terms.</a></label>
             @error('terms')
             <span class="invalid-feedback" role="alert">
