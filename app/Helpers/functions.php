@@ -55,3 +55,26 @@ if(!function_exists('get_description')) {
     return $label;
   }
 }
+
+if(!function_exists('get_state')) {
+  function get_state($key) {
+    $label = 'success';
+    
+    switch ($key) {
+      case 'succeed':
+          $label = 'approved';
+          break;
+      case 'rejected':
+          $label = 'canceled';
+          break;
+      case 'pending':
+          $label = 'progress';
+          break;
+      default:
+          # code...
+          break;
+    }
+
+    return $label;
+  }
+}

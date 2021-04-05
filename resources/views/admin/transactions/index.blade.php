@@ -34,8 +34,8 @@
                 <tr class="data-item">
                   <td class="data-col dt-tnxno">
                     <div class="d-flex align-items-center">
-                      <div class="data-state data-state-pending">
-                        <span class="d-none">Pending</span>
+                      <div class="data-state data-state-{{ get_state($transaction->status) }}">
+                        <span class="d-none text-uppercase">{{ $transaction->status }}</span>
                       </div>
                       <div class="fake-class">
                         <span class="lead tnx-id">{{ $transaction->reference }}</span>

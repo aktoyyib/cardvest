@@ -170,7 +170,7 @@
                           <div class="input-item input-with-label">
                             <label class="input-item-label">Select Action</label>
                             <div class="select-wrapper">
-                              <select class="input-bordered select-block" name="status" required>
+                              <select class="input-bordered select-block" name="status">
                                 <option>Select</option>
                                 <option value="pending">Processing</option>
                                 <option value="rejected">Reject</option>
@@ -183,7 +183,7 @@
                           <div class="input-item input-with-label">
                             <label class="input-item-label">Update Payment Status</label>
                             <div class="select-wrapper">
-                              <select class="input-bordered select-block" name="payment_status" required>
+                              <select class="input-bordered select-block" name="payment_status">
                                 <option>Select</option>
                                 <option value="pending">Processing</option>
                                 <option value="failed">Failed</option>

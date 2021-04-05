@@ -108,9 +108,20 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction)
     {
+        $p_s = array('failed', 'pending', 'succeed');
+        $_s = array('rejected', 'pending', 'succeed');
+
+        if (!in_array($request->status, $_s)) {
+            $request->merge(['status' => $transaction->status]);
+        }
+
+        if (!in_array($request->payment_status, $p_s)) {
+            $request->merge(['payment_status' => $transaction->payment_status]);
+        }
+
         $request->validate([
             'admin_comment' => 'nullable|string',
-            'status' => 'required|in:pending,rejected,succeed',
+            'status' => 'nullable|in:pending,rejected,succeed',
             'payment_status' => 'nullable|in:failed,pending,succeed'
         ]);
 
