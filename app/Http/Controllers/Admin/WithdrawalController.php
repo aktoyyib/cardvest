@@ -55,9 +55,9 @@ class WithdrawalController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Withdrawal $withdrawal)
     {
-        return view('admin.withdrawals.show');
+        return view('admin.withdrawals.show', compact('withdrawal'));
     }
 
     /**
