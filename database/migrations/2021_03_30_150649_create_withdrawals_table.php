@@ -21,6 +21,7 @@ class CreateWithdrawalsTable extends Migration
                 ->onUpdate('cascade')
                 ->onDelete('set null');
             $table->string('reference');
+            $table->unsignedBigInteger('bank_id');
             $table->unsignedBigInteger('amount');
             $table->unsignedBigInteger('balance');
             $table->enum('status', ['closed', 'pending', 'succeed'])->default('pending');
