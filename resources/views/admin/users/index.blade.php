@@ -47,7 +47,7 @@
                                           <span class="dt-status-sm badge badge-sq badge-outline badge-success badge-md">A</span>
                                       </td> -->
                   <td class="data-col dt-token">
-                    <span class="lead lead-btoken">{{ $user->balance() }}</span>
+                    <span class="lead lead-btoken">{{ to_naira($user->balance()) }}</span>
                   </td>
                   <td class="data-col text-right">
                     <div class="relative d-inline-block">
