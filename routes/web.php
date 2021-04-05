@@ -48,21 +48,20 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('wallet', [WalletController::class, 'index'])->name('wallet.index');
     Route::post('wallet/bank/add', [WalletController::class, 'store'])->name('wallet.store');
     Route::delete('wallet/bank/remove/{bank}', [WalletController::class, 'destroy'])->name('wallet.removebank');
-});
 
-Route::group(['prefix' => 'admin'], function() {
+    Route::group(['prefix' => 'admin', 'middleware' => ['role:admin']], function() {
+        // Admin Dashboard
+        Route::get('', AdminController::class)->name('admin.dashboard');
+        Route::get('dashboard', AdminController::class)->name('admin.dashboard');
     
-    // Admin Dashboard
-    Route::get('', AdminController::class)->name('admin.dashboard');
-    Route::get('dashboard', AdminController::class)->name('admin.dashboard');
-
-    Route::resource('users', Users::class)->only('index', 'show');
+        Route::resource('users', Users::class)->only('index', 'show');
+        
+        Route::resource('transactions', Transactions::class);
     
-    Route::resource('transactions', Transactions::class);
-
-    Route::resource('withdrawals', Withdrawals::class);
-
-    Route::resource('categories', Categories::class);
-
-    Route::resource('cards', Cards::class);
+        Route::resource('withdrawals', Withdrawals::class);
+    
+        Route::resource('categories', Categories::class);
+    
+        Route::resource('cards', Cards::class);
+    });
 });

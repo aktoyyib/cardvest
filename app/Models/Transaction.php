@@ -13,7 +13,7 @@ class Transaction extends Model
         'id',
     ];
 
-    protected $with = ['card', 'bank'];
+    protected $with = ['card', 'bank', 'recipient'];
 
     public function getDate()
     {
@@ -89,6 +89,11 @@ class Transaction extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function recipient()
+    {
+        return $this->belongsTo(User::class, 'recipient', 'id');
+    }
+
     public function payout_to() {
         return $this->belongsTo(User::class, 'recipient');
     }
@@ -139,7 +144,7 @@ class Transaction extends Model
     }
 
     public function scopeMine($query) {
-        return $query->where('user_id', auth()->id())->orWhere('recipient', auth()->id());
+        return $query->where('recipient', auth()->id());
     }
 
     public function scopeCompleted($query)

@@ -25,7 +25,6 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::desc()->paginate(25);
-        // return $transactions[1];
         return view('admin.transactions.index', compact('transactions'));
     }
 
@@ -39,6 +38,7 @@ class TransactionController extends Controller
         // Return View for transferring
         $user = auth()->user();
         $transactions = Transaction::hasRecipient()->admin()->desc()->paginate(10);
+        
         return view('admin.transactions.create', compact('user', 'transactions'));
     }
 
@@ -61,12 +61,12 @@ class TransactionController extends Controller
 
         $amount = $request->amount;
         $user = auth()->user();
-        $recipient = User::search($request->username)->first();
+        $recipient = User::search($request->email)->first();
 
         if (!$user->isSufficient($amount) && $request->role == 'funder') {
             return back()->with('error', 'Your wallet balance is insufficient for this transaction.');
         }
-        
+        // dd($recipient);
         if (!$recipient || $request->email === $user->email) {
             return back()->with('error', 'There is no such user with the email: ' .$request->email);
         }

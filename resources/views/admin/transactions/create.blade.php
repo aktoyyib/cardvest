@@ -43,7 +43,7 @@
             <div class="card-head">
               <h4 class="card-title">Admin Payouts</h4>
             </div>
-            <table class="data-table dt-filter-init admin-tnx">
+            <table class="data-table  admin-tnx">
               <thead>
                 <tr class="data-item data-head">
                   <th class="data-col dt-tnxno">Tranx NO</th>
@@ -56,8 +56,8 @@
                 <tr class="data-item">
                   <td class="data-col dt-tnxno">
                     <div class="d-flex align-items-center">
-                      <div class="data-state data-state-pending">
-                        <span class="d-none">Pending</span>
+                      <div class="data-state data-state-approved">
+                        <span class="d-none">Success</span>
                       </div>
                       <div class="fake-class">
                         <span class="lead tnx-id">{{ $transaction->reference }}</span>
@@ -70,8 +70,8 @@
                     <span class="sub sub-symbol">NGN</span>
                   </td>
                   <td class="data-col dt-token">
-                    <span class="sub sub-symbol">{{ $transaction->recipient->email }}</span>
-                    <span class="lead token-amount">{{ $transaction->recipient->username }}</span>
+                    <span class="sub sub-symbol">{{ $transaction->payout_to->email }}</span>
+                    <span class="lead token-amount">{{ $transaction->payout_to->username }}</span>
                   </td>
                 </tr><!-- .data-item -->
                 @empty

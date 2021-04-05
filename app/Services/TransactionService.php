@@ -217,13 +217,14 @@ class TransactionService
             $ref = $this->createReference('transfer');
 
             // Create Transaction from request data
-            $request->merge(['amount' => $amount, 'type'=> 'deposit', 'role' => $role, 'balance' => $sender->balance(), 'reference' => $ref, 'recipient' => $recipient->id, 'status' => 'succeed', 'unit' => null]);
+            $request->merge(['amount' => $amount, 'type'=> 'payout', 'role' => $role, 'balance' => $sender->balance(), 'reference' => $ref, 'recipient' => $recipient->id, 'status' => 'succeed', 'unit' => 0]);
             // dd($request);
             $transfer = Transaction::create($request->all());
             
             // Save users transaction
             $sender->transactions()->save($transfer);
         } catch (\Throwable $e) {
+            dd($e);
             DB::rollback();
             return back()->with('error', 'An error occured!');
         }
