@@ -56,6 +56,9 @@
         <div class="form-note">
           Don’t have an account? <a href="{{ route('register') }}"> <strong>Sign up here</strong></a>
         </div>
+        <div class="d-flex justify-content-center mt-1">
+          <a href="https://cardvest.ng" class="btn btn-primary text-center">Back to Home</a>
+        </div>
       </div>
     </div>
   </div>
