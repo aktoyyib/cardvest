@@ -405,7 +405,7 @@
       <div class="col-xl-4">
         <div class="token-sales card card-full-height">
           <div class="card-innr">
-            <a href="https://app.cardvest.ng/profile" target="_blank">
+            <a href="https://app.cardvest.ng/referrals" target="_blank">
               <center><img src="https://drive.google.com/uc?id=1CVK-kBpDSfvSnB8wKa4t94cGHWltidsc"></center>
             </a>
           </div>
