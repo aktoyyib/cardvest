@@ -54,6 +54,7 @@
           <!-- <li><a href="ico-distribution.html"><em class="ikon ikon-distribution"></em> ICO Distribution</a></li> -->
           <li><a href="{{ route('transaction.index') }}"><em class="ikon ikon-transactions"></em> Transactions</a></li>
           <li><a href="{{ route('profile') }}"><em class="ikon ikon-user"></em> Profile</a></li>
+          <li><a href="{{ route('referrals') }}"><em class="ikon ikon-user"></em> Referrals</a></li>
           @hasanyrole('admin')
           <li><a href="{{ route('admin.dashboard') }}"><em class="ikon ikon-user"></em> Admin Dashboard</a></li>
           @endhasanyrole

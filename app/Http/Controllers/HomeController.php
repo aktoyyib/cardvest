@@ -67,5 +67,25 @@ class HomeController extends Controller
         // return $categories;
         return view('rates', compact('categories', 'cardsToBuy'));
     }
+
+    public function referral()
+    {
+        $user = auth()->user();
+        
+        $details = array();
+
+        $referral_bonus = $user->transactions()->type('referral')->get()->reduce(function($carry, $item){
+            return $carry + $item["amount"];
+        }, 0);
+
+        $details['referral_bonus'] = $referral_bonus;
+        $details['referrals'] = $user->referrals;
+
+        $pending_referral = $user->referrals()->where('referrer_settled', false)->count();
+        $details['pending_referrals'] = $pending_referral;
+
+        // return $details;
+        return view('referrals', compact('user', 'details'));
+    }
     
 }
