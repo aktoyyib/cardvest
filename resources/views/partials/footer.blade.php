@@ -4,8 +4,8 @@
       <div class="col-md-8">
         <ul class="footer-links">
           <!-- <li><a href="#">FAQs</a></li> -->
-          <li><a href="https://cardvest.ng/terms-and-conditions/">Privacy Policy</a></li>
-          <li><a href="https://cardvest.ng/terms-and-conditions/">Terms of Condition</a></li>
+          <li><a href="https://cardvest.ng/privacy-policy-2">Privacy Policy</a></li>
+          <li><a href="https://cardvest.ng/terms-and-conditions">Terms of Condition</a></li>
         </ul>
       </div><!-- .col -->
       <div class="col-md-4 mt-2 mt-sm-0">

@@ -171,4 +171,11 @@ class Transaction extends Model
     {
         return $query->where('type', 'payout');
     }
+
+    public function scopeType($query, $value)
+    {
+        if ($value == 'referral')
+            return $query->where('type', 'payout')->where('reference', 'REFERRAL_BONUS');
+        return $query->where('type', $value);
+    }
 }

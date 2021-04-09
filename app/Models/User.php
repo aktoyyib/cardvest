@@ -9,10 +9,11 @@ use Illuminate\Notifications\Notifiable;
 
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasWallet;
+use App\Traits\Referral;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasWallet, HasRoles;
+    use HasFactory, Notifiable, HasWallet, HasRoles, Referral;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +25,7 @@ class User extends Authenticatable
         'phonenumber',
         'email',
         'password',
+        'referrer_id'
     ];
 
     /**

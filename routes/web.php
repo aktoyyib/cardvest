@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\TransactionController as Transactions;
 use App\Http\Controllers\Admin\WithdrawalController as Withdrawals;
 use App\Http\Controllers\Admin\CategoryController as Categories;
 use App\Http\Controllers\Admin\CardController as Cards;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,11 +27,21 @@ use App\Http\Controllers\Admin\CardController as Cards;
 */
 
 Route::get('rates', [HomeController::class, 'rates'])->name('rates');
+Route::get('email', function() {
+    $user = App\Models\User::find(1);
+
+    return new App\Mail\WelcomeToCardvest($user);
+});
 
 Route::get('fetch-banks', [WalletController::class, 'banks'])->name('banks');
 Route::post('verify-bank', [WalletController::class, 'verify'])->name('verify');
 
 Route::post('/webhook/flutterwave', [TransactionController::class, 'webhook'])->name('webhook');
+
+// Custom registration route
+Route::get('/register', [RegisteredUserController::class, 'create'])
+                ->middleware(['guest', 'referral'])
+                ->name('register');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');

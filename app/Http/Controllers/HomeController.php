@@ -23,8 +23,12 @@ class HomeController extends Controller
         $banks = $user->wallet->bank_accounts;
         $sold = $user->transactions()->completed()->cardSale()->sum('amount');
         $bought = $user->transactions()->completed()->cardPurchase()->sum('amount');
+        $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->take(3);
 
-        return view('home', compact('user', 'withdrawals', 'banks', 'sold', 'bought'));
+        $categories = Category::all();
+        $cardsToBuy = Card::where('type', 'buy')->get();
+        
+        return view('home', compact('user', 'withdrawals', 'banks', 'sold', 'bought', 'transactions', 'categories', 'cardsToBuy'));
     }
 
     /**
@@ -39,7 +43,21 @@ class HomeController extends Controller
         $bought = $user->transactions()->completed()->cardPurchase()->sum('amount');
         $payouts = Transaction::completed()->desc()->payouts()->mine()->take(3)->get();
         // return $payouts;
-        return view('profile', compact('user', 'sold', 'bought', 'payouts'));
+
+        $details = array();
+
+        $referral_bonus = $user->transactions()->type('referral')->get()->reduce(function($carry, $item){
+            return $carry + $item["amount"];
+        }, 0);
+
+        $details['referral_bonus'] = $referral_bonus;
+        $details['referrals'] = $user->referrals;
+
+        $pending_referral = $user->referrals()->where('referrer_settled', false)->count();
+        $details['pending_referrals'] = $pending_referral;
+
+        // return $details;
+        return view('profile', compact('user', 'sold', 'bought', 'payouts', 'details'));
     }
 
     public function rates()

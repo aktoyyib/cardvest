@@ -4,58 +4,10 @@
 @section('content')
 <div class="page-content">
   <div class="container">
-    <div class="row">
-      <div class="col-lg-4">
-        <div class="token-statistics card card-token height-auto">
-          <div class="card-innr">
-            <div class="token-balance token-balance-with-icon">
-              <div class="token-balance-icon">
-                <img src="images/logo-sm.png" alt="logo">
-              </div>
-              <div class="token-balance-text">
-                <h6 class="card-sub-title">Wallet Balance</h6>
-                <span class="lead">{{ to_naira($user->balance()) }} <span>NGN</span></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div><!-- .col -->
 
-      <div class="col-lg-4">
-        <div class="token-statistics card card-token height-auto">
-          <div class="card-innr">
-            <div class="token-balance token-balance-with-icon">
-              <div class="token-balance-icon">
-                <img src="images/logo-sm.png" alt="logo">
-              </div>
-              <div class="token-balance-text">
-                <h6 class="card-sub-title">Total Sold</h6>
-                <span class="lead">{{ to_naira($sold) }} <span>NGN</span></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div><!-- .col -->
-
-      <div class="col-lg-4">
-        <div class="token-statistics card card-token height-auto">
-          <div class="card-innr">
-            <div class="token-balance token-balance-with-icon">
-              <div class="token-balance-icon">
-                <img src="images/logo-sm.png" alt="logo">
-              </div>
-              <div class="token-balance-text">
-                <h6 class="card-sub-title">Total Bought</h6>
-                <span class="lead">{{ to_naira($bought) }} <span>NGN</span></span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div><!-- .col -->
-    </div>
 
     <div class="row">
-      <div class="col-xl-4 col-lg-5">
+      <div class="col-xl-3">
         <div class="token-calculator card card-full-height">
           <div class="card-innr">
             <div class="card-head">
@@ -92,7 +44,7 @@
           </div>
         </div>
       </div>
-      <div class="col-xl-8 col-lg-7">
+      <div class="col-xl-5">
         <div class="token-transaction card card-full-height">
           <div class="card-innr">
             <div class="card-head has-aside">
@@ -147,6 +99,75 @@
           </div>
           <div class="card-footer bg-white text-center my-2">
             {{ $withdrawals->links() }}
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4">
+        <div class="token-statistics card card-token height-auto">
+          <div class="card-innr">
+            <div class="token-balance token-balance-with-icon">
+              <div class="token-balance-icon">
+                <img src="images/logo-sm.png" alt="logo">
+              </div>
+              <div class="token-balance-text">
+                <h6 class="card-sub-title">Wallet Balance</h6>
+                <span class="lead">{{ to_naira($user->balance()) }} <span>NGN</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="token-transaction card" style="height: calc(100% - 170px)">
+          <div class="card-innr">
+            <div class="card-head has-aside">
+              <h4 class="card-title">Transaction History</h4>
+              <div class="card-opt">
+                <a href="{{ route('transaction.index') }}" class="link ucap">View ALL <em
+                    class="fas fa-angle-right ml-2"></em></a>
+              </div>
+            </div>
+            <table class="data-table user-tnx">
+              <thead>
+                <tr class="data-item data-head">
+                  <th class="data-col dt-amount">Amount</th>
+                  <th class="data-col dt-type">
+                    <div class="dt-type-text">Type</div>
+                  </th>
+                  <th class="data-col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($transactions as $transaction)
+                <tr class="data-item">
+                  <td class="data-col dt-token">
+                    <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
+                    <span class="sub sub-symbol">NGN</span>
+                  </td>
+                  <td class="data-col dt-type">
+                    <span
+                      class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
+                  </td>
+                  <td class="data-col">
+                    <span
+                      class="dt-type-md badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
+
+                    <a href="{{ route('transaction.show', $transaction) }}"><span
+                        class="dt-type-md badge badge-primary badge-md text-capitalize">View</span></a>
+                  </td>
+                </tr><!-- .data-item -->
+                @empty
+                <tr class="data-item">
+                  <td class="data-col dt-tnxno" colspan="4">
+                    <div class="alert alert-danger text-center">
+                      Empty Transactions!
+                    </div>
+                  </td>
+                </tr><!-- .data-item -->
+                @endforelse
+              </tbody>
+            </table>
+
           </div>
         </div>
       </div>
@@ -255,6 +276,143 @@
       </div>
     </div><!-- .row -->
 
+    <div class="row">
+      <div class="col-xl-8">
+        <div class="content-area card">
+          <div class="card-innr">
+            <div class="card-head">
+              <h4 class="card-title">Rate Calculator</h4>
+            </div>
+            <ul class="nav nav-tabs nav-tabs-line" role="tablist">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#sell-card">Sell Card</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#buy-card">Buy Card</a>
+              </li>
+            </ul><!-- .nav-tabs-line -->
+            <div class="tab-content" id="profile-details">
+              <div class="tab-pane fade show active" id="sell-card">
+                <div class="card-text mb-2">
+                  <p>Get the current value for your transaction</p>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-item input-with-label">
+                      <label class="input-item-label">Gift Card Category</label>
+                      <select class="select select-block select-bordered" id="gift-card-category">
+                        <option value="">Select</option>
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+
+                    <div class="input-item input-with-label">
+                      <label class="input-item-label">Gift Card</label>
+                      <select class="select select-block select-bordered" id="gift-card">
+                      </select>
+                    </div>
+
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Amount</label>
+                          <input class="input-bordered" type="number" id="gift-card-amount" placeholder="Amount in USD">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="token-overview-wrap mt-0">
+                      <div class="token-overview">
+                        <div class="row">
+                          <div class="col">
+                            <div class="token-bonus token-bonus-sale pt-1">
+                              <span class="token-overview-title"> = </span>
+                              <span class="token-overview-value bonus-on-sale" id="gift-card-equiv">0.00</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- <div class="note note-plane note-danger note-sm pdt-1x pl-0">
+                    <p>Your Contribution will be calculated based on exchange rate at the moment your transaction is
+                      confirm.</p>
+                  </div> -->
+                    </div>
+                  </div>
+                </div>
+              </div><!-- .tab-pane -->
+
+              <div class="tab-pane fade" id="buy-card">
+
+                <div class="card-text mb-2">
+                  <p>Get the current value for your transaction</p>
+                </div>
+                <div class="row">
+                  <div class="col-md-6">
+
+                    <div class="input-item input-with-label">
+                      <label class="input-item-label">Gift Card</label>
+                      <select class="select select-block select-bordered" id="buy-gift-card">
+                        <option value="">Select</option>
+                        @foreach($cardsToBuy as $card)
+                        <option value="{{ $card->id }}" data-rate="{{ $card->rate }}">
+                          {{ $card->name." - ".$card->rate."/$" }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+
+                  </div>
+                  <div class="col-md-6">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Amount</label>
+                          <input class="input-bordered" type="number" id="buy-gift-card-amount"
+                            placeholder="Amount in USD">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="token-overview-wrap mt-0">
+                      <div class="token-overview">
+                        <div class="row">
+                          <div class="col">
+                            <div class="token-bonus token-bonus-sale pt-1">
+                              <span class="token-overview-title"> = </span>
+                              <span class="token-overview-value bonus-on-sale" id="buy-gift-card-equiv">0.00</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- <div class="note note-plane note-danger note-sm pdt-1x pl-0">
+                    <p>Your Contribution will be calculated based on exchange rate at the moment your transaction is
+                      confirm.</p>
+                  </div> -->
+                    </div>
+                  </div>
+                </div>
+
+              </div><!-- .tab-pane -->
+            </div><!-- .tab-content -->
+            <div class="card-footer bg-white">
+              <a class="btn btn-primary" href="{{ route('transaction.create') }}">Proceed to Trade Card</a>
+            </div>
+          </div><!-- .card-innr -->
+        </div><!-- .card -->
+      </div>
+
+      <div class="col-xl-4">
+        <div class="token-sales card card-full-height">
+          <div class="card-innr">
+            <a href="https://app.cardvest.ng/profile" target="_blank">
+              <center><img src="https://drive.google.com/uc?id=1CVK-kBpDSfvSnB8wKa4t94cGHWltidsc"></center>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- .container -->
 </div><!-- .page-content -->
 @endsection()
@@ -291,6 +449,100 @@ $(document).ready(function() {
     var bank = JSON.parse(bankname.val())
     verifyAccount(banknumber.val(), bank.code)
   })
+
+  let categories = @json($categories);
+  let cardBox = $('#gift-card');
+  let cardCategoryBox = $('#gift-card-category');
+  let amountBox = $('#gift-card-amount');
+  let totalBox = $('#gift-card-equiv');
+
+  let cardBuyBox = $('#buy-gift-card');
+  let amountBuyBox = $('#buy-gift-card-amount');
+  amountBuyBox.prop('disabled', true)
+  let totalBuyBox = $('#buy-gift-card-equiv');
+
+  let currentCategory = null
+
+  amountBox.attr('disabled', true)
+
+  cardCategoryBox.change(function() {
+    var id = this.value
+    loadCard(categories, id)
+  });
+
+  amountBox.keyup(function() {
+    var amt = Number(this.value)
+    var id = cardBox.val()
+
+    var curCard = currentCategory.cards.find((card) => {
+      return card.id === Number(id)
+    })
+    // console.log(curCard);
+    var rate = curCard.rate
+    calculateRate(amt, rate)
+  });
+
+  let loadCard = function(categories, id) {
+    if (id === undefined || id < 1 || id === '') {
+      return
+    }
+
+    // Find the category in the categories array
+    currentCategory = categories.find((cat) => {
+      return cat.id === Number(id)
+    })
+
+
+
+    var cardOptions = `<option>Select</option>`
+    // Load the category cards into the card select input
+    currentCategory.cards.forEach((card) => {
+      cardOptions += `<option value="${card.id}">${card.name} - (${card.rate}/$)</option>`
+    })
+
+    cardBox.empty().append(cardOptions)
+    amountBox.val("")
+    amountBox.attr('disabled', false)
+    // console.log(cardOptions)
+  }
+
+  // For the BUy Card 
+  // ********************************* //
+  var buyRate = undefined
+
+  cardBuyBox.change(function() {
+    var selected = $(this).find('option:selected')
+    buyRate = Number(selected.data('rate'))
+    amountBuyBox.prop('disabled', false)
+
+    // console.log(buyRate)
+  })
+
+  amountBuyBox.keyup(function() {
+    if (buyRate == undefined) return
+    var amount = this.value
+
+    calculateRate(amount, buyRate, totalBuyBox)
+  })
+
+
+  // ******************************** //
+
+  let calculateRate = function(amount, rate, element = null) {
+    // console.log(rate)
+    var total = Number(amount) * rate
+
+    // create a formatter
+    var formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'NGN'
+    })
+
+    if (element === null)
+      totalBox.text(formatter.format(total))
+    else
+      element.text(formatter.format(total))
+  }
 });
 
 let loadBanks = function(banks) {

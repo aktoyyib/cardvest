@@ -20,10 +20,33 @@ use KingFlamez\Rave\Facades\Rave as Flutterwave;
 class TransactionService
 {
     protected $role = 'user';
-    const REFERRAL_RATE = 0.04;
-    const REGISTRATION_BONUS = 3000;
+    const REFERRAL_BONUS = 50000; //kobo
+    // const REGISTRATION_BONUS = 3000;
 
 //    ALl amounts must be converted to kobo before processing
+
+    public function makeReferral(User $user, User $recipient) {
+        $bonus_amount = self::REFERRAL_BONUS;
+
+        // Generate transaction reference code
+        $ref = 'REFERRAL_BONUS';
+        
+        // Credit the referrer
+        $recipient->credit($bonus_amount);
+
+        Transaction::create([
+            'user_id'=> $recipient->id,
+            'type'=>'payout',
+            'balance' => $recipient->balance(),
+            'reference' => $ref,
+            'status' => 'succeed',
+            'amount' => $bonus_amount,
+            'unit' => 0
+        ]);
+
+        $user->referrer_settled = true;
+        $user->save();
+    }
 
     public  function makeWithdrawal(Request $request) {
         $amount = $request->amount;

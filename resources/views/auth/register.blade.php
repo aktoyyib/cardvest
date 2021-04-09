@@ -6,8 +6,8 @@
   <div class="row h-full align-items-center" style="background:  #1c4938 no-repeat;">
     <div class="col-md-8 col-lg-5 mx-auto">
       <div class="d-flex justify-content-center">
-        <a href="/" class="page-ath-logo"><img src="{{ asset('images/logo.png') }}" height="48px" srcset="images/logo2x.png 2x"
-            alt="logo"></a>
+        <a href="/" class="page-ath-logo"><img src="{{ asset('images/logo.png') }}" height="48px"
+            srcset="images/logo2x.png 2x" alt="logo"></a>
       </div>
       <div class="bg-white radius-secondary p-4 p-md-5 mt-3">
         <h2 class="page-ath-heading">Sign up</h2>
@@ -64,8 +64,8 @@
           </div>
           <div class="input-item text-left">
             <input class="input-checkbox input-checkbox-md" name="terms" id="term-condition" type="checkbox">
-            <label for="term-condition">I agree to Cardvest's <a href="https://cardvest.ng/terms-and-conditions/">Privacy Policy</a> &amp; <a
-                href="regular-page.html"> Terms.</a></label>
+            <label for="term-condition">I agree to Cardvest's <a href="https://cardvest.ng/privacy-policy-2">Privacy
+                Policy</a> &amp; <a href="https://cardvest.ng/terms-and-conditions"> Terms.</a></label>
             @error('terms')
             <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
