@@ -287,8 +287,8 @@ class TransactionService
             // Get the transaction from your DB using the transaction reference (txref)
             $transaction = Transaction::where('reference', $transfer['data']['reference'])->first();
             
-            // Log::info(json_encode($request->data));
-            // exit();
+            Log::info(json_encode($transfer));
+            exit();
             if($transfer['data']['status'] === 'SUCCESSFUL') {
                 // update transfer status to successful in your db
                 $transaction->status = 'succeed';
