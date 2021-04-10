@@ -16,6 +16,7 @@ use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
+use Illuminate\Support\Facades\Log;
 
 class TransactionService
 {
@@ -264,6 +265,7 @@ class TransactionService
     }
 
     public function webhook(Request $request) {
+        Log::info('Webhook received');
         //This verifies the webhook is sent from Flutterwave
         $verified = Flutterwave::verifyWebhook();
 
