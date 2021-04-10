@@ -406,7 +406,7 @@
         <div class="token-sales card card-full-height">
           <div class="card-innr">
             <a href="https://app.cardvest.ng/referrals" target="_blank">
-              <center><img src="https://drive.google.com/uc?id=1CVK-kBpDSfvSnB8wKa4t94cGHWltidsc"></center>
+              <center><img src="{{ asset('images/ads-banner.jpg') }}"></center>
             </a>
           </div>
         </div>

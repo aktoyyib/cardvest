@@ -47,6 +47,7 @@ Route::get('/register', [RegisteredUserController::class, 'create'])
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('/dashboard', [HomeController::class, 'index']);
     Route::get('profile', [HomeController::class, 'profile'])->name('profile');
 
     Route::get('transactions', [TransactionController::class, 'index'])->name('transaction.index');

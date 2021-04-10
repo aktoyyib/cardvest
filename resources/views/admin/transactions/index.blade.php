@@ -53,7 +53,7 @@
                     <span class="sub sub-symbol">{{ $transaction->card->name }}</span>
                     @else
                     <span class="sub sub-symbol">Payout to:</span>
-                    <span class="lead token-amount">{{ $transaction->payout_to->username }}</span>
+                    <span class="lead token-amount">{{ $transaction->payout_to->username ?? 'Me' }}</span>
                     @endif
                   </td>
                   <td class="data-col dt-type">
