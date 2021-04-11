@@ -97,7 +97,7 @@
             <div class="gaps-3x"></div>
             <h6 class="card-sub-title">Withdrawal Feedback</h6>
             <ul class="data-details-list">
-              @if($withdrawal->payment_status == 'pending')
+
               <li>
                 <div class="data-details-head">Admin Feedback</div>
                 <div class="data-details-des">
@@ -133,7 +133,7 @@
 
                 </div>
               </li>
-              @endif
+
             </ul>
           </div><!-- .card-innr -->
         </div><!-- .card -->
