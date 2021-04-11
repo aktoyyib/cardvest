@@ -271,6 +271,7 @@ class TransactionService
 
         // if it is a charge event, verify and confirm it is a successful transaction
         if ($verified && $request->event == 'charge.completed' && $request->data->status == 'successful') {
+            Log::info('*** PAYMENT WEBHOOK ***');
             $verificationData = Flutterwave::verifyPayment($request->data['id']);
             if ($verificationData['status'] === 'success') {
                 // process for successful charge
@@ -281,6 +282,7 @@ class TransactionService
 
         // if it is a transfer event, verify and confirm it is a successful transfer
         if ($verified && $request->event == 'transfer.completed') {
+            Log::info('*** TRANSFER WEBHOOK ***');
 
             $transfer = Flutterwave::transfers()->fetch($request->data['id']);
 
