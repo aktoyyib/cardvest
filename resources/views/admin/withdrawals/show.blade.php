@@ -112,15 +112,18 @@
                       </div>
                       <div class="col-md-6">
                         <div class="d-flex flex-column">
-
                           <div class="input-item input-with-label">
                             <label class="input-item-label">Update Payment Status</label>
+
                             <div class="select-wrapper">
                               <select class="input-bordered select-block" name="payment_status" required>
                                 <option>Select</option>
-                                <option value="pending">Processing</option>
-                                <option value="failed">Failed</option>
-                                <option value="succeed">Approve</option>
+                                <option value="pending"
+                                  {{ $withdrawal->payment_status == 'pending' ? 'selected' : '' }}>Processing</option>
+                                <option value="failed" {{ $withdrawal->payment_status == 'failed' ? 'selected' : '' }}>
+                                  Failed</option>
+                                <option value="succeed"
+                                  {{ $withdrawal->payment_status == 'succeed' ? 'selected' : '' }}>Approve</option>
                               </select>
                             </div>
                           </div>
