@@ -284,28 +284,28 @@ class TransactionService
 
             $transfer = Flutterwave::transfers()->fetch($request->data['id']);
 
-            // Get the transaction from your DB using the transaction reference (txref)
-            $transaction = Transaction::where('reference', $transfer['data']['reference'])->first();
+            // Get the withdrawal from your DB using the withdrawal reference (reference)
+            $withdrawal = Withdrawal::where('reference', $transfer['data']['reference'])->first();
             
-            // Log::info(json_encode($transfer));
+            Log::info(json_encode($withdrawal));
             // exit();
             if($transfer['data']['status'] === 'SUCCESSFUL') {
                 // update transfer status to successful in your db
-                $transaction->status = 'succeed';
-                $transaction->payment_status = 'succeed';
-                $transaction->admin_comment = $transfer['data']['complete_message'];
+                $withdrawal->status = 'succeed';
+                $withdrawal->payment_status = 'succeed';
+                $withdrawal->admin_comment = $transfer['data']['complete_message'];
             } else if ($transfer['data']['status'] === 'FAILED') {
                 // update transfer status to failed in your db
                 // revert customer balance back
-                $transaction->payment_status = 'failed';
-                $transaction->admin_comment = $transfer['data']['complete_message'];
+                $withdrawal->payment_status = 'failed';
+                $withdrawal->admin_comment = $transfer['data']['complete_message'];
             } else if ($transfer['data']['status'] === 'PENDING') {
                 // update transfer status to pending in your db
                 // initial state is pending
-                $transaction->admin_comment = $transfer['data']['complete_message'];
+                $withdrawal->admin_comment = $transfer['data']['complete_message'];
             }
             
-            $transaction->save();
+            $withdrawal->save();
         }
     }
 
