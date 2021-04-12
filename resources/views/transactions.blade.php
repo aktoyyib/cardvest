@@ -29,7 +29,7 @@
               <td class="data-col dt-tnxno">
                 <div class="d-flex align-items-center">
                   <div class="data-state data-state-{{ $transaction->getStatus() }}">
-                    <span class="d-none">Pending</span>
+                    <span class="d-none">{{ $transaction->status }}</span>
                   </div>
                   <div class="fake-class">
                     <a href="{{ route('transaction.show', $transaction) }}">
@@ -53,7 +53,7 @@
               </td>
               <td class="">
                 <span
-                  class=" badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
+                  class="dt-type-md badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
 
                 <a href="{{ route('transaction.show', $transaction) }}"><span
                     class=" badge badge-primary badge-md text-capitalize">View</span></a>
