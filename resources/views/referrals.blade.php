@@ -43,10 +43,8 @@
                       <span class="lead">{{ $referral->created_at }}</span>
                     </div>
                   </td>
-                  <td class="d-none d-sm-table-cell tnx-date">
-                    <div class="d-flex flex-column">
-                      <span class="lead tnx-id">{{ $referral->username }}</span>
-                    </div>
+                  <td class="d-sm-table-cell">
+                    <span class="lead tnx-id">{{ ucfirst($referral->username) }}</span>
                   </td>
                   <td class="data-col" class="align-middle">
                     <i
@@ -87,7 +85,7 @@
                 data-clipboard-text="{{ $user->getReferralLinkAttribute() }}"><em class="ti ti-files"></em></button>
             </div><!-- .copy-wrap -->
 
-            <div class="d-flex justify-content-between mt-3">
+            <div class="mt-3">
               <div class="jumbotron py-3 earning-box">
                 <h4 class="text-secondary">&#8358;{{ to_naira($details['referral_bonus']) }}</h4>
                 <p>My Referral Earnings</p>

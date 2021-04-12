@@ -7,103 +7,7 @@
 
 
     <div class="row">
-      <div class="col-xl-3">
-        <div class="token-calculator card card-full-height">
-          <div class="card-innr">
-            <div class="card-head">
-              <h4 class="card-title">Withdraw Funds</h4>
-            </div>
-            <form action="{{ route('withdraw') }}" method="post">
-              @csrf
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Enter amount to withdraw</label>
-                <input class="input-bordered input-with-hint" type="number" min="0" step="0.01" name="amount"
-                  placeholder="Amount" required>
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Select Bank Account</label>
-                <div class="select-wrapper">
-                  <select class="select select-block select-bordered" name="bank" required>
-                    <option>Select</option>
-                    @forelse($user->wallet->bank_accounts as $bank)
-                    <option value="{{ $bank->id }}">{{ $bank->bankname }} - {{$bank->banknumber}}</option>
-                    @empty
-                    <option>---</option>
-                    @endforelse
-                  </select>
-                </div>
-              </div>
-              @if ($user->wallet->bank_accounts->count() === 0)
-              <small class="text-danger">Add Bank account to enable withdrawal</small>
-              @endif
-              <div class="token-buy text-center">
-                <button class="btn btn-primary"
-                  {{ $user->wallet->bank_accounts->count() === 0 ? 'disabled' : '' }}>Proceed</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-5">
-        <div class="token-transaction card card-full-height">
-          <div class="card-innr">
-            <div class="card-head has-aside">
-              <h4 class="card-title">Withdrawal History</h4>
-
-            </div>
-            <table class="data-table user-tnx">
-              <thead>
-                <tr class="data-item data-head">
-                  <th class="data-col dt-tnxno">Bank Details</th>
-                  <th class="data-col dt-token">Amount <small>NGN</small></th>
-                  <th class="data-col dt-amount">Date</th>
-                  <th class="data-col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                @forelse($withdrawals as $withdrawal)
-                <tr class="data-item">
-                  <td class="data-col dt-tnxno">
-                    <div class="d-flex align-items-center">
-                      <div class="fake-class">
-                        <span class="lead tnx-id">{{ $withdrawal->bank->bankname }}</span>
-                        <span class="sub sub-date">{{ $withdrawal->bank->banknumber }}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="data-col dt-token">
-                    <span class="lead token-amount">{{ to_naira($withdrawal->amount) }}</span>
-                    <span class="sub sub-symbol">{{ to_naira($withdrawal->amount) }} <small>(NGN)</small></span>
-                  </td>
-                  <td class="data-col dt-amount">
-                    <span class="lead amount-pay">{{ $withdrawal->getDate() }}</span>
-                    <span class="sub sub-symbol">{{ $withdrawal->getTime() }}</span>
-                  </td>
-                  <td class="data-col dt-type">
-                    <span
-                      class="dt-type-md badge badge-{{ $withdrawal->getStatus() }} badge-md text-capitalize">{{ $withdrawal->status }}</span>
-                  </td>
-                </tr><!-- .data-item -->
-                @empty
-                <tr class="data-item">
-                  <td class="data-col dt-tnxno" colspan="4">
-                    <div class="alert alert-danger text-center">
-                      No Withdrawals
-                    </div>
-                  </td>
-                </tr><!-- .data-item -->
-                @endforelse
-              </tbody>
-            </table>
-
-          </div>
-          <div class="card-footer bg-white text-center my-2">
-            {{ $withdrawals->links() }}
-          </div>
-        </div>
-      </div>
-
-      <div class="col-xl-4">
+      <div class="col-lg-4">
         <div class="token-statistics card card-token height-auto">
           <div class="card-innr">
             <div class="token-balance token-balance-with-icon">
@@ -118,7 +22,7 @@
           </div>
         </div>
 
-        <div class="token-transaction card" style="height: calc(100% - 170px)">
+        <div class="token-transaction card d-none d-lg-block" style="height: calc(100% - 170px)">
           <div class="card-innr">
             <div class="card-head has-aside">
               <h4 class="card-title">Transaction History</h4>
@@ -171,112 +75,7 @@
           </div>
         </div>
       </div>
-    </div><!-- .row -->
-
-    <div class="row">
-      <div class="col-xl-8 col-lg-7">
-        <div class="token-transaction card card-full-height">
-          <div class="card-innr">
-            <div class="card-head has-aside">
-              <h4 class="card-title">Bank Accounts</h4>
-            </div>
-            <table class="data-table user-tnx">
-              <thead>
-                <tr class="data-item data-head">
-                  <th class="data-col dt-tnxno">Bank Name</th>
-                  <th class="data-col dt-token">Account Number </th>
-                  <th class="data-col dt-amount">Account Name</th>
-                  <th class="data-col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                @forelse($banks as $bank)
-                <tr class="data-item">
-                  <td class="data-col dt-tnxno">
-                    <div class="d-flex align-items-center">
-                      <div class="fake-class">
-                        <span class="lead tnx-id">{{ $bank->bankname }}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="data-col dt-token">
-                    <span class="lead token-amount">{{ $bank->banknumber }}</span>
-                  </td>
-                  <td class="data-col dt-amount">
-                    <span class="lead amount-pay">{{ $bank->accountname }}</span>
-                  </td>
-                  <td class="data-col dt-type">
-                    <form action="{{ route('wallet.removebank', $bank) }}" method="post"
-                      id="remove-bank-{{ $bank->id }}">
-                      @csrf
-                      @method('delete')
-                    </form>
-                    <a href="{{ route('wallet.removebank', $bank) }}"
-                      onclick="event.preventDefault();document.getElementById('remove-bank-{{ $bank->id }}').submit()"
-                      class="btn btn-danger-alt btn-xs btn-icon"><em class="ti ti-trash"></em></a>
-                  </td>
-                </tr><!-- .data-item -->
-                @empty
-                <tr class="data-item">
-                  <td class="data-col dt-tnxno" colspan="4">
-                    <div class="alert alert-danger text-center">
-                      No Withdrawals
-                    </div>
-                  </td>
-                </tr><!-- .data-item -->
-                @endforelse
-
-              </tbody>
-            </table>
-
-          </div>
-        </div>
-      </div>
-      <div class="col-xl-4 col-lg-5">
-        <div class="token-calculator card card-full-height">
-          <div class="card-innr">
-            <div class="card-head">
-              <h4 class="card-title">Add Bank Account</h4>
-            </div>
-            @if($banks->count() < 3) <form action="{{ route('wallet.store') }}" method="post">
-              @csrf
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Number</label>
-                <input class="input-bordered input-with-hint" type="text" id="banknumber" name="banknumber"
-                  placeholder="Acc No">
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Select Bank Account <span class="fa fa-spinner fa-spin" id="bank-loader"
-                    style="diplay: none;"></span></label>
-                <div class="select-wrapper">
-                  <select class="input-bordered" name="bankname" id="bank-list">
-
-                  </select>
-                </div>
-              </div>
-              <input type="hidden" name="accountname" id="accountname">
-              <input type="hidden" name="code" id="bank-code">
-              <span class="fa fa-spinner fa-spin" id="verify-loader" style="diplay: none;"></span>
-
-              <div class="d-block">
-                <button type="button" class="btn btn-primary btn-block" id="verify-account">Check</button>
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Name</label>
-                <input class="input-bordered input-with-hint" type="text" id="account-name" placeholder="Acc Name"
-                  disabled>
-              </div>
-              <div class="token-buy d-block">
-                <button type="submit" class="btn btn-primary" id="add-account" disabled>Add Account</button>
-              </div>
-              </form>
-              @endif
-          </div>
-        </div>
-      </div>
-    </div><!-- .row -->
-
-    <div class="row">
+      
       <div class="col-xl-8">
         <div class="content-area card">
           <div class="card-innr">
@@ -401,7 +200,263 @@
           </div><!-- .card-innr -->
         </div><!-- .card -->
       </div>
+    </div><!-- .row -->
 
+    <div class="row">
+      <div class="col d-lg-none">
+        <div class="token-transaction card card-full-height">
+          <div class="card-innr">
+            <div class="card-head has-aside">
+              <h4 class="card-title">Transaction History</h4>
+              <div class="card-opt">
+                <a href="{{ route('transaction.index') }}" class="link ucap">View ALL <em
+                    class="fas fa-angle-right ml-2"></em></a>
+              </div>
+            </div>
+            <table class="data-table user-tnx">
+              <thead>
+                <tr class="data-item data-head">
+                  <th class="data-col dt-amount">Amount</th>
+                  <th class="data-col dt-type">
+                    <div class="dt-type-text">Type</div>
+                  </th>
+                  <th class="data-col">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($transactions as $transaction)
+                <tr class="data-item">
+                  <td class="data-col dt-token">
+                    <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
+                    <span class="sub sub-symbol">NGN</span>
+                  </td>
+                  <td class="data-col dt-type">
+                    <span
+                      class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
+                  </td>
+                  <td class="data-col">
+                    <span
+                      class="dt-type-md badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
+
+                    <a href="{{ route('transaction.show', $transaction) }}"><span
+                        class="dt-type-md badge badge-primary badge-md text-capitalize">View</span></a>
+                  </td>
+                </tr><!-- .data-item -->
+                @empty
+                <tr class="data-item">
+                  <td class="data-col dt-tnxno" colspan="4">
+                    <div class="alert alert-danger text-center">
+                      Empty Transactions!
+                    </div>
+                  </td>
+                </tr><!-- .data-item -->
+                @endforelse
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="token-calculator card card-full-height">
+          <div class="card-innr">
+            <div class="card-head">
+              <h4 class="card-title">Withdraw Funds</h4>
+            </div>
+            <form action="{{ route('withdraw') }}" method="post">
+              @csrf
+              <div class="input-item input-with-label">
+                <label class="input-item-label">Enter amount to withdraw</label>
+                <input class="input-bordered input-with-hint" type="number" min="0" step="0.01" name="amount"
+                  placeholder="Amount" required>
+              </div>
+              <div class="input-item input-with-label">
+                <label class="input-item-label">Select Bank Account</label>
+                <div class="select-wrapper">
+                  <select class="select select-block select-bordered" name="bank" required>
+                    <option>Select</option>
+                    @forelse($user->wallet->bank_accounts as $bank)
+                    <option value="{{ $bank->id }}">{{ $bank->bankname }} - {{$bank->banknumber}}</option>
+                    @empty
+                    <option>---</option>
+                    @endforelse
+                  </select>
+                </div>
+              </div>
+              @if ($user->wallet->bank_accounts->count() === 0)
+              <small class="text-danger">Add Bank account to enable withdrawal</small>
+              @endif
+              <div class="token-buy text-center">
+                <button class="btn btn-primary"
+                  {{ $user->wallet->bank_accounts->count() === 0 ? 'disabled' : '' }}>Proceed</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-8">
+        <div class="token-transaction card card-full-height">
+          <div class="card-innr">
+            <div class="card-head has-aside">
+              <h4 class="card-title">Withdrawal History</h4>
+
+            </div>
+            <table class="data-table user-tnx">
+              <thead>
+                <tr class="data-item data-head">
+                  <th class="data-col dt-tnxno">Bank Details</th>
+                  <th class="data-col dt-token">Amount <small>NGN</small></th>
+                  <th class="data-col dt-amount">Date</th>
+                  <th class="data-col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($withdrawals as $withdrawal)
+                <tr class="data-item">
+                  <td class="data-col dt-tnxno">
+                    <div class="d-flex align-items-center">
+                      <div class="fake-class">
+                        <span class="lead tnx-id">{{ $withdrawal->bank->bankname }}</span>
+                        <span class="sub sub-date">{{ $withdrawal->bank->banknumber }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="data-col dt-token">
+                    <span class="lead token-amount">{{ to_naira($withdrawal->amount) }}</span>
+                    <span class="sub sub-symbol">{{ to_naira($withdrawal->amount) }} <small>(NGN)</small></span>
+                  </td>
+                  <td class="data-col dt-amount">
+                    <span class="lead amount-pay">{{ $withdrawal->getDate() }}</span>
+                    <span class="sub sub-symbol">{{ $withdrawal->getTime() }}</span>
+                  </td>
+                  <td class="data-col dt-type">
+                    <span
+                      class="dt-type-md badge badge-{{ $withdrawal->getStatus() }} badge-md text-capitalize">{{ $withdrawal->status }}</span>
+                  </td>
+                </tr><!-- .data-item -->
+                @empty
+                <tr class="data-item">
+                  <td class="data-col dt-tnxno" colspan="4">
+                    <div class="alert alert-danger text-center">
+                      No Withdrawals
+                    </div>
+                  </td>
+                </tr><!-- .data-item -->
+                @endforelse
+              </tbody>
+            </table>
+
+          </div>
+          <div class="card-footer bg-white text-center my-2">
+            {{ $withdrawals->links() }}
+          </div>
+        </div>
+      </div>
+    </div><!-- .row -->
+
+    <div class="row">
+      <div class="col-lg-5">
+        <div class="token-transaction card card-full-height">
+          <div class="card-innr">
+            <div class="card-head has-aside">
+              <h4 class="card-title">Bank Accounts</h4>
+            </div>
+            <table class="data-table user-tnx">
+              <thead>
+                <tr class="data-item data-head">
+                  <th class="data-col dt-tnxno">Bank Name</th>
+                  <th class="data-col dt-token">Account Number </th>
+                  <th class="data-col dt-amount">Account Name</th>
+                  <th class="data-col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                @forelse($banks as $bank)
+                <tr class="data-item">
+                  <td class="data-col dt-tnxno">
+                    <div class="d-flex align-items-center">
+                      <div class="fake-class">
+                        <span class="lead tnx-id">{{ $bank->bankname }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="data-col dt-token">
+                    <span class="lead token-amount">{{ $bank->banknumber }}</span>
+                  </td>
+                  <td class="data-col dt-amount">
+                    <span class="lead amount-pay">{{ $bank->accountname }}</span>
+                  </td>
+                  <td class="data-col dt-type">
+                    <form action="{{ route('wallet.removebank', $bank) }}" method="post"
+                      id="remove-bank-{{ $bank->id }}">
+                      @csrf
+                      @method('delete')
+                    </form>
+                    <a href="{{ route('wallet.removebank', $bank) }}"
+                      onclick="event.preventDefault();document.getElementById('remove-bank-{{ $bank->id }}').submit()"
+                      class="btn btn-danger-alt btn-xs btn-icon"><em class="ti ti-trash"></em></a>
+                  </td>
+                </tr><!-- .data-item -->
+                @empty
+                <tr class="data-item">
+                  <td class="data-col dt-tnxno" colspan="4">
+                    <div class="alert alert-danger text-center">
+                      No Withdrawals
+                    </div>
+                  </td>
+                </tr><!-- .data-item -->
+                @endforelse
+
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3">
+        <div class="token-calculator card card-full-height">
+          <div class="card-innr">
+            <div class="card-head">
+              <h4 class="card-title">Add Bank Account</h4>
+            </div>
+            @if($banks->count() < 3) <form action="{{ route('wallet.store') }}" method="post">
+              @csrf
+              <div class="input-item input-with-label">
+                <label class="input-item-label">Account Number</label>
+                <input class="input-bordered input-with-hint" type="text" id="banknumber" name="banknumber"
+                  placeholder="Acc No">
+              </div>
+              <div class="input-item input-with-label">
+                <label class="input-item-label">Select Bank Account <span class="fa fa-spinner fa-spin" id="bank-loader"
+                    style="diplay: none;"></span></label>
+                <div class="select-wrapper">
+                  <select class="input-bordered" name="bankname" id="bank-list">
+
+                  </select>
+                </div>
+              </div>
+              <input type="hidden" name="accountname" id="accountname">
+              <input type="hidden" name="code" id="bank-code">
+              <span class="fa fa-spinner fa-spin" id="verify-loader" style="diplay: none;"></span>
+
+              <div class="d-block">
+                <button type="button" class="btn btn-primary btn-block" id="verify-account">Check</button>
+              </div>
+              <div class="input-item input-with-label">
+                <label class="input-item-label">Account Name</label>
+                <input class="input-bordered input-with-hint" type="text" id="account-name" placeholder="Acc Name"
+                  disabled>
+              </div>
+              <div class="token-buy d-block">
+                <button type="submit" class="btn btn-primary" id="add-account" disabled>Add Account</button>
+              </div>
+              </form>
+              @endif
+          </div>
+        </div>
+      </div>
       <div class="col-xl-4">
         <div class="token-sales card card-full-height">
           <div class="card-innr">
@@ -411,7 +466,8 @@
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- .row -->
+
 
   </div><!-- .container -->
 </div><!-- .page-content -->

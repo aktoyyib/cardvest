@@ -81,6 +81,7 @@ class HomeController extends Controller
         $details['referral_bonus'] = $referral_bonus;
         $details['referrals'] = $user->referrals;
 
+
         $pending_referral = $user->referrals()->where('referrer_settled', false)->count();
         $details['pending_referrals'] = $pending_referral;
 
