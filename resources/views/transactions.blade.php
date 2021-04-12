@@ -43,20 +43,20 @@
                 <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
                 <span class="sub sub-symbol">NGN</span>
               </td>
-              <td class="data-col dt-token">
+              <td class="data-col dt-token dt-type-md">
                 <span class="lead token-amount">{{ $transaction->card->category->name }}</span>
                 <span class="sub sub-symbol">{{ $transaction->card->name }}</span>
               </td>
-              <td class="data-col dt-type">
+              <td class="dt-type">
                 <span
                   class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
               </td>
-              <td class="data-col">
+              <td class="">
                 <span
-                  class="dt-type-md badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
+                  class=" badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
 
                 <a href="{{ route('transaction.show', $transaction) }}"><span
-                    class="dt-type-md badge badge-primary badge-md text-capitalize">View</span></a>
+                    class=" badge badge-primary badge-md text-capitalize">View</span></a>
               </td>
             </tr><!-- .data-item -->
             @empty

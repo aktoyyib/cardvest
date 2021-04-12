@@ -45,17 +45,20 @@
                 @forelse($transactions as $transaction)
                 <tr class="data-item">
                   <td class="data-col dt-token">
-                    <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
-                    <span class="sub sub-symbol">NGN</span>
+                    <div class="d-flex align-items-center">
+                      <div class="data-state data-state-{{ $transaction->getStatus() }}">
+                        <span class="d-none">Pending</span>
+                      </div>
+                      <div>
+                        <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
+                        <span class="sub sub-symbol">NGN</span>
+                      </div>
                   </td>
                   <td class="data-col dt-type">
                     <span
                       class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
                   </td>
                   <td class="data-col">
-                    <span
-                      class="dt-type-md badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
-
                     <a href="{{ route('transaction.show', $transaction) }}"><span
                         class="dt-type-md badge badge-primary badge-md text-capitalize">View</span></a>
                   </td>
@@ -232,14 +235,14 @@
                   </td>
                   <td class="data-col dt-type">
                     <span
-                      class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
+                      class="badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
                   </td>
                   <td class="data-col">
                     <span
-                      class="dt-type-md badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
+                      class="badge badge-{{ $transaction->getDescription($transaction->status) }} badge-md text-capitalize">{{ $transaction->status }}</span>
 
                     <a href="{{ route('transaction.show', $transaction) }}"><span
-                        class="dt-type-md badge badge-primary badge-md text-capitalize">View</span></a>
+                        class="badge badge-primary badge-md text-capitalize">View</span></a>
                   </td>
                 </tr><!-- .data-item -->
                 @empty
@@ -327,13 +330,13 @@
                     <span class="lead token-amount">{{ to_naira($withdrawal->amount) }}</span>
                     <span class="sub sub-symbol">{{ to_naira($withdrawal->amount) }} <small>(NGN)</small></span>
                   </td>
-                  <td class="data-col dt-amount">
+                  <td class="dt-type-md data-col dt-amount">
                     <span class="lead amount-pay">{{ $withdrawal->getDate() }}</span>
                     <span class="sub sub-symbol">{{ $withdrawal->getTime() }}</span>
                   </td>
                   <td class="data-col dt-type">
                     <span
-                      class="dt-type-md badge badge-{{ $withdrawal->getStatus() }} badge-md text-capitalize">{{ $withdrawal->status }}</span>
+                      class="badge badge-{{ $withdrawal->getStatus() }} badge-md text-capitalize">{{ $withdrawal->status }}</span>
                   </td>
                 </tr><!-- .data-item -->
                 @empty

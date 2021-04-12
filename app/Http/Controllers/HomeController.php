@@ -23,8 +23,8 @@ class HomeController extends Controller
         $banks = $user->wallet->bank_accounts;
         $sold = $user->transactions()->completed()->cardSale()->sum('amount');
         $bought = $user->transactions()->completed()->cardPurchase()->sum('amount');
-        $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->take(3);
-
+        $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->take(3)->get();
+        // return $transactions;
         $categories = Category::all();
         $cardsToBuy = Card::where('type', 'buy')->get();
         
