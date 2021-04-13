@@ -117,7 +117,9 @@
                       <div class="input-item input-with-label">
                         <label class="input-item-label">Calculated Amount</label>
                         <div class="content-area card border-primary ">
-                          <div class="card-header"></div>
+                          <div class="card-header">
+                            <p id="card-name" class="font-weight-bold"></p>
+                          </div>
                           <ul class="list-group list-group-flush">
                             <!---->
                             <li class="list-group-item"><strong>Total:</strong> <span
@@ -135,6 +137,7 @@
                       </div>
                     </div>
                   </div>
+
                 </form>
 
               </div><!-- .tab-pane -->
@@ -157,9 +160,9 @@
                           <div class="select-wrapper">
                             <select name="card_id" id="buy-gift-card" class="select select-block select-bordered"
                               required>
-                              <option>Select</option>
+                              <option value="0">Select</option>
                               @foreach($cardsToBuy as $card)
-                              <option value="{{ $card->id }}" data-rate="{{ $card->rate }}">
+                              <option value="{{ $card->id }}" data-card="{{ $card }}" data-rate="{{ $card->rate }}">
                                 {{ $card->name." - ".$card->rate."/$" }}</option>
                               @endforeach
                             </select>
@@ -185,7 +188,9 @@
                       <div class="input-item input-with-label">
                         <label class="input-item-label">Calculated Amount</label>
                         <div class="content-area card border-primary ">
-                          <div class="card-header"></div>
+                          <div class="card-header">
+                            <p id="buy-card-name" class="font-weight-bold"></p>
+                          </div>
                           <ul class="list-group list-group-flush">
                             <!---->
                             <li class="list-group-item"><strong>Total:</strong> <span
@@ -208,6 +213,19 @@
 
               </div><!-- .tab-pane -->
             </div><!-- .tab-content -->
+
+            <div class="row" id="terms-box">
+              <div class="col-md-12">
+                <div class="card border-primary">
+                  <div class="card-header">
+                    <p class="card-title">TERMS OF TRADE</p>
+                  </div>
+                  <div class="card-body" id="terms">
+
+                  </div>
+                </div>
+              </div>
+            </div>
           </div><!-- .card-innr -->
         </div><!-- .card -->
 
@@ -255,6 +273,11 @@ $(document).ready(function() {
   amountBuyBox.prop('disabled', true)
   let totalBuyBox = $('#buy-gift-card-equiv');
 
+  // Box for displaying terms of trade for each card
+  let termsBox = $('#terms-box');
+  termsBox.hide();
+  let termsDisplay = $('#terms');
+
   let currentCategory = null
 
   amountBox.attr('disabled', true)
@@ -262,6 +285,27 @@ $(document).ready(function() {
   cardCategoryBox.change(function() {
     var id = this.value
     loadCard(categories, id)
+  });
+
+  // Get the current card
+  cardBox.change(function() {
+    var id = this.value
+    if (id === undefined || id < 1 || id === '') {
+      termsBox.hide();
+      return
+    }
+
+    // Search for the card
+    var curCard = currentCategory.cards.find((card) => {
+      return card.id === Number(id)
+    })
+
+    // Populate the calculation box with the current card name
+    $('#card-name').text(curCard.name)
+
+    // Make terms box visible
+    termsBox.show();
+    termsDisplay.html(curCard.terms)
   });
 
   amountBox.keyup(function() {
@@ -288,7 +332,7 @@ $(document).ready(function() {
 
 
 
-    var cardOptions = `<option>Select</option>`
+    var cardOptions = `<option value="0">Select</option>`
     // Load the category cards into the card select input
     currentCategory.cards.forEach((card) => {
       cardOptions += `<option value="${card.id}">${card.name} - (${card.rate}/$)</option>`
@@ -303,13 +347,31 @@ $(document).ready(function() {
   // For the BUy Card 
   // ********************************* //
   var buyRate = undefined
+  var cardToBuy = undefined
 
   cardBuyBox.change(function() {
     var selected = $(this).find('option:selected')
-    buyRate = Number(selected.data('rate'))
+    var id = this.value
+
+    if (id === undefined || id < 1 || id === '') {
+      termsBox.hide();
+      return
+    }
+
+    // Get the current card
+    cardToBuy = selected.data('card')
+
+    // Populate the calculation box with the current card name
+    $('#buy-card-name').text(cardToBuy.name)
+
+    // Make terms box visible
+    termsBox.show();
+    termsDisplay.html(cardToBuy.terms)
+
+
+    buyRate = Number(cardToBuy.rate)
     amountBuyBox.prop('disabled', false)
 
-    console.log(buyRate)
   })
 
   amountBuyBox.keyup(function() {

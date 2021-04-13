@@ -100,6 +100,14 @@
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col">
+                  <div class="input-item input-with-label">
+                    <label for="terms" class="input-item-label">Terms of Trade</label>
+                    <textarea name="terms" id="terms" cols="30" rows="10"></textarea>
+                  </div>
+                </div>
+              </div>
               <div class="gaps-1x"></div><!-- 10px gap -->
               <div class="d-sm-flex justify-content-between align-items-center">
                 <button class="btn btn-primary">Add Card</button>
@@ -118,7 +126,8 @@
 @endsection()
 
 @push('scripts')
+<script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
 <script>
-
+    CKEDITOR.replace('terms');
 </script>
 @endpush
