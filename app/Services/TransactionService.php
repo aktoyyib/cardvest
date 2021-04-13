@@ -367,7 +367,7 @@ class TransactionService
     }
 
     public function addToAudienceList(User $user) {
-        $mailchimp = new MailchimpMarketing\ApiClient();
+        $mailchimp = new \MailchimpMarketing\ApiClient();
 
         $mailchimp->setConfig([
         'apiKey' => env('MAILCHIMP_KEY'),
