@@ -77,6 +77,7 @@
         });
     </script>
   @stack('scripts')
+  <script src="//code.tidio.co/vuck458qqc6qwmrxgmpwgp8ndvamsbix.js"></script>
 </body>
 
 </html>

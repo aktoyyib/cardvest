@@ -24,6 +24,7 @@
   <!-- JavaScript (include all script here) -->
   <script src="{{ asset('assets/js/jquery.bundle.js?ver=104')}}"></script>
   <script src="{{ asset('assets/js/script.js?ver=104')}}"></script>
+  <script src="//code.tidio.co/vuck458qqc6qwmrxgmpwgp8ndvamsbix.js"></script>
 </body>
 
 </html>
