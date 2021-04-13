@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\WithdrawalController as Withdrawals;
 use App\Http\Controllers\Admin\CategoryController as Categories;
 use App\Http\Controllers\Admin\CardController as Cards;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
+use App\Jobs\SendWelcomeMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,7 @@ Route::get('referrals', [HomeController::class, 'referral'])->name('referrals');
 
 Route::get('email', function() {
     $user = App\Models\User::find(1);
-
+    SendWelcomeMail::dispatchAfterResponse($user);
     return new App\Mail\WelcomeToCardvest($user);
 });
 

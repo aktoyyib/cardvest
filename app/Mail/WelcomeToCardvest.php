@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 use App\Models\User;
+use Log;
 
 class WelcomeToCardvest extends Mailable
 {
@@ -32,6 +33,7 @@ class WelcomeToCardvest extends Mailable
      */
     public function build()
     {
+        Log::info('Sending email');
         return $this->view('email.welcome')
                     ->with([
                         'username' => $this->user->username,
