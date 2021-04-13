@@ -54,7 +54,7 @@ Route::get('email', function() {
             "status" => "subscribed",
             "merge_fields" => [
               "FNAME" => $user->username,
-              "PHONE" => $user->phone
+              "PHONE" => $user->phonenumber
             ]
         ]);
         dd($response);
