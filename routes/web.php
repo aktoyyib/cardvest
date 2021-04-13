@@ -46,22 +46,8 @@ Route::get('email', function() {
 
     $list_id = env('MAILCHIMP_LIST_ID');
 
-    // $response = $mailchimp->lists->getListMembersInfo($list_id);
-    // dd($response);
-
-    try {
-        $response = $mailchimp->lists->addListMember($list_id, [
-            "email_address" => $user->email,
-            "status" => "subscribed",
-            "merge_fields" => [
-              "FNAME" => $user->username,
-              "PHONE" => $user->phonenumber
-            ]
-        ]);
-        Log::info('User added to email list successfully!');
-    } catch (\Throwable $e) {
-        Log::info(json_encode($e));
-    }
+    $response = $mailchimp->lists->getListMembersInfo($list_id);
+    dd($response);
 
     return new App\Mail\WelcomeToCardvest($user);
 });
