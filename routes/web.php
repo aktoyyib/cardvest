@@ -15,7 +15,6 @@ use App\Http\Controllers\Admin\CategoryController as Categories;
 use App\Http\Controllers\Admin\CardController as Cards;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Jobs\SendWelcomeMail;
-use Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,7 +61,6 @@ Route::get('email', function() {
     } catch (MailchimpMarketing\ApiException $e) {
         echo $e->getMessage();
     }
-
 
     return new App\Mail\WelcomeToCardvest($user);
 });
