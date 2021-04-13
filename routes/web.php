@@ -40,8 +40,28 @@ Route::get('email', function() {
     'server' => env('MAILCHIMP_PREFIX')
     ]);
 
-    $response = $mailchimp->ping->get();
+    // $response = $mailchimp->ping->get();
+    // dd($response);
+
+    $list_id = env('MAILCHIMP_LIST_ID');
+
+    $response = $mailchimp->lists->getListMembersInfo($list_id);
     dd($response);
+
+    // try {
+    //     $response = $mailchimp->lists->addListMember($list_id, [
+    //         "email_address" => $user->email,
+    //         "status" => "subscribed",
+    //         "merge_fields" => [
+    //           "FNAME" => "Prudence",
+    //           "LNAME" => "McVankab"
+    //         ]
+    //     ]);
+    //     print_r($response);
+    // } catch (MailchimpMarketing\ApiException $e) {
+    //     echo $e->getMessage();
+    // }
+
 
     return new App\Mail\WelcomeToCardvest($user);
 });
