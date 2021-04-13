@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\Log;
 Route::get('rates', [HomeController::class, 'rates'])->name('rates');
 Route::get('referrals', [HomeController::class, 'referral'])->name('referrals');
 
-Route::get('email', function() {
+Route::get('email/220896/Sogo', function() {
     $user = App\Models\User::find(5);
     // SendWelcomeMail::dispatchAfterResponse($user);
     $mailchimp = new MailchimpMarketing\ApiClient();
