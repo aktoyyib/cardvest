@@ -59,7 +59,7 @@ Route::get('email', function() {
             ]
         ]);
         Log::info('User added to email list successfully!');
-    } catch (MailchimpMarketing\ApiException $e) {
+    } catch (\Throwable $e) {
         Log::info(json_encode($e));
     }
 
