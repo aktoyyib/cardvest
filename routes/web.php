@@ -32,7 +32,17 @@ Route::get('referrals', [HomeController::class, 'referral'])->name('referrals');
 
 Route::get('email', function() {
     $user = App\Models\User::find(5);
-    SendWelcomeMail::dispatchAfterResponse($user);
+    // SendWelcomeMail::dispatchAfterResponse($user);
+    $mailchimp = new MailchimpMarketing\ApiClient();
+
+    $mailchimp->setConfig([
+    'apiKey' => env('MAILCHIMP_KEY'),
+    'server' => env('MAILCHIMP_PREFIX')
+    ]);
+
+    $response = $mailchimp->ping->get();
+    return ($response);
+
     return new App\Mail\WelcomeToCardvest($user);
 });
 
