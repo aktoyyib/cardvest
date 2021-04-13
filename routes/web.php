@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\CategoryController as Categories;
 use App\Http\Controllers\Admin\CardController as Cards;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Jobs\SendWelcomeMail;
+use Illuminate\Support\Facades\Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,9 +58,9 @@ Route::get('email', function() {
               "PHONE" => $user->phonenumber
             ]
         ]);
-        dd($response);
+        Log::info('User added to email list successfully!');
     } catch (MailchimpMarketing\ApiException $e) {
-        echo $e->getMessage();
+        Log::info(json_encode($e));
     }
 
     return new App\Mail\WelcomeToCardvest($user);
