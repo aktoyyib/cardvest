@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\CategoryController as Categories;
 use App\Http\Controllers\Admin\CardController as Cards;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Jobs\SendWelcomeMail;
+use Log;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,22 +46,22 @@ Route::get('email', function() {
 
     $list_id = env('MAILCHIMP_LIST_ID');
 
-    $response = $mailchimp->lists->getListMembersInfo($list_id);
-    dd($response);
+    // $response = $mailchimp->lists->getListMembersInfo($list_id);
+    // dd($response);
 
-    // try {
-    //     $response = $mailchimp->lists->addListMember($list_id, [
-    //         "email_address" => $user->email,
-    //         "status" => "subscribed",
-    //         "merge_fields" => [
-    //           "FNAME" => "Prudence",
-    //           "LNAME" => "McVankab"
-    //         ]
-    //     ]);
-    //     print_r($response);
-    // } catch (MailchimpMarketing\ApiException $e) {
-    //     echo $e->getMessage();
-    // }
+    try {
+        $response = $mailchimp->lists->addListMember($list_id, [
+            "email_address" => $user->email,
+            "status" => "subscribed",
+            "merge_fields" => [
+              "FNAME" => $user->username,
+              "PHONE" => $user->phone
+            ]
+        ]);
+        dd($response);
+    } catch (MailchimpMarketing\ApiException $e) {
+        echo $e->getMessage();
+    }
 
 
     return new App\Mail\WelcomeToCardvest($user);
