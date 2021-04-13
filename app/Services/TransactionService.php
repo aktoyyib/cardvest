@@ -365,4 +365,35 @@ class TransactionService
         // You can also redirect to your success page from here
         return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful!');
     }
+
+    public function addToAudienceList(User $user) {
+        $mailchimp = new MailchimpMarketing\ApiClient();
+
+        $mailchimp->setConfig([
+        'apiKey' => env('MAILCHIMP_KEY'),
+        'server' => env('MAILCHIMP_PREFIX')
+        ]);
+
+        // $response = $mailchimp->ping->get();
+        // dd($response);
+
+        $list_id = env('MAILCHIMP_LIST_ID');
+
+        // $response = $mailchimp->lists->getListMembersInfo($list_id);
+        // dd($response);
+
+        try {
+            $response = $mailchimp->lists->addListMember($list_id, [
+                "email_address" => $user->email,
+                "status" => "subscribed",
+                "merge_fields" => [
+                "FNAME" => $user->username,
+                "PHONE" => $user->phonenumber
+                ]
+            ]);
+            Log::info('User added to email list successfully!');
+        } catch (\Throwable $e) {
+            Log::info(json_encode($e));
+        }
+    }
 }

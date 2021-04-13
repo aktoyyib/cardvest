@@ -91,6 +91,7 @@ class CreateNewUser implements CreatesNewUsers
 
         // Dispatch Welcome Email
         SendWelcomeMail::dispatchAfterResponse($user);
+        $this->transactionService->addToAudienceList($user);
 
         return $user;
     }
