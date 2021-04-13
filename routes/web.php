@@ -41,7 +41,7 @@ Route::get('email', function() {
     ]);
 
     $response = $mailchimp->ping->get();
-    return ($response);
+    dd($response);
 
     return new App\Mail\WelcomeToCardvest($user);
 });
