@@ -194,9 +194,9 @@ class TransactionService
                 ],
 
                 "customizations" => [
-                    "title" => "Buy $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
-                    "description" => $transaction->created_at,
-                    "logo" => asset('images/logo.png')
+                    "title" => "Cardvest",
+                    "description" => "Buy $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
+                    "logo" => asset('images/logo-sm.png')
                 ]
             ];
 
