@@ -259,7 +259,6 @@ class TransactionService
 
     public function callback() {
         if (request()->has('status') && request()->status == 'cancelled') {
-            return request()->all();
             return redirect()->route('transaction.show', request()->tx_ref)->with('error', 'Payment cancelled please try again.');
         }
 
