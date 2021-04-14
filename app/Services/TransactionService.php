@@ -258,11 +258,11 @@ class TransactionService
     }
 
     public function callback() {
-        $transactionID = Flutterwave::getTransactionIDFromCallback();
-
         if (request()->has('status') && request()->status == 'cancelled') {
             return back()->with('error', 'Payment cancelled please try again.');
         }
+
+        $transactionID = Flutterwave::getTransactionIDFromCallback();
         
         $data = Flutterwave::verifyTransaction($transactionID);
         
