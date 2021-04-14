@@ -24,7 +24,10 @@ class TransactionService
     const REFERRAL_BONUS = 50000; //kobo
     // const REGISTRATION_BONUS = 3000;
 
-//    ALl amounts must be converted to kobo before processing
+    // ALl amounts must be converted to kobo before processing
+    // Likewise all values must be converted to naira before being displayed on the pages.
+    // Convert to naira using a readily declared function to_naira that takes the value in kobo as arguement
+    // The function can be found in App\Helpers\functions.php
 
     public function makeReferral(User $user, User $recipient) {
         $bonus_amount = self::REFERRAL_BONUS;

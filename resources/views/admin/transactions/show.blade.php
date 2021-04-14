@@ -154,12 +154,12 @@
               </li>
               @endif
 
-              @if($transaction->status !== 'succeed')
               <li>
                 <div class="data-details-head">Admin Feedback</div>
                 <div class="data-details-des">
                   <div class="w-100 row">
-                    <form method="post" action="{{ route('transactions.update', $transaction) }}" class="w-100 row">
+                    <form method="post" action="{{ route('transactions.update', $transaction) }}"
+                      id="transaction-update" class="w-100 row">
                       @csrf
                       @method('put')
                       <div class="col-sm-6">
@@ -167,19 +167,41 @@
                           placeholder="Your comment here">{{ $transaction->admin_comment }}</textarea>
 
                       </div>
+
                       <div class="col-md-6">
                         <div class="d-flex flex-column">
+                          <!-- Once the transaction is approved or declined. Only the admin comment can be edited. -->
+                          @if($transaction->status !== 'succeed')
+
+                          @if($transaction->type == 'sell')
                           <div class="input-item input-with-label">
                             <label class="input-item-label">Amount Payable <span class="text-warning">(Default:
                                 &#8358;{{ to_naira($transaction->amount) }})</span></label>
                             <input type="number" placeholder="Enter amount" inputmode="numeric" name="amount"
                               class="input-bordered">
                           </div>
+                          @endif
+
+                          <div class="input-item input-with-label">
+                            <label class="input-item-label">Gift Card</label>
+                            <div class="select-wrapper">
+                              <select class="select-bordered select select-block" name="card_id" id="gift-card">
+                                <option>Select</option>
+                                @foreach($transaction->card->category->all_cards()->type($transaction->type)->get() as
+                                $card)
+                                <option value="{{ $card->id }}"
+                                  {{ $transaction->card_id == $card->id ? 'selected' : '' }}>
+                                  {{ $card->name }}
+                                </option>
+                                @endforeach
+                              </select>
+                            </div>
+                          </div>
 
                           <div class="input-item input-with-label">
                             <label class="input-item-label">Select Action </label>
                             <div class="select-wrapper">
-                              <select class="input-bordered select-block" name="status">
+                              <select class="select-bordered select select-block" name="status">
                                 <option>Select</option>
                                 <option value="pending" {{ $transaction->status == 'pending' ? 'selected' : '' }}>
                                   Processing</option>
@@ -195,7 +217,7 @@
                           <div class="input-item input-with-label">
                             <label class="input-item-label">Update Payment Status</label>
                             <div class="select-wrapper">
-                              <select class="input-bordered select-block" name="payment_status">
+                              <select class="select-bordered select select-block" name="payment_status">
                                 <option>Select</option>
                                 <option value="pending"
                                   {{ $transaction->payment_status == 'pending' ? 'selected' : '' }}>Processing</option>
@@ -208,7 +230,15 @@
                           </div>
                           @endif
 
-                          <button class="btn btn-primary" onclick="">Update</button>
+                          @endif
+                          <!-- Ends here:  Once the transaction is approved or declined. Only the admin comment can be edited. -->
+
+                          <!-- A check before transaction update is only necessary when payment is still pending -->
+                          @if($transaction->status === 'pending')
+                          <button class="btn btn-primary mt-1" onclick="approveTransaction(event)">Update</button>
+                          @else
+                          <button class="btn btn-primary mt-1">Update</button>
+                          @endif
                         </div>
                       </div>
                     </form>
@@ -216,7 +246,7 @@
 
                 </div>
               </li>
-              @endif
+
             </ul>
             @endif
           </div><!-- .card-innr -->
@@ -230,8 +260,26 @@
 
 @push('scripts')
 <script>
-let approveTransaction = function(id) {
+let approveTransaction = function(event) {
+  event.preventDefault()
 
+  swal({
+      title: "Are you sure you want to continue?",
+      text: "This transaction (if it's a card SALE) might initiate a payout to the users wallet, this is irreversible!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        swal("Thank you! Transaction successfully updated!", {
+          icon: "success",
+        });
+        $('#transaction-update').submit();
+      } else {
+
+      }
+    });
 }
 
 let cancelTransaction = function(id) {

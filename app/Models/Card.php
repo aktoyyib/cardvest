@@ -35,4 +35,8 @@ class Card extends Model
     {
         return $query->orderBy('name', 'asc');
     }
+
+    public function scopeType($query, $value) {
+        return $query->where('type', $value);
+    }
 }

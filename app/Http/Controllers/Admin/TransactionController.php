@@ -132,7 +132,7 @@ class TransactionController extends Controller
             $amount = $transaction->amount;
         }
 
-        if (!is_null($request->status) && $request->status == 'succeed') {
+        if ($transaction->type == 'sell' && !is_null($request->status) && $request->status == 'succeed') {
             // Credit a user with a payout
             $recipient = User::find($transaction->user_id);
             $this->transactionService->makeTransfer($request->merge(['role' => 'admin', 'admin_comment' => 'Card Payout', 'amount' => $amount/100]), auth()->user(), $recipient);

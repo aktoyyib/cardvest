@@ -9,7 +9,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $with = ['cards'];
+    protected $with = ['cards', 'all_cards'];
 
     protected $guarded = ['id'];
 
