@@ -70,7 +70,7 @@ class Transaction extends Model
             case 'pending':
                 $label = 'progress';
                 break;
-            case 'rejected' || 'rejected':
+            case 'rejected':
                 $label = 'canceled';
                 break;
             case 'succeed':

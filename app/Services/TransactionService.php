@@ -173,7 +173,7 @@ class TransactionService
             $transaction = Transaction::create($request->all());
             $user->transactions()->save($transaction);
             $transaction->update([
-                'admin_comment' => 'Payment Received!',
+                'admin_comment' => 'Payment pending!',
             ]);
             
             // Initialize Payment
@@ -259,7 +259,7 @@ class TransactionService
 
     public function callback() {
         if (request()->has('status') && request()->status == 'cancelled') {
-            return redirect()->route('transaction.show', request()->tx_ref)->with('error', 'Payment cancelled please try again.');
+            return redirect()->route('transaction.index')->with('error', 'Payment cancelled please try again.');
         }
 
         $transactionID = Flutterwave::getTransactionIDFromCallback();
