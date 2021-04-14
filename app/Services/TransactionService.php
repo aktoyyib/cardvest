@@ -192,7 +192,8 @@ class TransactionService
 
                 "customizations" => [
                     "title" => "Buy $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
-                    "description" => $transaction->created_at
+                    "description" => $transaction->created_at,
+                    "logo" => asset('images/logo.png')
                 ]
             ];
 
@@ -346,7 +347,7 @@ class TransactionService
         
         // Check if you have previously given value for the transaction. If you have, redirect to your successpage else, continue
         if ($transaction->payment_status === 'succeed' && $transaction->status === 'succeed') {
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful!');
+            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful! Check the transaction tab for update. It should take 15-20 minutes!');
         }
         // Confirm that the $data['data']['status'] is 'successful'
         if ($data['data']['status']  !== 'successful') {
@@ -368,7 +369,7 @@ class TransactionService
         $transaction->payment_status = 'succeed';
         $transaction->save();
         // You can also redirect to your success page from here
-        return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful!');
+        return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful!  Check the transaction tab for update. It should take 15-20 minutes!');
     }
 
     public function addToAudienceList(User $user) {

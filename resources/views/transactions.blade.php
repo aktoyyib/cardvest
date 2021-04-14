@@ -33,7 +33,8 @@
                   </div>
                   <div class="fake-class">
                     <a href="{{ route('transaction.show', $transaction) }}">
-                      <span class="lead tnx-id">{{ $transaction->reference }}</span>
+                      <span class="lead tnx-id d-none d-md-block">{{ $transaction->reference }}</span>
+                      <span class="lead tnx-id d-md-none">{{ substr($transaction->reference, 0, 10) }}...</span>
                     </a>
                     <span class="sub sub-date">{{ $transaction->getDate() }} {{ $transaction->getTime() }}</span>
                   </div>

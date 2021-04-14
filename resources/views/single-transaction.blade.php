@@ -8,10 +8,8 @@
       <div class="card-innr">
         <div class="card-head d-flex justify-content-between align-items-center">
           <h4 class="card-title mb-0">Transaction Details</h4>
-          <a href="{{ route('transaction.index') }}" class="btn btn-sm btn-auto btn-primary d-sm-block d-none"><em
+          <a href="{{ route('transaction.index') }}" class="btn btn-sm btn-auto btn-primary d-sm-block"><em
               class="fas fa-arrow-left mr-3"></em>Back</a>
-          <a href="transactions.html" class="btn btn-icon btn-sm btn-primary d-sm-none"><em
-              class="fas fa-arrow-left"></em></a>
         </div>
         <div class="gaps-1-5x"></div>
         <div class="data-details d-md-flex">
