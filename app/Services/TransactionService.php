@@ -220,7 +220,7 @@ class TransactionService
     public function makeTransfer(Request $request, User $sender, User $recipient) {
         $amount = $request->amount * 100;
 
-        if ($sender->id == $recipient->id) return;
+        // if ($sender->id == $recipient->id) return;
 
         if (isset($request->role)) {
             $role = $request->role;

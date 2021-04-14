@@ -122,11 +122,24 @@ class TransactionController extends Controller
         $request->validate([
             'admin_comment' => 'nullable|string',
             'status' => 'nullable|in:pending,rejected,succeed',
-            'payment_status' => 'nullable|in:failed,pending,succeed'
+            'payment_status' => 'nullable|in:failed,pending,succeed',
+            'amount' => 'nullable|numeric|min:0',
         ]);
 
+        if (!is_null($request->amount)) {
+            $amount = $request->amount * 100;
+        } else {
+            $amount = $transaction->amount;
+        }
 
-        $transaction->update($request->all());
+        if (!is_null($request->status) && $request->status == 'succeed') {
+            // Credit a user with a payout
+            $recipient = User::find($transaction->user_id);
+            $this->transactionService->makeTransfer($request->merge(['role' => 'admin', 'admin_comment' => 'Card Payout', 'amount' => $amount/100]), auth()->user(), $recipient);
+        }
+
+
+        $transaction->update($request->merge(['amount' => $amount])->all());
 
         return back()->with('info', 'Transaction updated successfully!');
     }

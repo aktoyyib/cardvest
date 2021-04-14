@@ -174,8 +174,8 @@
 
                     <div class="col-md-6">
                       <span>
-                        <div class="input-item input-with-label"><label class="input-item-label">Amount</label> <input
-                            type="number" id="buy-gift-card-amount" placeholder="Enter amount" inputmode="numeric"
+                        <div class="input-item input-with-label"><label class="input-item-label">Amount</label>
+                          <input type="number" id="buy-gift-card-amount" placeholder="Enter amount" inputmode="numeric"
                             name="amount" disabled="disabled" required class="input-bordered"> <span
                             class="error"></span>
                         </div>

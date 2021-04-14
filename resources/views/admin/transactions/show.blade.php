@@ -153,6 +153,8 @@
                 </div>
               </li>
               @endif
+
+              @if($transaction->status !== 'succeed')
               <li>
                 <div class="data-details-head">Admin Feedback</div>
                 <div class="data-details-des">
@@ -168,13 +170,23 @@
                       <div class="col-md-6">
                         <div class="d-flex flex-column">
                           <div class="input-item input-with-label">
-                            <label class="input-item-label">Select Action</label>
+                            <label class="input-item-label">Amount Payable <span class="text-warning">(Default:
+                                &#8358;{{ to_naira($transaction->amount) }})</span></label>
+                            <input type="number" placeholder="Enter amount" inputmode="numeric" name="amount"
+                              class="input-bordered">
+                          </div>
+
+                          <div class="input-item input-with-label">
+                            <label class="input-item-label">Select Action </label>
                             <div class="select-wrapper">
                               <select class="input-bordered select-block" name="status">
                                 <option>Select</option>
-                                <option value="pending">Processing</option>
-                                <option value="rejected">Reject</option>
-                                <option value="succeed">Approve</option>
+                                <option value="pending" {{ $transaction->status == 'pending' ? 'selected' : '' }}>
+                                  Processing</option>
+                                <option value="rejected" {{ $transaction->status == 'rejected' ? 'selected' : '' }}>
+                                  Reject</option>
+                                <option value="succeed" {{ $transaction->status == 'succeed' ? 'selected' : '' }}>
+                                  Approve</option>
                               </select>
                             </div>
                           </div>
@@ -185,15 +197,18 @@
                             <div class="select-wrapper">
                               <select class="input-bordered select-block" name="payment_status">
                                 <option>Select</option>
-                                <option value="pending">Processing</option>
-                                <option value="failed">Failed</option>
-                                <option value="succeed">Approve</option>
+                                <option value="pending"
+                                  {{ $transaction->payment_status == 'pending' ? 'selected' : '' }}>Processing</option>
+                                <option value="failed" {{ $transaction->payment_status == 'failed' ? 'selected' : '' }}>
+                                  Failed</option>
+                                <option value="succeed"
+                                  {{ $transaction->payment_status == 'succeed' ? 'selected' : '' }}>Approve</option>
                               </select>
                             </div>
                           </div>
                           @endif
 
-                          <button class="btn btn-primary">Update</button>
+                          <button class="btn btn-primary" onclick="">Update</button>
                         </div>
                       </div>
                     </form>
@@ -201,6 +216,7 @@
 
                 </div>
               </li>
+              @endif
             </ul>
             @endif
           </div><!-- .card-innr -->
