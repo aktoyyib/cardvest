@@ -66,17 +66,19 @@
                   <div class="row">
                     <div class="col-md-6">
                       <span>
-                        <div class="input-item input-with-label"><label class="input-item-label">Amount</label> <input
-                            type="number" id="gift-card-amount" placeholder="Enter amount" inputmode="numeric"
-                            name="amount" disabled="disabled" required class="input-bordered"> <span
-                            class="error"></span>
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Amount</label>
+                          <input type="number" id="gift-card-amount" placeholder="Enter amount" inputmode="numeric"
+                            name="amount" disabled="disabled" required class="input-bordered" autocomplete="off"
+                            data-multiples="10">
+                          <span class="error"></span>
                         </div>
                       </span>
                     </div>
                     <div class="col-md-6">
                       <div class="input-item input-with-label">
                         <label class="input-item-label">File Upload</label>
-                        <div class="relative"><em class="input-file-icon fas fa-upload"></em>
+                        <div class="relative"><em class="input-file -icon fas fa-upload"></em>
                           <input type="file" id="file-01" multiple="multiple" name="images[]" accept="image/*"
                             class="input-bordered">
                         </div>
@@ -85,6 +87,7 @@
                       </div>
                     </div>
                   </div>
+
                   <div class="row">
                     <div class="col-md-6">
                       <div class="input-item">
@@ -259,6 +262,7 @@
 @endsection()
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <script>
 $(document).ready(function() {
 
@@ -417,6 +421,40 @@ $(document).ready(function() {
     else
       element.text(formatter.format(total))
   }
+
+  // JQUERY VALIDATION
+  jQuery.validator.addMethod("multiples", function(value, element, params) {
+    var isValid = false
+    var params = $(element).data('multiples')
+
+    if ((typeof params) === "number") {
+      params = params.toString()
+    }
+
+    params.split(',').forEach((a) => {
+      if (Number(value) % Number(a) === 0) {
+        isValid = true
+      }
+    })
+    return isValid
+  }, `Please enter a valid amount. Should be multiple of denomination.`)
+
+  $("#sell-form").validate({
+    rules: {
+      amount: {
+        required: true,
+        multiples: true,
+      }
+    },
+    submitHandler: function(form) {
+      // some other code
+      // maybe disabling submit button
+      // then:
+      // $(form).submit();
+      alert('ehe')
+    }
+  });
+
 });
 
 //  ****************************** //
