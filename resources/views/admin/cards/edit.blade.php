@@ -46,7 +46,7 @@
                     <select class="select-bordered select-block" name="category" id="category">
                       <option>Select</option>
                       @foreach($categories as $category)
-                      <option value="{{ $category->id }}" {{ $category->id === $card->category_id ? 'selected' : '' }}>
+                      <option value="{{ $category->id }}" {{ $category->id == $card->category_id ? 'selected' : '' }}>
                         {{ $category->name }}</option>
                       @endforeach
                     </select>
