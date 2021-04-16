@@ -70,7 +70,7 @@
                           <label class="input-item-label">Amount</label>
                           <input type="number" id="gift-card-amount" placeholder="Enter amount" inputmode="numeric"
                             name="amount" disabled="disabled" required class="input-bordered" autocomplete="off"
-                            data-multiples="10">
+                            >
                           <span class="error"></span>
                         </div>
                       </span>
@@ -443,16 +443,16 @@ $(document).ready(function() {
     rules: {
       amount: {
         required: true,
-        multiples: true,
+        // multiples: true,
       }
     },
-    submitHandler: function(form) {
-      // some other code
-      // maybe disabling submit button
-      // then:
-      // $(form).submit();
-      alert('ehe')
-    }
+    // submitHandler: function(form) {
+    //   // some other code
+    //   // maybe disabling submit button
+    //   // then:
+    //   // $(form).submit();
+    //   alert('ehe')
+    // }
   });
 
 });
