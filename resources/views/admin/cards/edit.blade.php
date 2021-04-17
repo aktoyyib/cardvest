@@ -56,15 +56,15 @@
                 <div class="col-md-6">
                   <div class="input-item input-with-label">
                     <label for="rate" class="input-item-label">Rate <small class="text-danger">*</small></label>
-                    <input class="input-bordered" type="number" min="0" steps="0.01" id="rate" name="rate"
+                    <input class="input-bordered" type="number" min="0" steps ="0.01" id="rate" name="rate"
                       placeholder="Rate per USD" value="{{ $card->rate }}">
                   </div><!-- .input-item -->
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-9">
                   <div class="input-item input-with-label">
-                    <label for="min" class="input-item-label">Min</label>
-                    <input class="input-bordered" type="number" id="min" name="min" palceholder="Mininum unit"
-                      value="{{ $card->min }}">
+                    <label for="denomination" class="input-item-label">Denomination (If multiple, separate with comma <span class="text-danger">e.g. 10,25</span>)</label>
+                    <input class="input-bordered" type="text" id="denomination" name="denomination" placeholder="e.g. 25"
+                      value="{{ $card->denomination ?? '' }}">
                   </div><!-- .input-item -->
                 </div>
                 <div class="col-md-3">

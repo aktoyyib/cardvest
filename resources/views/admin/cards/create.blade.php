@@ -65,11 +65,11 @@
                       placeholder="Rate per USD" value="{{ old('rate') }}">
                   </div><!-- .input-item -->
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-9">
                   <div class="input-item input-with-label">
-                    <label for="min" class="input-item-label">Min</label>
-                    <input class="input-bordered" type="number" id="min" name="min" palceholder="Mininum unit"
-                      value="{{ old('min') }}">
+                    <label for="denomination" class="input-item-label">Denomination (If multiple, separate with comma <span class="text-danger">e.g. 10,25</span>)</label>
+                    <input class="input-bordered" type="text" id="denomination" name="denomination" placeholder="e.g. 25"
+                      value="{{ $card->denomination ?? '' }}">
                   </div><!-- .input-item -->
                 </div>
                 <div class="col-md-3">

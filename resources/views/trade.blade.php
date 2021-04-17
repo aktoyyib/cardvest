@@ -304,6 +304,16 @@ $(document).ready(function() {
       return card.id === Number(id)
     })
 
+    // Set the validation for the amount input
+    // data-multiples="10"
+    if (!(curCard.denomination === '' || curCard.denomination === undefined)) {
+      amountBox.data('multiples', curCard.denomination)
+    }
+
+    if (!(curCard.max === '' || curCard.max === undefined)) {
+      amountBox.attr('max', curCard.max)
+    }
+
     // Populate the calculation box with the current card name
     $('#card-name').text(curCard.name)
 
@@ -348,7 +358,7 @@ $(document).ready(function() {
     // console.log(cardOptions)
   }
 
-  // For the BUy Card 
+  // FOR THE BUY CARD
   // ********************************* //
   var buyRate = undefined
   var cardToBuy = undefined
@@ -361,9 +371,20 @@ $(document).ready(function() {
       termsBox.hide();
       return
     }
+    
 
     // Get the current card
     cardToBuy = selected.data('card')
+
+    // Set the validation for the amount input
+    // data-multiples="10"
+    if (!(cardToBuy.denomination === '' || cardToBuy.denomination === undefined)) {
+      amountBox.data('multiples', cardToBuy.denomination)
+    }
+
+    if (!(cardToBuy.max === '' || cardToBuy.max === undefined)) {
+      amountBox.attr('max', cardToBuy.max)
+    }
 
     // Populate the calculation box with the current card name
     $('#buy-card-name').text(cardToBuy.name)
@@ -423,10 +444,18 @@ $(document).ready(function() {
   }
 
   // JQUERY VALIDATION
-  jQuery.validator.addMethod("multiples", function(value, element, params) {
+  jQuery.validator.addMethod("multiples", function(value, element, jsonParams) {
     var isValid = false
     var params = $(element).data('multiples')
 
+    if (params === undefined) {
+      params = jsonParams
+    }
+
+    if ((typeof params) === "boolean") {
+      return true
+    }
+    
     if ((typeof params) === "number") {
       params = params.toString()
     }
@@ -443,7 +472,23 @@ $(document).ready(function() {
     rules: {
       amount: {
         required: true,
-        // multiples: true,
+        multiples: true,
+      }
+    },
+    // submitHandler: function(form) {
+    //   // some other code
+    //   // maybe disabling submit button
+    //   // then:
+    //   // $(form).submit();
+    //   alert('ehe')
+    // }
+  });
+
+  $("#buy-form").validate({
+    rules: {
+      amount: {
+        required: true,
+        multiples: true,
       }
     },
     // submitHandler: function(form) {
