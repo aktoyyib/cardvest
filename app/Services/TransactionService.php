@@ -18,6 +18,10 @@ use Illuminate\Support\Str;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 use Illuminate\Support\Facades\Log;
 
+use App\Notifications\Order;
+use App\Notifications\OrderProcessed;
+use Illuminate\Support\Facades\Notification;
+
 class TransactionService
 {
     protected $role = 'user';
@@ -152,6 +156,10 @@ class TransactionService
         }
 
         DB::commit();
+
+        // Send Notification to admin
+        $users = User::find(1);
+        Notification::send($users, new Order($transaction));
 
         // Return a response to the user
         return redirect()->route('transaction.index')->with('success', 'You request has been noted and will be attended to with 5-10 minutes.');

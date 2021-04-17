@@ -7,18 +7,21 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+use App\Models\Transaction;
 class OrderProcessed extends Notification
 {
     use Queueable;
+
+    protected $transaction;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Transaction $transaction)
     {
-        //
+        $this->transaction = $transaction;
     }
 
     /**
@@ -29,7 +32,7 @@ class OrderProcessed extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -55,7 +58,12 @@ class OrderProcessed extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            //description, amount, status, payment_status, comment
+            'description' => ucfirst($this->transaction->type)." $".$this->transaction->unit." ".$this->card->name." at ".$this->card->rate."/$",
+            'type' => $this->transaction->type,
+            'amount' => to_naira($this->transaction->amount),
+            'status' => $this->transaction->status,
+            'remark' => $this->transaction->admin_comment
         ];
     }
 }

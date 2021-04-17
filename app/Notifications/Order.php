@@ -7,18 +7,24 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
+use App\Models\Transaction;
+use Illuminate\Notifications\Messages\SlackMessage;
+
 class Order extends Notification
 {
     use Queueable;
+
+    protected $transaction;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Transaction $transaction)
     {
-        //
+        $this->transaction = $transaction;
+        $this->card = $transaction->card;
     }
 
     /**
@@ -29,7 +35,7 @@ class Order extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail'];
+        return ['mail', 'slack', 'database'];
     }
 
     /**
@@ -41,9 +47,12 @@ class Order extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->subject('✅ Transaction Notification - Cardvest')
+                    ->greeting('Business Alert 💢!')
+                    ->line(ucfirst($this->transaction->type)." $".$this->transaction->unit." ".$this->card->name." at ".$this->card->rate."/$")
+                    ->line('You have a new transaction to attend to!')
+                    ->action('View Transaction', route('transactions.show', $this->transaction))
+                    ->line('Thank you!');
     }
 
     /**
@@ -55,7 +64,35 @@ class Order extends Notification
     public function toArray($notifiable)
     {
         return [
-            //
+            'description' => ucfirst($this->transaction->type)." $".$this->transaction->unit." ".$this->card->name." at ".$this->card->rate."/$",
+            'type' => $this->transaction->type,
+            'amount' => to_naira($this->transaction->amount),
+            'status' => $this->transaction->status,
+            'payment' => $this->transaction->payment_status,
+            'username' => $this->transaction->user->username,
         ];
+    }
+
+    /**
+     * Get the Slack representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\SlackMessage
+     */
+    public function toSlack($notifiable)
+    {
+        $transaction  = $this->transaction;
+        $card  = $this->card;
+
+        return (new SlackMessage)
+                ->success()
+                ->content('A new order has been placed on CARDVEST!')
+                ->attachment(function ($attachment) use ($transaction, $card) {
+                    $attachment->title('Invoice 1322', route('transactions.show', $transaction))
+                               ->fields([
+                                    'Title' => ucfirst($transaction->type)." $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
+                                    'Amount' => 'NGN '.to_naira($transaction->amount),
+                                ]);
+                });
     }
 }

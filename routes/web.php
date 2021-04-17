@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\CardController as Cards;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Jobs\SendWelcomeMail;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\Order;
+use App\Models\Transaction;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,6 +32,13 @@ use Illuminate\Support\Facades\Log;
 
 Route::get('rates', [HomeController::class, 'rates'])->name('rates');
 Route::get('referrals', [HomeController::class, 'referral'])->name('referrals');
+
+Route::get('/notification', function () {
+    $transaction = Transaction::find(5);
+
+    return (new Order($transaction))
+                ->toMail($transaction->user);
+});
 
 Route::get('email/220896/Sogo', function() {
     $user = App\Models\User::find(5);

@@ -98,4 +98,15 @@ class User extends Authenticatable
     public function getTotalBought() {
         return $this->transactions()->cardPurchase()->sum('amount');
     }
+
+    /**
+     * Route notifications for the Slack channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForSlack($notification)
+    {
+        return 'https://hooks.slack.com/services/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';
+    }
 }
