@@ -88,7 +88,7 @@ class Order extends Notification
                 ->success()
                 ->content('A new order has been placed on CARDVEST!')
                 ->attachment(function ($attachment) use ($transaction, $card) {
-                    $attachment->title('Invoice 1322', route('transactions.show', $transaction))
+                    $attachment->title('Transaction '.$transaction->reference , route('transactions.show', $transaction))
                                ->fields([
                                     'Title' => ucfirst($transaction->type)." $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
                                     'Amount' => 'NGN '.to_naira($transaction->amount),
