@@ -6,6 +6,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WithdrawalController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\UserController as Users;
@@ -18,6 +19,9 @@ use App\Jobs\SendWelcomeMail;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\Order;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\Order as OrderNotification;
+use App\Notifications\OrderProcessed;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,8 +40,10 @@ Route::get('referrals', [HomeController::class, 'referral'])->name('referrals');
 Route::get('/notification', function () {
     $transaction = Transaction::find(5);
 
-    return (new Order($transaction))
-                ->toMail($transaction->user);
+    // return (new Order($transaction))
+    //             ->toMail($transaction->user);
+    $admins = App\Models\User::role('admin')->get();
+    Notification::send($admins, new OrderNotification($transaction));
 });
 
 Route::get('email/220896/Sogo', function() {
@@ -76,8 +82,11 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', [HomeController::class, 'index']);
     Route::get('profile', [HomeController::class, 'profile'])->name('profile');
 
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
+
     Route::get('transactions', [TransactionController::class, 'index'])->name('transaction.index');
     Route::get('transactions/{transaction:reference}', [TransactionController::class, 'show'])->name('transaction.show');
+    Route::post('trade-card/image', [TransactionController::class, 'upload'])->name('transaction.upload');
     Route::get('trade-card', [TransactionController::class, 'create'])->name('transaction.create');
     Route::post('trade-card/sell', [TransactionController::class, 'store'])->name('transaction.store');
     Route::post('trade-card/buy', [TransactionController::class, 'buy'])->name('transaction.buy');// The callback url after a payment

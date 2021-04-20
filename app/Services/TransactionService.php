@@ -106,6 +106,18 @@ class TransactionService
         return $withdrawal;
     }
 
+    public function uploadImage(Request $request) {
+        // Save the image
+        $file = $request->file('file');
+        $filename = Str::slug($request->type, '-') . time().'.'.$file->extension();
+
+        $path = $file->storeAs(
+            'gift-cards', $filename
+        );
+
+        return $filename;
+    }
+
     public function sellCard(Request $request) {
         $user = auth()->user();
         $card = Card::find($request->card_id);
@@ -127,27 +139,27 @@ class TransactionService
                 $bank = $request->bank;
             }
 
-            // Save Images
-            if($request->hasfile('images')) {
-                foreach($request->file('images') as $image)
-                {
-                    $filename=$image->getClientOriginalName();
-                    // $image->move(public_path().'/images/', $name);  
-                    $data[] = $filename;
-                    $path = $image->storeAs(
-                        'gift-cards', $filename
-                    );
-                }
+            // Save Images 
+            // if($request->hasfile('images')) {
+            //     foreach($request->file('images') as $image)
+            //     {
+            //         $filename=$image->getClientOriginalName();
+            //         // $image->move(public_path().'/images/', $name);  
+            //         $data[] = $filename;
+            //         $path = $image->storeAs(
+            //             'gift-cards', $filename
+            //         );
+            //     }
                 
-            }
+            // }
 
             $request->merge(['card_id' => $card->id, 'bank' => $bank, 'amount' => $amount, 'type'=> 'sell', 'balance' => $user->balance(), 'reference' => $ref, 'status' => 'pending', 'unit' => $unit]);
             // dd($request->all());
 
-            $transaction = Transaction::create($request->except('images'));
+            $transaction = Transaction::create($request->all());
             $user->transactions()->save($transaction);
 
-            $transaction->images = json_encode($data);
+            // $transaction->images = json_encode($data);
             $transaction->save();
 
         } catch (Throwable $e) {
@@ -158,8 +170,7 @@ class TransactionService
         DB::commit();
 
         // Send Notification to admin
-        $users = User::find(1);
-        Notification::send($users, new Order($transaction));
+        $this->newOrderNotifiction($transaction);
 
         // Return a response to the user
         return redirect()->route('transaction.index')->with('success', 'You request has been noted and will be attended to with 5-10 minutes.');
@@ -412,5 +423,11 @@ class TransactionService
         } catch (\Throwable $e) {
             Log::info(json_encode($e));
         }
+    }
+
+    public function newOrderNotifiction(Transaction $transaction) :void {
+        // Fetch all admins
+        $admins = User::role('admin')->get();
+        Notification::send($admins, new Order($transaction));
     }
 }

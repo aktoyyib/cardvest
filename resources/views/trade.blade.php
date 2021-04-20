@@ -75,17 +75,10 @@
                         </div>
                       </span>
                     </div>
-                    <div class="col-md-6">
-                      <div class="input-item input-with-label">
-                        <label class="input-item-label">File Upload</label>
-                        <div class="relative"><em class="input-file -icon fas fa-upload"></em>
-                          <input type="file" id="file-01" multiple="multiple" name="images[]" accept="image/*"
-                            class="input-bordered">
-                        </div>
-                        <div class="text-info"><i class="fa fa-info-circle"></i> You can upload multiple files at once
-                        </div>
-                      </div>
-                    </div>
+
+                    <input type="hidden" id="images" multiple="multiple" name="images" >
+
+                    
                   </div>
 
                   <div class="row">
@@ -143,6 +136,20 @@
 
                 </form>
 
+                <div class="row">
+                  <div class="col-md-12">
+                      <div class="input-item input-with-label">
+                          <label class="input-item-label">Gift Card Image</label>
+                          <div id="gift-card-shot">
+                              <div class="dz-message" data-dz-message>
+                                  <span class="dz-message-text">Drag and drop file</span>
+                                  <span class="dz-message-or">or</span>
+                                  <button class="btn btn-sm btn-primary">Choose a File</button>
+                              </div>
+                          </div>
+                      </div>
+                    </div>
+                </div>
               </div><!-- .tab-pane -->
 
               <div class="tab-pane fade" id="buy-card">
@@ -264,7 +271,39 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <script>
+  
+
+
 $(document).ready(function() {
+
+  $.ajaxSetup({
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  
+  // Dropzone Image Upload
+  // The recommended way from within the init configuration:
+  let giftCardShot = new Dropzone("#gift-card-shot", {
+    url: "{{ route('transaction.upload') }}",
+    maxFilesize: 5,
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  let imagesArray = [];
+
+  giftCardShot.on("success", function(file, response) {
+    imagesArray.push(response)
+    $("#images").val(JSON.stringify(imagesArray))
+    // console.log($("#images").val())
+  });
+
+  // giftCardShot.on("addedfile", function(file) {
+  //   console.log(file.name)
+  // });
+
 
   let categories = @json($categories);
   let cardBox = $('#gift-card');

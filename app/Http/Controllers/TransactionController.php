@@ -53,7 +53,7 @@ class TransactionController extends Controller
         $request->validate([
             'card_id' => 'required|numeric',
             'amount' => 'required|numeric|min:0',
-            'images*' => 'nullable|image|mimes:jpg,png,jpeg,pdf|max:2048',
+            // 'images*' => 'nullable|image|mimes:jpg,png,jpeg,pdf|max:2048',
             'to_bank' => 'nullable',
             'bank' => 'nullable|numeric',
             'comment' => 'nullable|string'
@@ -105,5 +105,10 @@ class TransactionController extends Controller
     public function webhook(Request $request)
     {
         $this->transactionService->webhook($request);
+    }
+
+    public function upload(Request $request)
+    {
+        return $this->transactionService->uploadImage($request);
     }
 }

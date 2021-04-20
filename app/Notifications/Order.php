@@ -35,7 +35,7 @@ class Order extends Notification
      */
     public function via($notifiable)
     {
-        return ['mail', 'slack', 'database'];
+        return ['database', 'mail', 'slack'];
     }
 
     /**
