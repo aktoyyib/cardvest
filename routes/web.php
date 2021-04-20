@@ -18,6 +18,7 @@ use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Jobs\SendWelcomeMail;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\Order;
+use App\Models\User;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Order as OrderNotification;
@@ -42,8 +43,11 @@ Route::get('/notification', function () {
 
     // return (new Order($transaction))
     //             ->toMail($transaction->user);
-    $admins = App\Models\User::role('admin')->get();
-    Notification::send($admins, new OrderNotification($transaction));
+    // $admins = App\Models\User::role('admin')->get();
+    $admins = $transaction->user;
+    // Notification::send($admins, new OrderProcessed($transaction));
+    return (new OrderProcessed($transaction))
+                ->toMail($transaction->user);
 });
 
 Route::get('email/220896/Sogo', function() {

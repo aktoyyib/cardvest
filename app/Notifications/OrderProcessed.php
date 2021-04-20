@@ -13,6 +13,8 @@ class OrderProcessed extends Notification
     use Queueable;
 
     protected $transaction;
+    protected $user;
+    protected $card;
 
     /**
      * Create a new notification instance.
@@ -22,6 +24,8 @@ class OrderProcessed extends Notification
     public function __construct(Transaction $transaction)
     {
         $this->transaction = $transaction;
+        $this->user = $transaction->user;
+        $this->card = $transaction->card;
     }
 
     /**
@@ -32,7 +36,7 @@ class OrderProcessed extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -44,9 +48,10 @@ class OrderProcessed extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->greeting('Hello '.$this->user->username.',')
+                    ->line('Your gift card transaction has been processed by the admin.')
+                    ->action('Check Transaction Status', route('transaction.show', $this->transaction))
+                    ->line('Thank you for transacting with us!');
     }
 
     /**

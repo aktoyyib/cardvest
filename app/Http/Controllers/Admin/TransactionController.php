@@ -138,8 +138,10 @@ class TransactionController extends Controller
             $this->transactionService->makeTransfer($request->merge(['role' => 'admin', 'admin_comment' => 'Card Payout', 'amount' => $amount/100]), auth()->user(), $recipient);
         }
 
-
         $transaction->update($request->merge(['amount' => $amount])->all());
+        
+        // Send notification
+        // $this->transactionService->notifyUser($transaction);
 
         return back()->with('info', 'Transaction updated successfully!');
     }

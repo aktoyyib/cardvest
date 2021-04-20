@@ -109,7 +109,7 @@ class TransactionService
     public function uploadImage(Request $request) {
         // Save the image
         $file = $request->file('file');
-        $filename = Str::slug($request->type, '-') . time().'.'.$file->extension();
+        $filename = Str::slug(Str::random(2), '-') . time().'.'.$file->extension();
 
         $path = $file->storeAs(
             'gift-cards', $filename
@@ -429,5 +429,11 @@ class TransactionService
         // Fetch all admins
         $admins = User::role('admin')->get();
         Notification::send($admins, new Order($transaction));
+    }
+
+    public function notifyUser(Transaction $transaction) :void {
+        // Get the user
+        $user = $transaction->user;
+        Notification::send($user, new OrderProcessed($transaction));
     }
 }
