@@ -488,7 +488,7 @@ $(document).ready(function() {
   $('#bank-loader').show()
   $('#bank-list').prop('disabled', true);
 
-  $.get("/fetch-banks", function(data, status) {
+  $.get("{{ route('banks') }}", function(data, status) {
     // var data = data.json()
 
     if (data.status === 'success') {
@@ -627,7 +627,7 @@ verifyloader.hide();
 let verifyAccount = function(acc_num, bnk_name) {
   verifyloader.show();
 
-  $.post("/verify-bank", {
+  $.post("{{ route('verify') }}", {
       'banknumber': acc_num,
       'bankname': bnk_name
     },
