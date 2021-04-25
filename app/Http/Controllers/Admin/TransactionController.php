@@ -141,7 +141,7 @@ class TransactionController extends Controller
         $transaction->update($request->merge(['amount' => $amount])->all());
         
         // Send notification
-        // $this->transactionService->notifyUser($transaction);
+        $this->transactionService->notifyUser($transaction);
 
         return back()->with('info', 'Transaction updated successfully!');
     }

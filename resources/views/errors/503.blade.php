@@ -7,9 +7,9 @@
     <div class="row justify-content-center">
       <div class="col-md-8 col-lg-7 col-xl-6 text-center">
         <div class="error-content">
-          <span class="error-text-large">403</span>
-          <h4 class="text-dark">Opps! Why you’re here?</h4>
-          <p>Unauthorized Access.</p>
+          <span class="error-text-large">Oops</span>
+          <h4 class="text-dark">Cardvest is down for maintenance.</h4>
+          <p>Time to chillax</p>
           <a href="/" class="btn btn-primary">Back to Home</a>
         </div>
       </div>
