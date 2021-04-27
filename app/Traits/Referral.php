@@ -33,6 +33,6 @@ trait Referral
     }
 
     public function referrerIsSettled() {
-        return $this->referral_settled;
+        return $this->referrer_settled;
     }
 }

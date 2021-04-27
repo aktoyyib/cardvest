@@ -145,11 +145,13 @@
               @if($transaction->type === 'sell')
               <li>
                 <div class="data-details-head">Image Uploads</div>
-                <div class="data-details-des">
-                  @foreach(json_decode($transaction->images) as $image)
-                  <a href="{!! Storage::url('gift-cards/'.$image) !!}" class="img-thumbnail" target="_blank"><img
+                <div class="data-details-des d-flex justify-content-start">
+                  @forelse(json_decode($transaction->images) as $image)
+                  <a href="{!! Storage::url('gift-cards/'.$image) !!}" class="img-thumbnail mr-2" target="_blank"><img
                       src="{!! Storage::url('gift-cards/'.$image) !!}" height="30px" alt=""></a>
-                  @endforeach
+                  @empty
+                  <span class="text-primary">No Image uploaded! <i class="fa fa-times text-danger"></i> </span>
+                  @endforelse
                 </div>
               </li>
               @endif

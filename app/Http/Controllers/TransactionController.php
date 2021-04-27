@@ -26,6 +26,7 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->paginate(10);
+        
         return view('transactions', compact('transactions'));
     }
 

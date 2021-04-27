@@ -132,13 +132,13 @@ class TransactionController extends Controller
             $amount = $transaction->amount;
         }
 
+        $transaction->update($request->merge(['amount' => $amount])->all());
+
         if ($transaction->type == 'sell' && !is_null($request->status) && $request->status == 'succeed') {
             // Credit a user with a payout
-            $recipient = User::find($transaction->user_id);
+            $recipient = $transaction->user;
             $this->transactionService->makeTransfer($request->merge(['role' => 'admin', 'admin_comment' => 'Card Payout', 'amount' => $amount/100]), auth()->user(), $recipient);
         }
-
-        $transaction->update($request->merge(['amount' => $amount])->all());
 
         // Settle the referrer of the owner of the transaction
         // Iff: has referrer AND the referrer is not settled (= 0)

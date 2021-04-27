@@ -158,8 +158,11 @@ class TransactionService
 
             $transaction = Transaction::create($request->all());
             $user->transactions()->save($transaction);
+            
+            if (is_null($request->images)) {
+                $transaction->images = json_encode([]);
+            }
 
-            // $transaction->images = json_encode($data);
             $transaction->save();
 
         } catch (Throwable $e) {
@@ -271,7 +274,6 @@ class TransactionService
             // Save users transaction
             $sender->transactions()->save($transfer);
         } catch (\Throwable $e) {
-            dd($e);
             DB::rollback();
             return back()->with('error', 'An error occured!');
         }
