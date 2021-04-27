@@ -48,7 +48,7 @@
                   </td>
                   <td class="data-col" class="align-middle">
                     <i
-                      class="fa fa-{{ $referral->referrer_settled ? 'check-circle text-success' : 'spinner text-info' }}"></i>
+                      class="fa fa-{{ $referral->referrer_settled ? 'check-circle text-success' : 'spinner text-info fa-spin' }}"></i>
                     {{ $referral->referrer_settled ? '' : 'Pending'}}
                   </td>
                 </tr><!-- tr -->
