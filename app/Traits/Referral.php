@@ -31,4 +31,8 @@ trait Referral
     public function referrals() {
         return $this->hasMany(User::class, 'referrer_id', 'id');
     }
+
+    public function referrerIsSettled() {
+        return $this->referral_settled;
+    }
 }

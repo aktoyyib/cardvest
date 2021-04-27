@@ -139,6 +139,18 @@ class TransactionController extends Controller
         }
 
         $transaction->update($request->merge(['amount' => $amount])->all());
+
+        // Settle the referrer of the owner of the transaction
+        // Iff: has referrer AND the referrer is not settled (= 0)
+        if ($request->status == 'succeed') {
+            $the_transaction_user = $transaction->user;
+            if ($the_transaction_user->referrer != null && !$the_transaction_user->referrerIsSettled()) {
+                // Get the referrer
+                $referrer = $the_transaction_user->referrer;
+                // Settle the referrer
+                $this->transactionService->makeReferral($the_transaction_user, $referrer);
+            }
+        }
         
         // Send notification
         $this->transactionService->notifyUser($transaction);

@@ -85,8 +85,10 @@ class CreateNewUser implements CreatesNewUsers
         // Delete the referral cookie only if the registration was successful
         if (request()->hasCookie('cardvest_referrer')) {
             cookie()->queue(cookie()->forget('cardvest_referrer'));
-            //  Give bonus to the referrer
-            $this->transactionService->makeReferral($user, $referrer);
+            
+            //  Attach the referrer to the user
+            $user->referrer()->associate($referrer);
+            $user->save();
         }
 
         // Dispatch Welcome Email
