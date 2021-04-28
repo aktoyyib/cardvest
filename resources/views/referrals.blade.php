@@ -76,7 +76,7 @@
           <div class="card-innr">
             <h6 class="card-title card-title-sm">Earn with Referral</h6>
             <p class=" pdb-0-5x">Invite your friends &amp; family and receive a <strong><span class="text-primary">bonus
-                </span> of &#8358; 500.</strong></p>
+                </span> of &#8358; 500</strong> when they initiate their first trade.</p>
             <div class="copy-wrap mgb-0-5x">
               <span class="copy-feedback"></span>
               <em class="fas fa-link"></em>

@@ -36,7 +36,6 @@ use App\Notifications\OrderProcessed;
 */
 
 Route::get('rates', [HomeController::class, 'rates'])->name('rates');
-Route::get('referrals', [HomeController::class, 'referral'])->name('referrals');
 
 Route::get('/notification', function () {
     $transaction = Transaction::find(5);
@@ -87,6 +86,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('profile', [HomeController::class, 'profile'])->name('profile');
 
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::get('referrals', [HomeController::class, 'referral'])->name('referrals');
 
     Route::get('transactions', [TransactionController::class, 'index'])->name('transaction.index');
     Route::get('transactions/{transaction:reference}', [TransactionController::class, 'show'])->name('transaction.show');
