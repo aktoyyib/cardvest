@@ -44,30 +44,30 @@ Route::get('/notification', function () {
     //             ->toMail($transaction->user);
     // $admins = App\Models\User::role('admin')->get();
     $admins = $transaction->user;
-    // Notification::send($admins, new OrderProcessed($transaction));
+    Notification::send('josephajibodu@gmail.com', new OrderProcessed($transaction));
     return (new OrderProcessed($transaction))
                 ->toMail($transaction->user);
 });
 
-Route::get('email/220896/Sogo', function() {
+Route::get('email', function() {
     $user = App\Models\User::find(5);
     // SendWelcomeMail::dispatchAfterResponse($user);
-    $mailchimp = new MailchimpMarketing\ApiClient();
+    // $mailchimp = new MailchimpMarketing\ApiClient();
 
-    $mailchimp->setConfig([
-    'apiKey' => env('MAILCHIMP_KEY'),
-    'server' => env('MAILCHIMP_PREFIX')
-    ]);
+    // $mailchimp->setConfig([
+    // 'apiKey' => env('MAILCHIMP_KEY'),
+    // 'server' => env('MAILCHIMP_PREFIX')
+    // ]);
 
-    // $response = $mailchimp->ping->get();
+    // // $response = $mailchimp->ping->get();
+    // // dd($response);
+
+    // $list_id = env('MAILCHIMP_LIST_ID');
+
+    // $response = $mailchimp->lists->getListMembersInfo($list_id);
     // dd($response);
 
-    $list_id = env('MAILCHIMP_LIST_ID');
-
-    $response = $mailchimp->lists->getListMembersInfo($list_id);
-    dd($response);
-
-    return new App\Mail\WelcomeToCardvest($user);
+    // return new App\Mail\WelcomeToCardvest($user);
 });
 
 Route::get('fetch-banks', [WalletController::class, 'banks'])->name('banks');
