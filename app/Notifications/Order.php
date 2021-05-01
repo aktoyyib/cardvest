@@ -15,6 +15,7 @@ class Order extends Notification
     use Queueable;
 
     protected $transaction;
+    protected $card;
 
     /**
      * Create a new notification instance.
