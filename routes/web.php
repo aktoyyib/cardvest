@@ -44,7 +44,8 @@ Route::get('/notification', function () {
     //             ->toMail($transaction->user);
     // $admins = App\Models\User::role('admin')->get();
     $admins = $transaction->user;
-    Notification::send('josephajibodu@gmail.com', new OrderProcessed($transaction));
+    // Notification::send('josephajibodu@gmail.com', new OrderProcessed($transaction));
+    Notification::route('mail', 'josephajibodu@gmail.com')->notify(new OrderProcessed($transaction));
     return (new OrderProcessed($transaction))
                 ->toMail($transaction->user);
 });
