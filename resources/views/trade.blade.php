@@ -138,7 +138,7 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="input-item input-with-label">
-                      <label class="input-item-label">Gift Card Image</label>
+                      <label class="input-item-label">Gift Card Image <span class="text-danger">*</span> </label>
                       <div id="gift-card-shot">
                         <div class="dz-message" data-dz-message>
                           <span class="dz-message-text">Drag and drop file</span>

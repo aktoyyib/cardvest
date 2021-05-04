@@ -58,10 +58,12 @@ class TransactionController extends Controller
             // 'images*' => 'nullable|image|mimes:jpg,png,jpeg,pdf|max:2048',
             'to_bank' => 'nullable',
             'bank' => 'nullable|numeric',
-            'comment' => 'nullable|string'
+            'comment' => 'nullable|string',
+            'images' => 'required'
         ], [
             'card_id.numeric' => 'A valid gift card must be selected',
-            'card_id.required' => 'You must select a gift card to continue'
+            'card_id.required' => 'You must select a gift card to continue',
+            'images.required' => 'You must upload the shot of the gift card'
         ]);
         
         //  Check if the card_id is valid
