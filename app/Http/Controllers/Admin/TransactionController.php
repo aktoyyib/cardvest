@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Models\User;
+use App\Models\Card;
 use App\Models\Transaction;
 use App\Services\TransactionService;
 
