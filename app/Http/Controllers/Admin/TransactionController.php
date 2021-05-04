@@ -111,6 +111,9 @@ class TransactionController extends Controller
         $p_s = array('failed', 'pending', 'succeed');
         $_s = array('rejected', 'pending', 'succeed');
 
+        // Get the value before adding other fields to the request array
+        $userIsToBePaid = $transaction->type == 'sell' && $request->has('status') && $request->status == 'succeed';
+
         if (!in_array($request->status, $_s)) {
             $request->merge(['status' => $transaction->status]);
         }
@@ -142,8 +145,8 @@ class TransactionController extends Controller
         } catch(\Throwable $e) {
             return back()->with('error', 'Transaction could not be updated. Check that the necessary inputs are valid and try again.');
         }
-
-        if ($transaction->type == 'sell' && !is_null($request->status) && $request->status == 'succeed') {
+        
+        if ($userIsToBePaid) {
             // Credit a user with a payout
             $recipient = $transaction->user;
             $this->transactionService->makeTransfer($request->merge(['role' => 'admin', 'admin_comment' => 'Card Payout', 'amount' => $amount/100]), auth()->user(), $recipient);
