@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Card;
+use App\Models\Bank;
 use App\Services\TransactionService;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
@@ -58,7 +59,20 @@ class TransactionController extends Controller
             'to_bank' => 'nullable',
             'bank' => 'nullable|numeric',
             'comment' => 'nullable|string'
+        ], [
+            'card_id.numeric' => 'A valid gift card must be selected',
+            'card_id.required' => 'You must select a gift card to continue'
         ]);
+        
+        //  Check if the card_id is valid
+        if (is_null(Card::find($request->card_id))) {
+            return back()->with('warning','Please select a valid card to continue.');
+        }
+        
+        //  Check if bank is valid
+        if (isset($request->to_bank) && is_null(Bank::find($request->bank))) {
+            return back()->with('warning','Please select a valid bank or un-check the bank payment option.');
+        }
 
         return $this->transactionService->sellCard($request);
     }
@@ -75,8 +89,16 @@ class TransactionController extends Controller
             'card_id' => 'required|numeric',
             'amount' => 'required|numeric|min:0',
             'comment' => 'nullable|string'
+        ], [
+            'card_id.numeric' => 'A valid gift card must be selected',
+            'card_id.required' => 'You must select a gift card to continue'
         ]);
 
+        //  Check if the card_id is valid
+        if (is_null(Card::find($request->card_id))) {
+            return back()->with('warning','Please select a valid card to continue.');
+        }
+        
         return $this->transactionService->buyCard($request);
     }
 

@@ -55,7 +55,7 @@
                           <label class="input-item-label">Gift Card</label>
                           <div class="select-wrapper">
                             <select name="card_id" id="gift-card" class="select select-block select-bordered" required>
-                              <option value="">Select</option>
+                              <option>Select</option>
                             </select>
                           </div>
                           <span class="error"></span>
@@ -69,16 +69,15 @@
                         <div class="input-item input-with-label">
                           <label class="input-item-label">Amount</label>
                           <input type="number" id="gift-card-amount" placeholder="Enter amount" inputmode="numeric"
-                            name="amount" disabled="disabled" required class="input-bordered" autocomplete="off"
-                            >
+                            name="amount" disabled="disabled" required class="input-bordered" autocomplete="off">
                           <span class="error"></span>
                         </div>
                       </span>
                     </div>
 
-                    <input type="hidden" id="images" multiple="multiple" name="images" >
+                    <input type="hidden" id="images" multiple="multiple" name="images">
 
-                    
+
                   </div>
 
                   <div class="row">
@@ -138,17 +137,17 @@
 
                 <div class="row">
                   <div class="col-md-12">
-                      <div class="input-item input-with-label">
-                          <label class="input-item-label">Gift Card Image</label>
-                          <div id="gift-card-shot">
-                              <div class="dz-message" data-dz-message>
-                                  <span class="dz-message-text">Drag and drop file</span>
-                                  <span class="dz-message-or">or</span>
-                                  <button class="btn btn-sm btn-primary">Choose a File</button>
-                              </div>
-                          </div>
+                    <div class="input-item input-with-label">
+                      <label class="input-item-label">Gift Card Image</label>
+                      <div id="gift-card-shot">
+                        <div class="dz-message" data-dz-message>
+                          <span class="dz-message-text">Drag and drop file</span>
+                          <span class="dz-message-or">or</span>
+                          <button class="btn btn-sm btn-primary">Choose a File</button>
+                        </div>
                       </div>
                     </div>
+                  </div>
                 </div>
               </div><!-- .tab-pane -->
 
@@ -170,7 +169,7 @@
                           <div class="select-wrapper">
                             <select name="card_id" id="buy-gift-card" class="select select-block select-bordered"
                               required>
-                              <option value="0">Select</option>
+                              <option>Select</option>
                               @foreach($cardsToBuy as $card)
                               <option value="{{ $card->id }}" data-card="{{ $card }}" data-rate="{{ $card->rate }}">
                                 {{ $card->name." - ".$card->rate."/$" }}</option>
@@ -271,9 +270,6 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <script>
-  
-
-
 $(document).ready(function() {
 
   $.ajaxSetup({
@@ -281,14 +277,14 @@ $(document).ready(function() {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
-  
+
   // Dropzone Image Upload
   // The recommended way from within the init configuration:
   let giftCardShot = new Dropzone("#gift-card-shot", {
     url: "{{ route('transaction.upload') }}",
     maxFilesize: 5,
     headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     }
   });
 
@@ -410,7 +406,7 @@ $(document).ready(function() {
       termsBox.hide();
       return
     }
-    
+
 
     // Get the current card
     cardToBuy = selected.data('card')
@@ -494,7 +490,7 @@ $(document).ready(function() {
     if ((typeof params) === "boolean") {
       return true
     }
-    
+
     if ((typeof params) === "number") {
       params = params.toString()
     }
