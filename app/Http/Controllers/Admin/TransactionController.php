@@ -126,13 +126,22 @@ class TransactionController extends Controller
             'amount' => 'nullable|numeric|min:0',
         ]);
 
+        //  Check if the card_id is valid
+        if ($request->has('card_id') && is_null(Card::find($request->card_id))) {
+            return back()->with('warning','Please select the valid card to continue.');
+        }
+
         if (!is_null($request->amount)) {
             $amount = $request->amount * 100;
         } else {
             $amount = $transaction->amount;
         }
-
-        $transaction->update($request->merge(['amount' => $amount])->all());
+        
+        try {
+            $transaction->update($request->merge(['amount' => $amount])->all());
+        } catch(\Throwable $e) {
+            return back()->with('error', 'Transaction could not be updated. Check that the necessary inputs are valid and try again.');
+        }
 
         if ($transaction->type == 'sell' && !is_null($request->status) && $request->status == 'succeed') {
             // Credit a user with a payout
