@@ -36,8 +36,8 @@ class OrderProcessed extends Notification
      */
     public function via($notifiable)
     {
-        // return ['database'];
-        return ['database', 'mail'];
+        return ['database'];
+        // return ['database', 'mail'];
     }
 
     /**
