@@ -68,6 +68,8 @@ class TransactionController extends Controller
         if (is_null(Card::find($request->card_id))) {
             return back()->with('warning','Please select a valid card to continue.');
         }
+
+        return Card::find($request->card_id);
         
         //  Check if bank is valid
         if (isset($request->to_bank) && is_null(Bank::find($request->bank))) {
