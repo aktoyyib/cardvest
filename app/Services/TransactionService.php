@@ -430,12 +430,14 @@ class TransactionService
     public function newOrderNotifiction(Transaction $transaction) :void {
         // Fetch all admins
         $admins = User::role('admin')->get();
+        Log::info($admins);
         Notification::send($admins, new Order($transaction));
     }
 
     public function notifyUser(Transaction $transaction) :void {
         // Get the user
         $user = $transaction->user;
+        Log::info($user);
         Notification::send($user, new OrderProcessed($transaction));
     }
 }
