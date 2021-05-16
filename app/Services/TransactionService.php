@@ -284,7 +284,9 @@ class TransactionService
 
     public function callback() {
         if (request()->has('status') && request()->status == 'cancelled') {
-            return request()->all();
+            // Get the transaction from your DB using the transaction reference (txref)
+            $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
+            if (!is_null($transaction)) $transaction->delete();
             return redirect()->route('transaction.index')->with('error', 'Payment cancelled please try again.');
         }
 
@@ -369,6 +371,11 @@ class TransactionService
     protected function processCharge($data, $isWebhook = false) {
         // Get the transaction from your DB using the transaction reference (txref)
         $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
+
+        // Handle when transaction is null. In case webhook is ahead of direct callback or vice-versa
+        if (is_null($transaction)) {
+            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Invalid Transaction. This could mean the payment failed or was cancelled. Thank you!');
+        }
         
         // Check if you have previously given value for the transaction. If you have, redirect to your successpage else, continue
         if ($transaction->payment_status === 'succeed' && $transaction->status === 'succeed') {
