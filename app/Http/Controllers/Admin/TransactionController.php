@@ -26,6 +26,10 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = Transaction::desc()->paginate(25);
+
+        // Transaction Types - Sell | Buy | Payout 
+        // Transactions should actually show only card sales or purchase (Sell - Pending / Success / Rejected |  Buy - Successful payment)
+        // Payouts should be moved to its own separate page
         return view('admin.transactions.index', compact('transactions'));
     }
 
