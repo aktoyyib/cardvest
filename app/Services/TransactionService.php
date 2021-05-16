@@ -233,7 +233,7 @@ class TransactionService
 
             return redirect($payment['data']['link']);
 
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             DB::rollback();
             return back()->with('error', 'An error occured!');
         }
@@ -284,6 +284,7 @@ class TransactionService
 
     public function callback() {
         if (request()->has('status') && request()->status == 'cancelled') {
+            return request()->all();
             return redirect()->route('transaction.index')->with('error', 'Payment cancelled please try again.');
         }
 
@@ -375,15 +376,18 @@ class TransactionService
         }
         // Confirm that the $data['data']['status'] is 'successful'
         if ($data['data']['status']  !== 'successful') {
+            $transaction->delete();
             return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed!');
         }
         // Confirm that the currency on your db transaction is equal to the returned currency
         if ($data['data']['currency']  !== 'NGN') {
+            $transaction->delete();
             return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [CE]');
         }
         // Confirm that the db transaction amount is equal to the returned amount
         $amt = $transaction->amount/100;
         if ($data['data']['amount']  !== $amt) {
+            $transaction->delete();
             return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [AE]');
         }
         // Update the db transaction record (including parameters that didn't exist before the transaction is completed. for audit purpose)
