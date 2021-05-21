@@ -207,7 +207,8 @@ class TransactionService
                 'amount' => $transaction->amount/100,
                 'email' => $user->email,
                 'tx_ref' => $reference,
-                'currency' => "NGN",
+                'currency' => "GHS",
+                'country' => "NG",
                 'redirect_url' => route('callback'),
                 'customer' => [
                     'email' => $user->email,
