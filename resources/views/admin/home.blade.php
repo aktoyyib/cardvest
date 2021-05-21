@@ -86,6 +86,22 @@
           </div>
         </div>
       </div><!-- .col -->
+
+      <div class="col-lg-4">
+        <div class="token-statistics card card-token height-auto">
+          <div class="card-innr">
+            <div class="token-balance token-balance-with-icon">
+              <div class="token-balance-icon">
+                <img src="{{ asset('images/logo-sm.png') }}" alt="logo">
+              </div>
+              <div class="token-balance-text">
+                <span class="lead"><span>Administrators</span></span>
+                <h6 class="card-sub-title"><a href="{{ route('roles.index') }}">View</a></h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- .col -->
     </div>
 
   </div><!-- .container -->
