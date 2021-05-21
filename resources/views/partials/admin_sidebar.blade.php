@@ -5,6 +5,7 @@
     </div>
     <ul class="sidebar-nav">
       <li><a href="{{ route('users.index') }}"><em class="ikon ikon-user"></em> Users</a></li>
+      <li><a href="{{ route('roles.index') }}"><em class="ikon ikon-user"></em> Roles</a></li>
       <li><a href="{{ route('transactions.index') }}"><em class="ikon ikon-user"></em> Transactions</a></li>
       <li><a href="{{ route('withdrawals.index') }}"><em class="ikon ikon-user"></em> Withdrawals</a></li>
       <li><a href="{{ route('categories.index') }}"><em class="ikon ikon-exchange"></em> Gift Cards</a></li>
