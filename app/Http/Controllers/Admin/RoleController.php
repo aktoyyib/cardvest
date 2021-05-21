@@ -11,7 +11,7 @@ class RoleController extends Controller
 {
     public function index($searched_users = null, $param = null)
     {
-        $users = User::role('admin')->simplePaginate(10);
+        $users = User::role(['admin', 'Super Admin'])->simplePaginate(10);
         return view('admin.roles.index', compact('users', 'searched_users', 'param'));
     }
 

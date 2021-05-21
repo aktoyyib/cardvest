@@ -96,12 +96,13 @@
               </div>
               <div class="token-balance-text">
                 <span class="lead"><span>Administrators</span></span>
-                <h6 class="card-sub-title"><a href="{{ route('roles.index') }}">View</a></h6>
+                <h6 class="card-sub-title"><a href="{{ route('roles.index') }}">View Admins</a></h6>
               </div>
             </div>
           </div>
         </div>
       </div><!-- .col -->
+
     </div>
 
   </div><!-- .container -->
