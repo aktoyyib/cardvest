@@ -127,7 +127,6 @@ class TransactionService
         
         $data = array();
         
-        // return $amount;
         // Debit the user
         $ref = $this->createReference('sell');
 
@@ -140,20 +139,20 @@ class TransactionService
             }
 
             // Save Images 
-            if($request->hasfile('images')) {
-                foreach($request->file('images') as $image)
-                {
-                    $filename=$image->getClientOriginalName();
-                    // $image->move(public_path().'/images/', $name);  
-                    $data[] = $filename;
-                    $path = $image->storeAs(
-                        'gift-cards', $filename
-                    );
-                }
+            // if($request->hasfile('images')) {
+            //     foreach($request->file('images') as $image)
+            //     {
+            //         $filename=$image->getClientOriginalName();
+            //         // $image->move(public_path().'/images/', $name);  
+            //         $data[] = $filename;
+            //         $path = $image->storeAs(
+            //             'gift-cards', $filename
+            //         );
+            //     }
                 
-            } 
+            // } 
 
-            $request->merge(['card_id' => $card->id, 'bank' => $bank, 'amount' => $amount, 'type'=> 'sell', 'balance' => $user->balance(), 'reference' => $ref, 'status' => 'pending', 'unit' => $unit, 'images' => json_encode($data)]);
+            $request->merge(['card_id' => $card->id, 'bank' => $bank, 'amount' => $amount, 'type'=> 'sell', 'balance' => $user->balance(), 'reference' => $ref, 'status' => 'pending', 'unit' => $unit, 'images' => json_encode($request->images)]);
             // dd($request->all());
 
             $transaction = Transaction::create($request->all());
