@@ -60,15 +60,21 @@ class TransactionController extends Controller
         
         //  Check if the card_id is valid
         if (is_null(Card::find($request->card_id))) {
-            return response()->json(['warning' =>'Please select a valid card to continue.'], 400);
+            abort(400, 'Gift card is invalid');
         }
 
         //  Check if bank is valid
-        if (isset($request->to_bank) && is_null(Bank::find($request->bank))) {
-            return response()->json(['warning' => 'Please select a valid bank or un-check the bank payment option.'], 400);
+        if (isset($request->to_bnk) && is_null(Bank::find($request->bank))) {
+            abort(400, 'Bank must be valid if supplied');
         }
         
-        return $this->transactionService->sellCard($request);
+        $response = $this->transactionService->sellCard($request);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => $response['message'],
+            'data' => $response['data']
+        ]);
     }
 
     /**

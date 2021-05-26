@@ -118,6 +118,7 @@ class TransactionService
         return $filename;
     }
 
+    // Done
     public function sellCard(Request $request) {
         $user = auth()->user();
         $card = Card::find($request->card_id);
@@ -150,7 +151,7 @@ class TransactionService
 
         } catch (\Throwable $e) {
             DB::rollback();
-            return response()->json(['error' => 'An error occured!'], 500);
+            throw $e;
         }
 
         DB::commit();
@@ -159,10 +160,10 @@ class TransactionService
         $this->newOrderNotifiction($transaction);
 
         // Return a response to the user
-        return response()->json([
-            'success' => 'You request has been noted and will be attended to with 5-10 minutes.',
+        return [
+            'message' => 'You request has been noted and will be attended to with 5-10 minutes.',
             'data' => $transaction,
-        ]);
+        ];
     }
 
     public function buyCard(Request $request) {
@@ -179,7 +180,6 @@ class TransactionService
 
         try {
             $request->merge(['card_id' => $card->id, 'amount' => $amount, 'type'=> 'buy', 'balance' => $user->balance(), 'reference' => $reference, 'unit' => $unit]);
-            // dd($request->all());
 
             $transaction = Transaction::create($request->all());
             $user->transactions()->save($transaction);

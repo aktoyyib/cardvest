@@ -28,3 +28,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::post('/transactions', [TransactionController::class, 'store']);
 });
+
+Route::fallback(function() {
+    return response()->json([
+        'message' => 'Page not Found. If error persists, contact info@cardvest.ng'
+    ], 404);
+});
