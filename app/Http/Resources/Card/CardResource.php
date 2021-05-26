@@ -22,7 +22,7 @@ class CardResource extends JsonResource
             "max" => $this->max,
             "type" => $this->type,
             "category_id" => $this->category_id,
-            // "terms" => $this->terms,
+            "terms" => $this->terms,
             "denomination" => $this->denomination
         ];
     }

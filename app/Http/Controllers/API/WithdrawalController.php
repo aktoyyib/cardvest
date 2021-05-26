@@ -10,7 +10,6 @@ use App\Services\API\TransactionService;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
 use App\Http\Resources\Withdrawal\WithdrawalResource;
-use App\Http\Resources\Withdrawal\WithdrawalCollection;
 
 class WithdrawalController extends Controller
 {
@@ -23,7 +22,7 @@ class WithdrawalController extends Controller
 
     public function index()
     {
-        return new WithdrawalCollection(auth()->user()->withdrawals);
+        return WithdrawalResource::collection(auth()->user()->withdrawals);
     }
 
     public function get(Withdrawal $withdrawal)

@@ -13,7 +13,6 @@ use App\Services\API\TransactionService;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
 use App\Http\Resources\Transaction\TransactionResource;
-use App\Http\Resources\Transaction\TransactionCollection;
 
 class TransactionController extends Controller
 {
@@ -33,7 +32,7 @@ class TransactionController extends Controller
     {
         $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->paginate(10);
         
-        return new TransactionCollection($transactions);
+        return TransactionResource::collection($transactions);
     }
 
     // Done ✔

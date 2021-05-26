@@ -17,4 +17,14 @@ class CardController extends Controller
     public function show(Card $card) {
         return new CardResource($card);
     }
+
+    public function cardsUsersCanSell()
+    {
+        return CardResource::collection(Card::sale()->get());
+    }
+
+    public function cardsUsersCanBuy()
+    {
+        return CardResource::collection(Card::buy()->get());
+    }
 }

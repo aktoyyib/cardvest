@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/withdrawals', [WithdrawalController::class, 'index']);
     Route::get('/withdrawals/{withdrawal:reference}', [WithdrawalController::class, 'get']);
     Route::post('/withdrawals', [WithdrawalController::class, 'store']);
-    
+
     // Giftcard Categories
     Route::post('/giftcard-categories', [CategoryController::class, 'create']); // 🔒
     Route::put('/giftcard-categories/{category}', [CategoryController::class, 'update']); // 🔒
@@ -51,11 +51,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/giftcards/{card}', [CardController::class, 'update']); // 🔒
     Route::delete('/giftcards/{card}', [CardController::class, 'destroy']); // 🔒
     Route::get('/giftcards', [CardController::class, 'index']);
+    Route::get('/giftcards/sell', [CardController::class, 'cardsUsersCanSell']);
+    Route::get('/giftcards/buy', [CardController::class, 'cardsUsersCanBuy']);
     Route::get('/giftcards/{card}', [CardController::class, 'show']);
-    Route::get('/giftcards/buy/{card}', [CardController::class, 'cardsUsersCanBuy']);
 });
 
-Route::fallback(function() {
+Route::fallback(function () {
     return response()->json([
         'message' => 'Page not Found. If error persists, contact info@cardvest.ng'
     ], 404);
