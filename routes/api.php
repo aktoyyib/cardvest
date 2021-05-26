@@ -26,7 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Transactions
     Route::get('/transactions', [TransactionController::class, 'index']);
-    Route::post('/transactions', [TransactionController::class, 'store']);
+    Route::post('/transactions/sell', [TransactionController::class, 'sell']);
+    Route::post('/transactions/buy', [TransactionController::class, 'buy']);
 });
 
 Route::fallback(function() {

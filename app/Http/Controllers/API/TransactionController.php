@@ -36,13 +36,7 @@ class TransactionController extends Controller
         return new TransactionCollection($transactions);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function sell(Request $request)
     {
         $request->validate([
             'card_id' => 'required|numeric',
