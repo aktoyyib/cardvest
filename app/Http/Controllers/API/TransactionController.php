@@ -106,7 +106,7 @@ class TransactionController extends Controller
      */
     public function get(Transaction $transaction)
     {
-        return $transaction;
+        return new TransactionResource($transaction);
     }
 
     /**
