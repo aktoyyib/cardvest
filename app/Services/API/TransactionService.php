@@ -278,7 +278,7 @@ class TransactionService
             $verificationData = Flutterwave::verifyPayment($request->data['id']);
             if ($verificationData['status'] === 'success') {
                 // process for successful charge
-                $this->processCharge($verificationData, true);
+                $this->processCharge($verificationData);
             }
 
         }
@@ -338,27 +338,24 @@ class TransactionService
         return strtoupper($reference);
     }
 
-    protected function processCharge($data, $isWebhook = false) {
+    // Done ✔
+    protected function processCharge($data) {
         // Get the transaction from your DB using the transaction reference (txref)
         $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
         
         // Check if you have previously given value for the transaction. If you have, redirect to your successpage else, continue
-        if ($transaction->payment_status === 'succeed' && $transaction->status === 'succeed') {
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful! Check the transaction tab for update. It should take 15-20 minutes!');
-        }
+        if ($transaction->payment_status === 'succeed' && $transaction->status === 'succeed') exit();
+
         // Confirm that the $data['data']['status'] is 'successful'
-        if ($data['data']['status']  !== 'successful') {
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed!');
-        }
+        if ($data['data']['status']  !== 'successful') exit();
+
         // Confirm that the currency on your db transaction is equal to the returned currency
-        if ($data['data']['currency']  !== 'NGN') {
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [CE]');
-        }
+        if ($data['data']['currency']  !== 'NGN') exit();
+
         // Confirm that the db transaction amount is equal to the returned amount
         $amt = $transaction->amount/100;
-        if ($data['data']['amount']  !== $amt) {
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [AE]');
-        }
+        if ($data['data']['amount']  !== $amt) exit();
+        
         // Update the db transaction record (including parameters that didn't exist before the transaction is completed. for audit purpose)
         // Give value for the transaction
         // Update the transaction to note that you have given value for the transaction
@@ -366,7 +363,7 @@ class TransactionService
         $transaction->payment_status = 'succeed';
         $transaction->save();
         // You can also redirect to your success page from here
-        return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful!  Check the transaction tab for update. It should take 15-20 minutes!');
+        exit();
     }
 
     public function addToAudienceList(User $user) {
