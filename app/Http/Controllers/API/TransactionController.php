@@ -58,7 +58,7 @@ class TransactionController extends Controller
         }
 
         //  Check if bank is valid
-        if (isset($request->to_bnk) && is_null(Bank::find($request->bank))) {
+        if (isset($request->to_bank) && is_null(Bank::find($request->bank))) {
             abort(400, 'Bank must be valid if supplied');
         }
         
