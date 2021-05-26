@@ -36,6 +36,7 @@ class TransactionController extends Controller
         return new TransactionCollection($transactions);
     }
 
+    // Done ✔
     public function sell(Request $request)
     {
         $request->validate([
@@ -71,12 +72,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    /**
-     * Buy card
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    // Pending
     public function buy(Request $request)
     {
         $request->validate([
@@ -90,10 +86,16 @@ class TransactionController extends Controller
 
         //  Check if the card_id is valid
         if (is_null(Card::find($request->card_id))) {
-            return back()->with('warning','Please select a valid card to continue.');
+            abort(400, 'Gift card is invalid');
         }
         
-        return $this->transactionService->buyCard($request);
+        $paymentLink = $this->transactionService->buyCard($request);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Proceed to make payment',
+            'data' => ['paymentLink' => $paymentLink]
+        ]);
     }
 
     /**

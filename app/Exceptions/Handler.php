@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Http\Request;
 use Throwable;
 
@@ -42,7 +43,13 @@ class Handler extends ExceptionHandler
         
         $this->renderable(function (NotFoundHttpException $e, $request) {
             return response()->json([
-                'error' => 'Entry for Resource not found'], 404);
+                'message' => 'Entry for Resource not found'], 404);
         });
+
+        $this->renderable(function (RequestException $e, $request) {
+            return response()->json([
+                'message' => 'Could not make connection to the external server'], 500);
+        });
+        
     }
 }

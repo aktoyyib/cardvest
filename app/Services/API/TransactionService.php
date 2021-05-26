@@ -118,7 +118,7 @@ class TransactionService
         return $filename;
     }
 
-    // Done
+    // Done ✔
     public function sellCard(Request $request) {
         $user = auth()->user();
         $card = Card::find($request->card_id);
@@ -166,6 +166,7 @@ class TransactionService
         ];
     }
 
+    // Pending
     public function buyCard(Request $request) {
         $user = auth()->user();
         $card = Card::find($request->card_id);
@@ -213,20 +214,17 @@ class TransactionService
 
             if ($payment['status'] !== 'success') {
                 // notify something went wrong
-                return back()->with('error', 'An error occured while processing payment!');
+                abort(400, 'An error occured while processing payment!');
             }
             DB::commit();
 
-            return redirect($payment['data']['link']);
+            return $payment['data']['link'];
 
-        } catch (Throwable $e) {
+        } catch (\Throwable $e) {
             DB::rollback();
-            return back()->with('error', 'An error occured!');
+            throw $e;
         }
         
-
-        // Return a response to the user
-        return redirect()->route('transaction.index')->with('success', 'You request has been noted and will be attended to with 5-10 minutes.');
     }
 
     public function makeTransfer(Request $request, User $sender, User $recipient) {
