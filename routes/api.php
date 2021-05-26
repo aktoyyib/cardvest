@@ -38,13 +38,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/withdrawals/{withdrawal:reference}', [WithdrawalController::class, 'get']);
     Route::post('/withdrawals', [WithdrawalController::class, 'store']);
     
-    // Giftcard
+    // Giftcard Categories
     Route::post('/giftcard-categories', [CategoryController::class, 'create']); // 🔒
     Route::put('/giftcard-categories/{category}', [CategoryController::class, 'update']); // 🔒
     Route::delete('/giftcard-categories/{category}', [CategoryController::class, 'destroy']); // 🔒
     Route::get('/giftcard-categories', [CategoryController::class, 'index']);
     Route::get('/giftcard-categories/sell/{category}', [CategoryController::class, 'cardsUsersCanSell']);
     Route::get('/giftcard-categories/buy/{category}', [CategoryController::class, 'cardsUsersCanBuy']);
+
+    // Giftcards
+    Route::post('/giftcards', [CardController::class, 'create']); // 🔒
+    Route::put('/giftcards/{card}', [CardController::class, 'update']); // 🔒
+    Route::delete('/giftcards/{card}', [CardController::class, 'destroy']); // 🔒
+    Route::get('/giftcards', [CardController::class, 'index']);
+    Route::get('/giftcards/{card}', [CardController::class, 'show']);
+    Route::get('/giftcards/buy/{card}', [CardController::class, 'cardsUsersCanBuy']);
 });
 
 Route::fallback(function() {
