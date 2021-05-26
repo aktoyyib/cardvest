@@ -9,13 +9,18 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $with = ['cards', 'all_cards'];
+    protected $with = ['cards_you_sell', 'cards_you_buy'];
 
     protected $guarded = ['id'];
 
-    public function cards()
+    public function cards_you_sell()
     {
         return $this->hasMany(Card::class)->where('type', 'sell');
+    }
+
+    public function cards_you_buy()
+    {
+        return $this->hasMany(Card::class)->where('type', 'buy');
     }
 
     public function all_cards()

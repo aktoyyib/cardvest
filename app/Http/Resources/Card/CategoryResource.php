@@ -3,8 +3,9 @@
 namespace App\Http\Resources\Card;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Card\CardCollection;
 
-class CardResource extends JsonResource
+class CategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,13 +18,7 @@ class CardResource extends JsonResource
         return [
             "id" => $this->id,
             "name" => $this->name,
-            "rate" => $this->rate,
-            "min" => $this->min,
-            "max" => $this->max,
-            "type" => $this->type,
-            "category_id" => $this->category_id,
-            // "terms" => $this->terms,
-            "denomination" => $this->denomination
+            "description" => $this->description,
         ];
     }
 }

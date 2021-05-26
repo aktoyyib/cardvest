@@ -104,7 +104,11 @@ class TransactionService
         return $withdrawal;
     }
 
+    // Pending
     public function uploadImage(Request $request) {
+        // TODO:
+        // Save the file in a temporary folder
+        // Then move the file to the right folder when storing the sell transaction.
         // Save the image
         $file = $request->file('file');
         $filename = Str::slug(Str::random(2), '-') . time().'.'.$file->extension();

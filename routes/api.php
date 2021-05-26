@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\Auth\AuthController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\WithdrawalController;
+use App\Http\Controllers\API\CardController;
+use App\Http\Controllers\API\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,7 +37,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/withdrawals', [WithdrawalController::class, 'index']);
     Route::get('/withdrawals/{withdrawal:reference}', [WithdrawalController::class, 'get']);
     Route::post('/withdrawals', [WithdrawalController::class, 'store']);
-
+    
+    // Giftcard
+    Route::post('/giftcard-categories', [CategoryController::class, 'create']); // 🔒
+    Route::put('/giftcard-categories/{category}', [CategoryController::class, 'update']); // 🔒
+    Route::delete('/giftcard-categories/{category}', [CategoryController::class, 'destroy']); // 🔒
+    Route::get('/giftcard-categories', [CategoryController::class, 'index']);
+    Route::get('/giftcard-categories/sell/{category}', [CategoryController::class, 'cardsUsersCanSell']);
+    Route::get('/giftcard-categories/buy/{category}', [CategoryController::class, 'cardsUsersCanBuy']);
 });
 
 Route::fallback(function() {
