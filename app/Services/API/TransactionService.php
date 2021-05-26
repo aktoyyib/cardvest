@@ -225,43 +225,6 @@ class TransactionService
         
     }
 
-    public function makeTransfer(Request $request, User $sender, User $recipient) {
-        $amount = $request->amount * 100;
-
-        if (isset($request->role)) $role = $request->role;
-        else $role = 'user';
-        
-        DB::beginTransaction();
-
-        try {
-            // Debit users wallet with the amount (Only if the role is user or funder)
-            if ($role == 'user' || $role == 'funder') {
-                $sender->debit($amount);
-                $sender->refresh();
-            }
-            // Credit the recipients wallet with the amount
-            $recipient->credit($amount);
-            
-            // Create Reference Code
-            $ref = $this->createReference('transfer');
-
-            // Create Transaction from request data
-            $request->merge(['amount' => $amount, 'type'=> 'payout', 'role' => $role, 'balance' => $sender->balance(), 'reference' => $ref, 'recipient' => $recipient->id, 'status' => 'succeed', 'unit' => 0]);
-            // dd($request);
-            $transfer = Transaction::create($request->all());
-            
-            // Save users transaction
-            $sender->transactions()->save($transfer);
-            
-            DB::commit();
-        } catch (\Throwable $e) {
-            DB::rollback();
-            throw $e;
-        }
-
-        return $withdrawal;
-    }
-
     // Remains thesame
     public function webhook(Request $request) {
         Log::info('Webhook received');
@@ -310,6 +273,7 @@ class TransactionService
         }
     }
 
+    // Remains thesame
     protected function createReference($type) {
 
         $random = Str::random(10);
