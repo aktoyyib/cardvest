@@ -8,6 +8,7 @@ use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\WithdrawalController;
 use App\Http\Controllers\API\CardController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\WalletController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/giftcards/sell', [CardController::class, 'cardsUsersCanSell']);
     Route::get('/giftcards/buy', [CardController::class, 'cardsUsersCanBuy']);
     Route::get('/giftcards/{card}', [CardController::class, 'show']);
+
+    // Bank Accounts
+    Route::get('/bank-accounts', [WalletController::class, 'getBankAccounts']);
+    Route::post('/bank-accounts', [WalletController::class, 'addBankAccounts']);
 });
 
 Route::fallback(function () {

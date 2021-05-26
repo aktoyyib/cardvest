@@ -78,7 +78,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="col-xl-8">
         <div class="content-area card">
           <div class="card-innr">
@@ -160,7 +160,8 @@
                         <option value="">Select</option>
                         @foreach($cardsToBuy as $card)
                         <option value="{{ $card->id }}" data-rate="{{ $card->rate }}">
-                          {{ $card->name." - ".$card->rate."/$" }}</option>
+                          {{ $card->name." - ".$card->rate."/$" }}
+                        </option>
                         @endforeach
                       </select>
                     </div>
