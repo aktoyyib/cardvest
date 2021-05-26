@@ -56,11 +56,11 @@ class TransactionService
         $user->save();
     }
 
-    public  function makeWithdrawal(Request $request) {
+    // Done ✔
+    public  function makeWithdrawal(Request $request, $bank) {
         $amount = $request->amount;
         $user = Auth::user();
-
-        $bank = Bank::find($request->bank);
+        
         // Create Reference Code
         $reference = Flutterwave::generateReference();
 
@@ -78,31 +78,29 @@ class TransactionService
                 'reference' => $reference
             ];
             
+            $amount = $amount * 100;
             // If not successful, status of withdrawal remains pending
-            
-            $user->debit($amount*100);
+            $user->debit($amount);
             $user->refresh();
             
-            $amount = $amount * 100;
             $request->merge(['amount' => $amount, 'balance' => $user->balance(), 'reference' => $reference, 'bank_id' => $request->bank, 'status' => 'succeed']);
             $withdrawal = Withdrawal::create($request->all());
     
             $user->withdrawals()->save($withdrawal);
-
+            
             // Send the money to the user
             $transfer = Flutterwave::transfers()->initiate($data);
 
             if ($transfer['status'] !== 'success') {
                 $withdrawal->update(['status' => 'pending']);
             }
-            
+
+            DB::commit();
         } catch (\Throwable $e) {
             DB::rollback();
-            return null;
+            throw $e;
         }
         
-        DB::commit();
-
         return $withdrawal;
     }
 
@@ -230,11 +228,8 @@ class TransactionService
     public function makeTransfer(Request $request, User $sender, User $recipient) {
         $amount = $request->amount * 100;
 
-        // if ($sender->id == $recipient->id) return;
-
-        if (isset($request->role)) {
-            $role = $request->role;
-        }
+        if (isset($request->role)) $role = $request->role;
+        else $role = 'user';
         
         DB::beginTransaction();
 
@@ -257,13 +252,14 @@ class TransactionService
             
             // Save users transaction
             $sender->transactions()->save($transfer);
+            
+            DB::commit();
         } catch (\Throwable $e) {
             DB::rollback();
-            return back()->with('error', 'An error occured!');
+            throw $e;
         }
 
-        DB::commit();
-
+        return $withdrawal;
     }
 
     // Remains thesame

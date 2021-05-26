@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Withdrawal;
+use App\Models\Bank;
 use App\Services\API\TransactionService;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
@@ -36,18 +37,22 @@ class WithdrawalController extends Controller
             'amount' => 'required|numeric|min:0',
             'bank' => 'required'
         ]);
-
+        $bank = Bank::find($request->bank);
+        if (is_null($bank)) {
+            return response()->json(['message' => 'The bank is invalid'], 400);
+        }
+        
         $user = auth()->user();
-        if (!$user->isSufficient($request->amount)) {
+        if (!$user->isSufficient($request->amount * 100)) {
             return response()->json(['message' => 'Your withdrawal wallet is insufficient!'], 400);
         }
 
-        $withdrawal = $this->transactionService->makeWithdrawal($request);
-
-        if ($withdrawal->status === 'pending') {
-            return back()->with('info', 'You withdrawal request is being processed!');
-        }
-        // Successful
-        return back()->with('success', 'You withdrawal request has been processed successfully!');
+        $withdrawal = $this->transactionService->makeWithdrawal($request, $bank);
+        return $withdrawal;
+        return response()->json([
+            'status' => 'success',
+            'message' => 'You withdrawal is on the way to your account!',
+            'data' => new WithdrawalResource($withdrawal)
+        ]);
     }
 }
