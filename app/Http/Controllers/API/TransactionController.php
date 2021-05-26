@@ -72,7 +72,7 @@ class TransactionController extends Controller
         ]);
     }
 
-    // Pending
+    // Done ✔
     public function buy(Request $request)
     {
         $request->validate([

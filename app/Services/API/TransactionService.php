@@ -166,7 +166,7 @@ class TransactionService
         ];
     }
 
-    // Pending
+    // Done ✔
     public function buyCard(Request $request) {
         $user = auth()->user();
         $card = Card::find($request->card_id);
@@ -264,18 +264,6 @@ class TransactionService
 
         DB::commit();
 
-    }
-
-    public function callback() {
-        if (request()->has('status') && request()->status == 'cancelled') {
-            return redirect()->route('transaction.index')->with('error', 'Payment cancelled please try again.');
-        }
-
-        $transactionID = Flutterwave::getTransactionIDFromCallback();
-        
-        $data = Flutterwave::verifyTransaction($transactionID);
-        
-        return $this->processCharge($data);
     }
 
     public function webhook(Request $request) {
