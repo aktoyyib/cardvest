@@ -99,22 +99,14 @@ class TransactionController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Get the specified resource.
      *
      * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function show(Transaction $transaction)
+    public function get(Transaction $transaction)
     {
-        return view('single-transaction', compact('transaction'));
-    }
-    /**
-     * Obtain Rave callback information
-     * @return void
-     */
-    public function callback()
-    {
-        return $this->transactionService->callback();
+        return $transaction;
     }
 
     /**
