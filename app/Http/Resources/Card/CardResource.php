@@ -22,8 +22,6 @@ class CardResource extends JsonResource
             "max" => $this->max,
             "type" => $this->type,
             "category_id" => $this->category_id,
-            "created_at" => $this->created_at,
-            "updated_at" => $this->updated_at,
             "terms" => $this->terms,
             "denomination" => $this->denomination
         ];
