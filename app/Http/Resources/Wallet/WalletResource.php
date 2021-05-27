@@ -20,7 +20,7 @@ class WalletResource extends JsonResource
             "bonus" => $this->bonus,
             "balance" => $this->balance,
             "currency" => $this->currency,
-            "bank_accounts" => new BankResource($this->bank_accounts)
+            "bank_accounts" => BankResource::collection($this->bank_accounts)
         ];
     }
 }
