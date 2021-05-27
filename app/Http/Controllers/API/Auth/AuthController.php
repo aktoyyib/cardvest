@@ -83,7 +83,11 @@ class AuthController extends Controller
             'device_name' => 'required|max:255',
         ]);
     
-        $user = \App\Models\User::where('email', $request->email)->firstOrFail();
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        if (is_null($user)) {
+            abort('You don\'t have an account with us', 400);
+        }
     
         $user->tokens()->delete();
     
