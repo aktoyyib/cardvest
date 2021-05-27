@@ -10,7 +10,6 @@ use App\Models\Category;
 use App\Models\Card;
 use App\Models\Bank;
 use App\Services\API\TransactionService;
-use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
 use App\Http\Resources\Transaction\TransactionResource;
 
