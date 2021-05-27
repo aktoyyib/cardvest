@@ -23,16 +23,18 @@ class TransactionController extends Controller
         $this->transactionService = $transactionService;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->paginate(10);
         
         return TransactionResource::collection($transactions);
+    }
+
+    public function payouts()
+    {
+        $payouts = Transaction::completed()->desc()->payouts()->mine()->get();
+        
+        return TransactionResource::collection($payouts);
     }
 
     // Done ✔

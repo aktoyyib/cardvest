@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Transactions
     Route::get('/transactions', [TransactionController::class, 'index']);
+    Route::get('/transactions/payouts', [TransactionController::class, 'payouts']);
     Route::get('/transactions/{transaction:reference}', [TransactionController::class, 'get']);
     Route::post('/transactions/sell', [TransactionController::class, 'sell']);
     Route::post('/transactions/buy', [TransactionController::class, 'buy']);
@@ -68,6 +69,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/bank-accounts/verify', [WalletController::class, 'verify']);
     Route::post('/bank-accounts', [WalletController::class, 'addBankAccounts']);
     Route::delete('/bank-accounts/{bank}', [WalletController::class, 'destroy']);
+
+    // Referrals
+    Route::get('/referrals', [WalletController::class, 'getBankAccounts']);
 });
 
 Route::fallback(function () {
