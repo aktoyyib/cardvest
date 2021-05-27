@@ -68,7 +68,7 @@ class WalletController extends Controller
             ->post('https://api.flutterwave.com/v3/accounts/resolve', [
                 'account_number' => $request->banknumber,
                 'account_bank' => $request->bankname
-            ]);
+            ])->json();
 
         return response()->json([ 'data' => $response]);
     }
