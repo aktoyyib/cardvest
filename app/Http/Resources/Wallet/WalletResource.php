@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Wallet;
 
+use App\Http\Resources\Bank\BankResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class WalletResource extends JsonResource
@@ -19,7 +20,7 @@ class WalletResource extends JsonResource
             "bonus" => $this->bonus,
             "balance" => $this->balance,
             "currency" => $this->currency,
-            "bank_accounts" => $this->bank_accounts
+            "bank_accounts" => new BankResource($this->bank_accounts)
         ];
     }
 }
