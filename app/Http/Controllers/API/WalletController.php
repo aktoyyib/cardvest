@@ -52,6 +52,11 @@ class WalletController extends Controller
         return response()->json(['data' => $banks]);
     }
 
+    // GIving me some weird data
+    // "data": {
+    //     "cookies": {},
+    //     "transferStats": {}
+    // }
     public function verify(Request $request)
     {
         $request->validate([
