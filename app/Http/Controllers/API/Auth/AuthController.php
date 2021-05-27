@@ -86,7 +86,7 @@ class AuthController extends Controller
         $user = \App\Models\User::where('email', $request->email)->first();
 
         if (is_null($user)) {
-            abort('You don\'t have an account with us', 400);
+            abort(400, 'You don\'t have an account with us');
         }
     
         $user->tokens()->delete();
