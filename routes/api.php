@@ -10,6 +10,7 @@ use App\Http\Controllers\API\CardController;
 use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\WalletController;
+use App\Http\Controllers\API\ReferralController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,12 +23,13 @@ use App\Http\Controllers\API\WalletController;
 |
 */
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/register', [AuthController::class, 'create']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Authentication
-    Route::get('/user', [AuthController::class, 'user']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/auth/user', [AuthController::class, 'user']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
 
     // Users
     Route::get('/users/me', [UserController::class, 'me']);
@@ -71,7 +73,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/bank-accounts/{bank}', [WalletController::class, 'destroy']);
 
     // Referrals
-    Route::get('/referrals', [WalletController::class, 'getBankAccounts']);
+    Route::get('/referrals', [ReferralController::class, 'index']);
 });
 
 Route::fallback(function () {
