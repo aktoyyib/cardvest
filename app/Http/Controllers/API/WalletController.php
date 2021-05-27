@@ -33,26 +33,23 @@ class WalletController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Wallet  $wallet
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Bank $bank)
     {
         if (!$bank->withdrawals->isEmpty() || !$bank->transactions->isEmpty()) {
-            return back()->with('warning', 'You cannot remove bank account as it is currently in use.');
+            return abort(422, 'You cannot remove bank account as it is currently in use.');
         }
         $bank->delete();
-        return back()->with('success', 'Bank account successfully removed');
+        return response()->json([
+            'messsage' => 'Bank account successfully removed',
+            'status' => 'success'
+        ]);
     }
 
     public function banks()
     {
         $banks = Flutterwave::banks()->nigeria();
 
-        return response($banks);
+        return response()->json(['data' => $banks]);
     }
 
     public function verify(Request $request)
@@ -68,7 +65,7 @@ class WalletController extends Controller
                 'account_bank' => $request->bankname
             ]);
 
-        return response($response);
+        return response()->json([ 'data' => $response]);
     }
 
     public function getBankAccounts()

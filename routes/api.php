@@ -58,7 +58,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Bank Accounts
     Route::get('/bank-accounts', [WalletController::class, 'getBankAccounts']);
+    Route::get('/bank-accounts/banks', [WalletController::class, 'banks']);
+    Route::post('/bank-accounts/verify', [WalletController::class, 'verify']);
     Route::post('/bank-accounts', [WalletController::class, 'addBankAccounts']);
+    Route::delete('/bank-accounts/{bank}', [WalletController::class, 'destroy']);
 });
 
 Route::fallback(function () {
