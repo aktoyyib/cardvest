@@ -70,7 +70,7 @@ class WalletController extends Controller
                 'account_bank' => $request->bankname
             ])->json();
 
-        return response()->json([ 'data' => $response]);
+        return response()->json($response);
     }
 
     public function getBankAccounts()
