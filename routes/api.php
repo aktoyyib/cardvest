@@ -8,6 +8,7 @@ use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\WithdrawalController;
 use App\Http\Controllers\API\CardController;
 use App\Http\Controllers\API\CategoryController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\WalletController;
 
 /*
@@ -27,6 +28,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Authentication
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Users
+    Route::get('/users/me', [UserController::class, 'me']);
+    Route::put('/users/{user}', [UserController::class, 'update']);
+    Route::put('/users/{user}/password', [UserController::class, 'updatePassword']);
 
     // Transactions
     Route::get('/transactions', [TransactionController::class, 'index']);
