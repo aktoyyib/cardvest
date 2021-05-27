@@ -83,7 +83,7 @@ class AuthController extends Controller
             'device_name' => 'required|max:255',
         ]);
     
-        $user = \App\Models\User::where('email', $request->email)->first();
+        $user = \App\Models\User::where('email', $request->email)->firstOrFail();
     
         $user->tokens()->delete();
     
