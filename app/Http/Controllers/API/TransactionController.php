@@ -127,11 +127,11 @@ class TransactionController extends Controller
         $filename = $this->transactionService->uploadImage($request);
 
         return response()->json([
+            'message' => 'Image uploaded successfully',
+            'status' => 'success',
             'data' => [
                 'filename' => $filename,
             ],
-            'status' => 'success',
-            'message' => 'Image uploaded successfully'
         ]);
     }
 }
