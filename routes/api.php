@@ -39,9 +39,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Transactions
     Route::get('/transactions', [TransactionController::class, 'index']);
     Route::get('/transactions/payouts', [TransactionController::class, 'payouts']);
-    Route::get('/transactions/{transaction:reference}', [TransactionController::class, 'get']);
+    Route::post('/transactions/image-upload', [TransactionController::class, 'upload']);
     Route::post('/transactions/sell', [TransactionController::class, 'sell']);
     Route::post('/transactions/buy', [TransactionController::class, 'buy']);
+    Route::get('/transactions/{transaction:reference}', [TransactionController::class, 'get']);
 
     // Withdrawals
     Route::get('/withdrawals', [WithdrawalController::class, 'index']);

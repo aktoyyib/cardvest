@@ -25,14 +25,14 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->paginate(10);
-        
+
         return TransactionResource::collection($transactions);
     }
 
     public function payouts()
     {
         $payouts = Transaction::completed()->desc()->payouts()->mine()->get();
-        
+
         return TransactionResource::collection($payouts);
     }
 
@@ -52,7 +52,7 @@ class TransactionController extends Controller
             'card_id.required' => 'You must select a gift card to continue',
             'images.required' => 'You must upload the shot of the gift card'
         ]);
-        
+
         //  Check if the card_id is valid
         if (is_null(Card::find($request->card_id))) {
             abort(400, 'Gift card is invalid');
@@ -62,7 +62,7 @@ class TransactionController extends Controller
         if (isset($request->to_bank) && is_null(Bank::find($request->bank))) {
             abort(400, 'Bank must be valid if supplied');
         }
-        
+
         $response = $this->transactionService->sellCard($request);
 
         return response()->json([
@@ -88,7 +88,7 @@ class TransactionController extends Controller
         if (is_null(Card::find($request->card_id))) {
             abort(400, 'Gift card is invalid');
         }
-        
+
         $paymentLink = $this->transactionService->buyCard($request);
 
         return response()->json([
@@ -120,6 +120,18 @@ class TransactionController extends Controller
 
     public function upload(Request $request)
     {
-        return $this->transactionService->uploadImage($request);
+        $request->validate([
+            'file' => 'required|image|mimes:jpg,png,jpeg|max:2048',
+        ]);
+
+        $filename = $this->transactionService->uploadImage($request);
+
+        return response()->json([
+            'data' => [
+                'filename' => $filename,
+            ],
+            'status' => 'success',
+            'message' => 'Image uploaded successfully'
+        ]);
     }
 }
