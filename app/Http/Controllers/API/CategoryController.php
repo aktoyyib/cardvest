@@ -19,12 +19,12 @@ class CategoryController extends Controller
 
     public function cardsUsersCanSell(Category $category)
     {
-        return CategoryResource::collection($category->cards_you_sell);
+        return CardResource::collection($category->cards_you_sell);
     }
 
     public function cardsUsersCanBuy(Category $category)
     {
-        return CategoryResource::collection($category->cards_you_buy);
+        return CardResource::collection($category->cards_you_buy);
     }
 
 }
