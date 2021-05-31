@@ -39,12 +39,12 @@ class UserController extends Controller
 
         $user = auth()->user();
 
-        if (!isset($input['current_password']) || ! Hash::check($request->current_password, $user->password)) {
+        if (!isset($request->current_password) || ! Hash::check($request->current_password, $user->password)) {
             abort(400, __('The provided password does not match your current password.'));
         }
-
+        
         $user->forceFill([
-            'password' => Hash::make($input['password']),
+            'password' => Hash::make($request->password),
         ])->save();
         
         return new UserResource($user);

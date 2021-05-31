@@ -42,23 +42,22 @@ class TransactionController extends Controller
         $request->validate([
             'card_id' => 'required|numeric',
             'amount' => 'required|numeric|min:0',
-            'images*' => 'nullable|image|mimes:jpg,png,jpeg,pdf|max:2048',
+            'images.*' => 'required',
             'to_bank' => 'nullable',
             'bank' => 'nullable|numeric',
             'comment' => 'nullable|string',
-            // 'images' => 'required'
         ], [
             'card_id.numeric' => 'A valid gift card must be selected',
             'card_id.required' => 'You must select a gift card to continue',
             'images.required' => 'You must upload the shot of the gift card'
         ]);
-
+        abort(400, 'Hey there');
         //  Check if the card_id is valid
         if (is_null(Card::find($request->card_id))) {
             abort(400, 'Gift card is invalid');
         }
 
-        //  Check if bank is valid
+        //  Check if bank is valid 
         if (isset($request->to_bank) && is_null(Bank::find($request->bank))) {
             abort(400, 'Bank must be valid if supplied');
         }
