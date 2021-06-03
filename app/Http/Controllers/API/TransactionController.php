@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Card;
 use App\Models\Bank;
 use App\Services\API\TransactionService;
+use Illuminate\Support\Str;
 
 use App\Http\Resources\Transaction\TransactionResource;
 
@@ -42,16 +43,18 @@ class TransactionController extends Controller
         $request->validate([
             'card_id' => 'required|numeric',
             'amount' => 'required|numeric|min:0',
-            'images.*' => 'required',
+            'images' => 'required',
+            'images.*' => 'mimes:jpeg,jpg,png|max:2048',
             'to_bank' => 'nullable',
             'bank' => 'nullable|numeric',
             'comment' => 'nullable|string',
         ], [
             'card_id.numeric' => 'A valid gift card must be selected',
             'card_id.required' => 'You must select a gift card to continue',
-            'images.required' => 'You must upload the shot of the gift card'
+            'images.required' => 'You must upload the shot of the gift card',
+            'images.*.mimes' => 'Uploaded card can only be of the types jpeg, jpg or png'
         ]);
-        abort(400, 'Hey there');
+
         //  Check if the card_id is valid
         if (is_null(Card::find($request->card_id))) {
             abort(400, 'Gift card is invalid');
@@ -63,7 +66,7 @@ class TransactionController extends Controller
         }
 
         $response = $this->transactionService->sellCard($request);
-
+        
         return response()->json([
             'status' => 'success',
             'message' => $response['message'],

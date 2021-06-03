@@ -140,14 +140,27 @@ class TransactionService
                 $bank = $request->bank;
             }
 
-            $request->merge(['card_id' => $card->id, 'bank' => $bank, 'amount' => $amount, 'type'=> 'sell', 'balance' => $user->balance(), 'reference' => $ref, 'status' => 'pending', 'unit' => $unit, 'images' => json_encode($request->images)]);
+            // Save Images 
+            if($request->hasfile('images')) {
+                foreach($request->file('images') as $image)
+                {
+                    $filename = Str::slug(Str::random(2), '-') . time().'.'.$image->extension();
+                    // $image->move(public_path().'/images/', $name);  
+                    $data[] = $filename;
+                    $path = $image->storeAs(
+                        'gift-cards', $filename
+                    );
+                }
+            }
 
-            $transaction = Transaction::create($request->all());
+            $request->merge(['card_id' => $card->id, 'bank' => $bank, 'amount' => $amount, 'type'=> 'sell', 'balance' => $user->balance(), 'reference' => $ref, 'status' => 'pending', 'unit' => $unit, 'images' => 'data']);
+            
+            $transaction = Transaction::create($request->except(['images']));
             $user->transactions()->save($transaction);
             
             if (is_null($request->images)) {
                 $transaction->images = json_encode([]);
-            }
+            } else $transaction->images = json_encode($data);
 
             $transaction->save();
 
