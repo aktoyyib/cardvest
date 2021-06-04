@@ -25,6 +25,11 @@ use App\Http\Controllers\API\ReferralController;
 
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/register', [AuthController::class, 'create']);
+Route::get('/payment', function () {
+    return response()->json([
+        'data' => request()->all()
+    ]);
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     // Authentication
