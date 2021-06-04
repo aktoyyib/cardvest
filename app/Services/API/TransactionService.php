@@ -210,7 +210,7 @@ class TransactionService
                 'email' => $user->email,
                 'tx_ref' => $reference,
                 'currency' => "NGN",
-                'redirect_url' => route('callback'),
+                'redirect_url' => 'https://app.cardvest.ng/api/payment',
                 'customer' => [
                     'email' => $user->email,
                     "phone_number" => $user->phonenumber,

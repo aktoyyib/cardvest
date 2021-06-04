@@ -29,7 +29,7 @@ Route::get('/payment', function () {
     return response()->json([
         'data' => request()->all()
     ]);
-});
+})->name('payment-callback');
 
 Route::middleware('auth:sanctum')->group(function () {
     // Authentication
