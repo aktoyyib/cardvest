@@ -48,6 +48,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/transactions/sell', [TransactionController::class, 'sell']);
     Route::post('/transactions/buy', [TransactionController::class, 'buy']);
     Route::get('/transactions/{transaction:reference}', [TransactionController::class, 'get']);
+    Route::delete('/transactions/{transaction:reference}', [TransactionController::class, 'destroy']);
 
     // Withdrawals
     Route::get('/withdrawals', [WithdrawalController::class, 'index']);
