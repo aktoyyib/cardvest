@@ -30,6 +30,7 @@ Route::get('/payment', function () {
         'data' => request()->all()
     ]);
 })->name('payment-callback');
+Route::post('/webhook/flutterwave', [TransactionController::class, 'webhook'])->name('webhook');
 
 Route::middleware('auth:sanctum')->group(function () {
     // Authentication
