@@ -247,9 +247,9 @@ class TransactionService
         Log::info('Webhook received');
         //This verifies the webhook is sent from Flutterwave
         $verified = Flutterwave::verifyWebhook();
-        Log::info(json_decode(json_encode($request->data), false)->status);
+        Log::info($request['data']);
         // if it is a charge event, verify and confirm it is a successful transaction
-        if ($verified && $request->event == 'charge.completed' && $request->data->status == 'successful') {
+        if ($verified && $request->event == 'charge.completed' && $request->data['status'] == 'successful') {
             Log::info('*** PAYMENT WEBHOOK ***');
             $verificationData = Flutterwave::verifyPayment($request->data['id']);
             if ($verificationData['status'] === 'success') {
