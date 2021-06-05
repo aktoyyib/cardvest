@@ -317,6 +317,8 @@ class TransactionService
 
     // Done ✔
     protected function processCharge($data) {
+        Log::info(request()->query('tx_ref'));
+        return Log::info(request()->all());
         // Get the transaction from your DB using the transaction reference (txref)
         $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
         
