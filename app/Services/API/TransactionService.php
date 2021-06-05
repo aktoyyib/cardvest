@@ -317,10 +317,9 @@ class TransactionService
 
     // Done ✔
     protected function processCharge($data) {
-        Log::info(request()->query('tx_ref'));
-        return Log::info(request()->all());
+        Log::info(request->data['tx_ref']);
         // Get the transaction from your DB using the transaction reference (txref)
-        $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
+        $transaction = Transaction::where('reference', request->data['tx_ref'])->first();
         
         // Check if you have previously given value for the transaction. If you have, redirect to your successpage else, continue
         if ($transaction->payment_status === 'succeed' && $transaction->status === 'succeed') exit();
