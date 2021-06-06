@@ -98,7 +98,7 @@ class TransactionService
             
         } catch (\Throwable $e) {
             DB::rollback();
-            return null;
+            throw $e;
         }
         
         DB::commit();
@@ -127,8 +127,6 @@ class TransactionService
         
         $data = array();
         
-        // return $amount;
-        // Debit the user
         $ref = $this->createReference('sell');
 
         DB::beginTransaction();
@@ -304,11 +302,12 @@ class TransactionService
         $verified = Flutterwave::verifyWebhook();
 
         // if it is a charge event, verify and confirm it is a successful transaction
-        if ($verified && $request->event == 'charge.completed' && $request->data->status == 'successful') {
+        if ($verified && $request->event == 'charge.completed' && $request->data['status'] == 'successful') {
             Log::info('*** PAYMENT WEBHOOK ***');
-            $verificationData = Flutterwave::verifyPayment($request->data['id']);
+            $verificationData = Flutterwave::verifyTransaction($request->data['id']);
             if ($verificationData['status'] === 'success') {
                 // process for successful charge
+                // value of true shows that its from a webhook
                 $this->processCharge($verificationData, true);
             }
 
@@ -371,7 +370,7 @@ class TransactionService
 
     protected function processCharge($data, $isWebhook = false) {
         // Get the transaction from your DB using the transaction reference (txref)
-        $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
+        $transaction = Transaction::where('reference', request()->data['tx_ref'])->first();
 
         // Handle when transaction is null. In case webhook is ahead of direct callback or vice-versa
         if (is_null($transaction)) {
@@ -382,6 +381,7 @@ class TransactionService
         if ($transaction->payment_status === 'succeed' && $transaction->status === 'succeed') {
             return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful! Check the transaction tab for update. It should take 15-20 minutes!');
         }
+        
         // Confirm that the $data['data']['status'] is 'successful'
         if ($data['data']['status']  !== 'successful') {
             $transaction->delete();
