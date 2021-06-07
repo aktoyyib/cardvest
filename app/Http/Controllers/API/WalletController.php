@@ -49,7 +49,7 @@ class WalletController extends Controller
     {
         $banks = Flutterwave::banks()->nigeria();
 
-        return response()->json(['data' => $banks]);
+        return response()->json($banks);
     }
 
     // GIving me some weird data
