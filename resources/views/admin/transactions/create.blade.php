@@ -62,7 +62,7 @@
               </thead>
               <tbody>
                 @forelse($transactions as $transaction)
-                <tr class="data-item">
+                <tr class="data-item {{ str_contains ($transaction->reference, '-RVS') ? 'table-success' : 'table-warning' }}">
                   <td class="data-col dt-tnxno">
                     <div class="d-flex align-items-center">
                       <div class="data-state data-state-approved">
