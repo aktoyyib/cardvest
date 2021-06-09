@@ -245,8 +245,6 @@ class TransactionService
     public function makeTransfer(Request $request, User $sender, User $recipient) {
         $amount = $request->amount * 100;
 
-        // if ($sender->id == $recipient->id) return;
-
         if (isset($request->role)) {
             $role = $request->role;
         }
@@ -254,16 +252,28 @@ class TransactionService
         DB::beginTransaction();
 
         try {
-            // Debit users wallet with the amount (Only if the role is user or funder)
-            if ($role == 'user' || $role == 'funder') {
-                $sender->debit($amount);
-                $sender->refresh();
+
+            if ($request->has('debit')) {
+                // Credit users wallet with the amount (Only if the role is user or funder)
+                if ($role == 'user') {
+                    $sender->credit($amount);
+                    $sender->refresh();
+                }
+                // Debit the recipients wallet with the amount
+                $recipient->debit($amount);
+                // Create Reference Code
+                $ref = $this->createReference('reversal');
+            } else {
+                // Credit users wallet with the amount (Only if the role is user or funder)
+                if ($role == 'user') {
+                    $sender->debit($amount);
+                    $sender->refresh();
+                }
+                // Debit the recipients wallet with the amount
+                $recipient->credit($amount);
+                // Create Reference Code
+                $ref = $this->createReference('transfer');
             }
-            // Credit the recipients wallet with the amount
-            $recipient->credit($amount);
-            
-            // Create Reference Code
-            $ref = $this->createReference('transfer');
 
             // Create Transaction from request data
             $request->merge(['amount' => $amount, 'type'=> 'payout', 'role' => $role, 'balance' => $sender->balance(), 'reference' => $ref, 'recipient' => $recipient->id, 'status' => 'succeed', 'unit' => 0]);
@@ -274,6 +284,7 @@ class TransactionService
             $sender->transactions()->save($transfer);
         } catch (\Throwable $e) {
             DB::rollback();
+            throw $e;
             return back()->with('error', 'An error occured!');
         }
 
@@ -360,6 +371,9 @@ class TransactionService
                 break;
             case 'deposit':
                 $reference = 'CVT'. $random .'CDR';
+                break;
+            case 'reversal':
+                $reference = 'CVT'. $random .'-RVS';
                 break;
             default:
                 $reference = 'CVT'. $random .'-PAY';

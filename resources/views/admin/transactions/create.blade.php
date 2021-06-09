@@ -24,6 +24,15 @@
                 <input class="input-bordered" type="number" min="0" step="0.01" name="amount" placeholder="Amount"
                   required>
               </div>
+
+              <div class="input-item">
+                <input type="checkbox" name="debit" id="debit"
+                  class="input-checkbox input-checkbox-md">
+                <label for="debit">
+                  Debit users account
+                </label>
+              </div>
+              
               <div class="input-item input-with-label">
                 <label class="input-item-label">Enter users email address</label>
                 <input class="input-bordered" type="email" name="email" placeholder="Email Address" required>
