@@ -12,7 +12,7 @@
         <h2 class="page-ath-heading">Reset your password <span>Enter a new password for your account.</span></h2>
         <form action="{{ route('password.update') }}" method="post">
           @csrf
-          <input type="hidden" name="token" value="{{ $token }}">
+          <input type="hidden" name="token" value="{{ request()->route('token') }}">
           <div class="input-item">
             <input id="email" type="email" class="input-bordered @error('email') is-invalid @enderror" name="email"
               value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
