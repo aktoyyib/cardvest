@@ -34,7 +34,7 @@
           </div>
 
           <div class="input-item">
-            <input type="password" placeholder="Confirm Password" name="password_confirm" class="input-bordered"
+            <input type="password" placeholder="Confirm Password" name="password_confirmation" class="input-bordered"
               required autocomplete="new-password">
           </div>
           <div class="d-flex justify-content-between align-items-center">
