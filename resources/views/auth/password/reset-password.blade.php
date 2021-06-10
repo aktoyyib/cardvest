@@ -13,9 +13,9 @@
         <form action="{{ route('password.update') }}" method="post">
           @csrf
           <input type="hidden" name="token" value="{{ request()->route('token') }}">
+          <input type="hidden" name="email" value="{{ request()->query('email') }}">
           <div class="input-item">
-            <input id="email" type="email" class="input-bordered @error('email') is-invalid @enderror" name="email"
-              value="{{ request()->query('email') }}" disabled required autocomplete="email" autofocus>
+            <input id="email" type="email" class="input-bordered @error('email') is-invalid @enderror" value="{{ request()->query('email') }}" disabled required autocomplete="email" autofocus>
             @error('email')
             <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
