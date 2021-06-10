@@ -3,7 +3,7 @@
 @section('title', 'Cardvest - Reset Password')
 @section('content')
 <div class="container-fluid">
-  <div class="row h-full align-items-center" style="background: url(../images/ath-gfx.png) #253992 no-repeat;">
+  <div class="row h-full align-items-center" style="background: #1c4938 no-repeat;">
     <div class="col-md-8 col-lg-5 mx-auto">
       <div class="d-flex justify-content-center">
         <a href="/" class="page-ath-logo"><img src="{{ asset('images/logo.png') }}" alt="logo"></a>
