@@ -15,7 +15,7 @@
           <input type="hidden" name="token" value="{{ request()->route('token') }}">
           <div class="input-item">
             <input id="email" type="email" class="input-bordered @error('email') is-invalid @enderror" name="email"
-              value="{{ $email ?? old('email') }}" required autocomplete="email" autofocus>
+              value="{{ request()->query('email') }}" disabled required autocomplete="email" autofocus>
             @error('email')
             <span class="invalid-feedback" role="alert">
               <strong>{{ $message }}</strong>
