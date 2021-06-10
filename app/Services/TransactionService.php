@@ -384,8 +384,14 @@ class TransactionService
 
     protected function processCharge($data, $isWebhook = false) {
         Log::info(request()->all());
-        // Get the transaction from your DB using the transaction reference (txref)
-        $transaction = Transaction::where('reference', request()->data['tx_ref'])->first();
+        
+        if ($isWebhook) {
+            // Get the transaction from your DB using the transaction reference (txref)
+            $transaction = Transaction::where('reference', request()->data['tx_ref'])->first();
+        } else {
+            // Get the transaction from your DB using the transaction reference (txref)
+            $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
+        }
 
         // Handle when transaction is null. In case webhook is ahead of direct callback or vice-versa
         if (is_null($transaction)) {
