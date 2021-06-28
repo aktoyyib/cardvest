@@ -5,8 +5,25 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Models\Transaction;
+use App\Models\Category;
+use App\Models\Card;
+use App\Models\Bank;
+use App\Services\API\TransactionService;
+use KingFlamez\Rave\Facades\Rave as Flutterwave;
+
+use App\Http\Resources\Transaction\TransactionResource;
+use App\Http\Resources\Transaction\TransactionCollection;
+
 class TransactionController extends Controller
 {
+    protected $transactionService;
+
+    public function __construct(TransactionService $transactionService)
+    {
+        $this->transactionService = $transactionService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,17 +31,9 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->paginate(10);
+        
+        return new TransactionCollection($transactions);
     }
 
     /**
@@ -35,51 +44,88 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'card_id' => 'required|numeric',
+            'amount' => 'required|numeric|min:0',
+            'images*' => 'nullable|image|mimes:jpg,png,jpeg,pdf|max:2048',
+            'to_bank' => 'nullable',
+            'bank' => 'nullable|numeric',
+            'comment' => 'nullable|string',
+            // 'images' => 'required'
+        ], [
+            'card_id.numeric' => 'A valid gift card must be selected',
+            'card_id.required' => 'You must select a gift card to continue',
+            'images.required' => 'You must upload the shot of the gift card'
+        ]);
+        
+        //  Check if the card_id is valid
+        if (is_null(Card::find($request->card_id))) {
+            return response()->json(['warning' =>'Please select a valid card to continue.'], 400);
+        }
+
+        //  Check if bank is valid
+        if (isset($request->to_bank) && is_null(Bank::find($request->bank))) {
+            return response()->json(['warning' => 'Please select a valid bank or un-check the bank payment option.'], 400);
+        }
+        
+        return $this->transactionService->sellCard($request);
+    }
+
+    /**
+     * Buy card
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function buy(Request $request)
+    {
+        $request->validate([
+            'card_id' => 'required|numeric',
+            'amount' => 'required|numeric|min:0',
+            'comment' => 'nullable|string'
+        ], [
+            'card_id.numeric' => 'A valid gift card must be selected',
+            'card_id.required' => 'You must select a gift card to continue'
+        ]);
+
+        //  Check if the card_id is valid
+        if (is_null(Card::find($request->card_id))) {
+            return back()->with('warning','Please select a valid card to continue.');
+        }
+        
+        return $this->transactionService->buyCard($request);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Transaction $transaction)
     {
-        //
+        return view('single-transaction', compact('transaction'));
+    }
+    /**
+     * Obtain Rave callback information
+     * @return void
+     */
+    public function callback()
+    {
+        return $this->transactionService->callback();
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Receives Flutterwave webhook
+     * @return void
      */
-    public function edit($id)
+    public function webhook(Request $request)
     {
-        //
+        $this->transactionService->webhook($request);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function upload(Request $request)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        return $this->transactionService->uploadImage($request);
     }
 }

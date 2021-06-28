@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
-
+use App\Http\Resources\User\UserResource;
 
 class AuthController extends Controller
 {
@@ -36,5 +36,10 @@ class AuthController extends Controller
         $user = auth()->user();
         $user->tokens()->delete();
         return response()->json(['message' => 'User logged out.'], 200);
+    }
+
+    public function user()
+    {
+        return new UserResource(auth()->user());
     }
 }
