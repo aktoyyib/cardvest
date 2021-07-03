@@ -117,6 +117,8 @@ Route::group(['middleware' => ['auth']], function () {
             Route::post('roles/store/{user}', [RoleController::class, 'store'])->name('roles.store');
             Route::get('roles', [RoleController::class, 'index'])->name('roles.index');
             Route::delete('roles/remove/{user}', [RoleController::class, 'destroy'])->name('roles.destroy');
+
+            Route::get('transactions/create', [Transactions::class, 'create'])->name('transactions.create');
         });
         
         Route::resource('transactions', Transactions::class);
