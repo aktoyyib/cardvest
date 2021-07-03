@@ -121,7 +121,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('transactions/create', [Transactions::class, 'create'])->name('transactions.create');
         });
         
-        Route::resource('transactions', Transactions::class);
+        Route::resource('transactions', Transactions::class)->only(['index', 'store', 'show', 'edit', 'update', 'destroy']);
     
         Route::resource('withdrawals', Withdrawals::class);
     
