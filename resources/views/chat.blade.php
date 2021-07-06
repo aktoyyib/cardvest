@@ -23,8 +23,9 @@
     <div class="row h-full justify-content-center align-items-center">
       <div class="col">
         <h4 class="display-4 text-center">Cardvest <br> Live Chat</h4>
-        <div class="alert alert-primary">
-          <p>If chat is not loaded in 5sec, click the back arrow and open this page again.</p>
+        <div class="alert alert-warning">
+          <p class="text-center"><i class="fa fa-spinner fa-spin"></i></p>
+          <p>Please wait while the chat interface pops up.</>
         </div>
       </div>
     </div>
@@ -34,11 +35,7 @@
   <!-- <script src="{{ asset('assets/js/jquery.bundle.js?ver=104')}}"></script>
   <script src="{{ asset('assets/js/script.js?ver=104')}}"></script> -->
   <script src="//code.tidio.co/vuck458qqc6qwmrxgmpwgp8ndvamsbix.js"></script>
-  <script>  
-    document.tidioIdentify = {
-      email: email || "contact@mail", // visitor email
-    };
-
+  <script>
     tidioChatApi.open();
   </script>
 </body>
