@@ -20,6 +20,7 @@
         "laravel/slack-notification-channel": "^2.3",
         "laravel/tinker": "^2.5",
         "mailchimp/marketing": "^3.0",
+        "sentry/sentry-laravel": "^2.7",
         "spatie/laravel-permission": "^4.0",
         "wildbit/swiftmailer-postmark": "^3.3"
     },

@@ -40,6 +40,10 @@ Route::get('chat', function() {
     return view('chat');
 })->name('chat');
 
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
+});
+
 Route::get('rates', [HomeController::class, 'rates'])->name('rates');
 
 Route::get('/notification', function () {
