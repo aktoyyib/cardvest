@@ -172,7 +172,7 @@ class TransactionService
         DB::commit();
 
         // Send Notification to admin
-        // $this->newOrderNotifiction($transaction);
+        $this->newOrderNotifiction($transaction);
 
         // Return a response to the user
         return [
