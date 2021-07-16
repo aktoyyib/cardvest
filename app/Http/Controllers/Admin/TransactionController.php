@@ -113,6 +113,11 @@ class TransactionController extends Controller
      */
     public function update(Request $request, Transaction $transaction)
     {
+        // Check if the payment has been processed already
+        if ($transaction->status != 'pending') {
+            return back()->with('info', 'Transaction has been processed already.');
+        }
+        
         $p_s = array('failed', 'pending', 'succeed');
         $_s = array('rejected', 'pending', 'succeed');
 
