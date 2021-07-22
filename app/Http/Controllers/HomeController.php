@@ -26,7 +26,7 @@ class HomeController extends Controller
         $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->take(3)->get();
         // return $transactions;
         $categories = Category::all();
-        $cardsToBuy = Card::where('type', 'buy')->get();
+        $cardsToBuy = Card::active()->where('type', 'buy')->get();
         
         return view('home', compact('user', 'withdrawals', 'banks', 'sold', 'bought', 'transactions', 'categories', 'cardsToBuy'));
     }
@@ -63,7 +63,7 @@ class HomeController extends Controller
     public function rates()
     {
         $categories = Category::all();
-        $cardsToBuy = Card::where('type', 'buy')->get();
+        $cardsToBuy = Card::active()->where('type', 'buy')->get();
         // return $categories;
         return view('rates', compact('categories', 'cardsToBuy'));
     }

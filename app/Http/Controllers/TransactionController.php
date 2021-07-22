@@ -39,7 +39,7 @@ class TransactionController extends Controller
     public function create()
     {
         $categories = Category::all();
-        $cardsToBuy = Card::where('type', 'buy')->get();
+        $cardsToBuy = Card::active()->where('type', 'buy')->get();
         $banks = auth()->user()->wallet->bank_accounts->all();
         return view('trade', compact('categories', 'cardsToBuy', 'banks'));
     }

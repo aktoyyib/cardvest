@@ -15,13 +15,13 @@ class Category extends Model
 
     public function cards_you_sell()
     {
-        return $this->hasMany(Card::class)->where('type', 'sell');
+        return $this->hasMany(Card::class)->where('type', 'sell')->active();
     }
 
     // To support migration cards should be changed to cards_you_sell
     public function cards()
     {
-        return $this->hasMany(Card::class)->where('type', 'sell');
+        return $this->hasMany(Card::class)->where('type', 'sell')->active();
     }
 
     public function cards_you_buy()

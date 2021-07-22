@@ -135,6 +135,7 @@ Route::group(['middleware' => ['auth']], function () {
     
         Route::resource('categories', Categories::class);
     
+        Route::delete('/cards/{card}/disable', [Cards::class, 'disable'])->name('cards.disable');
         Route::resource('cards', Cards::class);
     });
 });

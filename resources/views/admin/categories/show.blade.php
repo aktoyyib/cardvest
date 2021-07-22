@@ -50,7 +50,7 @@
               </thead>
               <tbody>
                 @forelse($cards as $card)
-                <tr class="data-item">
+                <tr class="data-item {{ $card->active ? '' : 'table-danger' }}">
                   <td class="data-col dt-tnxno">
                     <div class="d-flex align-items-center">
                       <div class="fake-class">
@@ -77,11 +77,19 @@
                       <div class="toggle-class dropdown-content dropdown-content-top-left">
                         <ul class="dropdown-list">
                           <li><a href="{{ route('cards.edit', $card) }}"><em class="ti ti-eye"></em> Edit Card</a></li>
+                          <li><a href="#" onclick="disableCard(event, {{ $card->id }})"><em class="fa fa-{{ $card->active ? 'ban' : 'check' }}"></em>
+                          {{ $card->active ? 'Disable' : 'Enable' }}</a>
+                          </li>
                           <li><a href="#" onclick="deleteCard(event, {{ $card->id }})"><em class="ti ti-trash"></em>
                               Delete</a>
                           </li>
                           <form action="{{ route('cards.destroy', $card) }}" method="post"
                             id="card-delete-{{ $card->id }}">
+                            @csrf
+                            @method('delete')
+                          </form>
+                          <form action="{{ route('cards.disable', $card) }}" method="post"
+                            id="card-disable-{{ $card->id }}">
                             @csrf
                             @method('delete')
                           </form>
@@ -133,6 +141,25 @@ let deleteCard = function(event, id) {
         swal("Card removed!", {
           icon: "success",
         });
+        form.submit();
+      } else {
+
+      }
+    });
+}
+
+let disableCard = function(event, id) {
+  event.preventDefault()
+  var form = $('#card-disable-' + id);
+  swal({
+      title: "Are you sure?",
+      text: "This action toggles the cards availability.",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDisable) => {
+      if (willDisable) {
         form.submit();
       } else {
 

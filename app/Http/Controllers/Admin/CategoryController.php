@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Category;
 use App\Models\Card;
+use App\Scopes\ActiveScope;
 
 class CategoryController extends Controller
 {
@@ -56,6 +57,7 @@ class CategoryController extends Controller
     public function show(Category $category)
     {
         $cards = $category->all_cards()->alpha()->paginate(25);
+        // return $cards;
         return view('admin.categories.show', compact('category', 'cards'));
     }
 

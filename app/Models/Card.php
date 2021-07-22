@@ -4,12 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Scopes\ActiveScope;
 
 class Card extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    // protected static function booted()
+    // {
+    //     static::addGlobalScope(new ActiveScope);
+    // }
 
     public function category()
     {
@@ -38,5 +44,10 @@ class Card extends Model
 
     public function scopeType($query, $value) {
         return $query->where('type', $value);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('active', true);
     }
 }

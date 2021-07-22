@@ -98,16 +98,20 @@ class CardController extends Controller
         return redirect()->route('categories.show', $request->category)->with('success', 'Changes saved successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(Card $card)
     {
         if ($card->transactions()->count() > 0) return back()->with('warning', 'Card cannot be removed!');
+        
         $card->delete();
         return back()->with('success', 'Card successfully removed!');
+    }
+
+    public function disable(Card $card)
+    {
+        if ($card->active)
+            $card->update(['active' => false]);
+        else
+            $card->update(['active' => true]);
+        return back()->with('success', 'Action completed successfully!');
     }
 }
