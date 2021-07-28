@@ -131,6 +131,7 @@ Route::group(['middleware' => ['auth']], function () {
             Route::get('activities', [\App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activities.index');
         });
 
+        Route::get('transactions/search', [Transactions::class, 'search'])->name('transactions.search');
         Route::resource('transactions', Transactions::class)->only(['index', 'store', 'show', 'edit', 'update', 'destroy']);
 
         Route::resource('withdrawals', Withdrawals::class);

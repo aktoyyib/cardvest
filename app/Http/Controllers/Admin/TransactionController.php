@@ -24,14 +24,26 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($searched_transactions = null, $param = null)
     {
+//        The searched_transaction and param comes from the search function of this controller
+//        This is to enable search result to be displayed on the normal
         $transactions = Transaction::desc()->paginate(25);
 
         // Transaction Types - Sell | Buy | Payout
         // Transactions should actually show only card sales or purchase (Sell - Pending / Success / Rejected |  Buy - Successful payment)
         // Payouts should be moved to its own separate page
-        return view('admin.transactions.index', compact('transactions'));
+        return view('admin.transactions.index', compact('transactions', 'searched_transactions', 'param'));
+    }
+
+    public function search()
+    {
+        $param = request()->query('search');
+        $transactions = Transaction::query();
+        $transactions = $transactions->where('reference', 'LIKE', "%{$param}%")
+            ->get();
+
+        return $this->index($transactions, $param);
     }
 
     /**
