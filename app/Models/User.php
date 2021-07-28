@@ -8,13 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\Traits\CausesActivity;
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasWallet;
 use App\Traits\Referral;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasWallet, HasRoles, Referral;
+    use HasApiTokens, HasFactory, Notifiable, HasWallet, HasRoles, Referral, CausesActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -78,7 +79,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class)->where('role', 'user');
     }
-    
+
     public function scopeSearch($query, $username)
     {
         $query->where('email', $username)->orWhere('username', $username);

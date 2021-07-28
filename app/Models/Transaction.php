@@ -5,16 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Transaction extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
 
     protected $guarded = [
         'id',
     ];
 
     protected $with = ['card', 'bank', 'recipient'];
+
+    protected static $logAttributes = ['type', 'reference', 'images', 'amount', 'status', 'payment_status', 'admin_comment'];
+    protected static $logOnlyDirty = true;
+    protected static $logName = 'admin.transactions';
 
     public function getDate()
     {
@@ -28,7 +33,7 @@ class Transaction extends Model
 
     public function getDescription($key = null) {
         $label = 'success';
-        
+
         if (!is_null($key)) {
             switch ($key) {
                 case 'succeed':

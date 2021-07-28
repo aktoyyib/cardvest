@@ -116,7 +116,7 @@ Route::group(['middleware' => ['auth']], function () {
         // Admin Dashboard
         Route::get('', AdminController::class)->name('admin.dashboard');
         Route::get('dashboard', AdminController::class)->name('admin.dashboard');
-    
+
         Route::resource('users', Users::class)->only('index', 'show');
 
         Route::group(['middleware' => ['role:Super Admin']], function() {
@@ -127,14 +127,16 @@ Route::group(['middleware' => ['auth']], function () {
             Route::delete('roles/remove/{user}', [RoleController::class, 'destroy'])->name('roles.destroy');
 
             Route::get('transactions/create', [Transactions::class, 'create'])->name('transactions.create');
+
+            Route::get('activities', [\App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activities.index');
         });
-        
+
         Route::resource('transactions', Transactions::class)->only(['index', 'store', 'show', 'edit', 'update', 'destroy']);
-    
+
         Route::resource('withdrawals', Withdrawals::class);
-    
+
         Route::resource('categories', Categories::class);
-    
+
         Route::delete('/cards/{card}/disable', [Cards::class, 'disable'])->name('cards.disable');
         Route::resource('cards', Cards::class);
     });

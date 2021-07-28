@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Card;
 use App\Models\Transaction;
 use App\Services\TransactionService;
+use Spatie\Activitylog\Models\Activity;
 
 class TransactionController extends Controller
 {
@@ -27,7 +28,7 @@ class TransactionController extends Controller
     {
         $transactions = Transaction::desc()->paginate(25);
 
-        // Transaction Types - Sell | Buy | Payout 
+        // Transaction Types - Sell | Buy | Payout
         // Transactions should actually show only card sales or purchase (Sell - Pending / Success / Rejected |  Buy - Successful payment)
         // Payouts should be moved to its own separate page
         return view('admin.transactions.index', compact('transactions'));
@@ -40,10 +41,12 @@ class TransactionController extends Controller
      */
     public function create()
     {
+//        Log payout activity
+
         // Return View for transferring
         $user = auth()->user();
         $transactions = Transaction::hasRecipient()->admin()->desc()->paginate(10);
-        
+
         return view('admin.transactions.create', compact('user', 'transactions'));
     }
 
@@ -55,6 +58,8 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
+//        Log payout sending activity
+
         if (!isset($request->role)) {
             return back()->with('error', 'Unauthorized access!');
         }
@@ -90,18 +95,12 @@ class TransactionController extends Controller
      */
     public function show(Transaction $transaction)
     {
-        return view('admin.transactions.show', compact('transaction'));
-    }
+//        Log payout activity - viewing a specific transaction
+        activity('admin.transactions')
+            ->performedOn($transaction)
+            ->log('viewed');
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return view('admin.transactions.show', compact('transaction'));
     }
 
     /**
@@ -115,9 +114,19 @@ class TransactionController extends Controller
     {
         // Check if the payment has been processed already
         if ($transaction->status != 'pending') {
+//            Log Payout activity - Transaction already approved
+            $action = $request->status === 'rejected' ? 'decline' : 'approve';
+            $action = $request->status === 'succeed' ? 'approve' : 'processing';
+            activity('admin.transactions')
+                ->performedOn($transaction)
+                ->withProperties([
+                    'action' => $action
+                ])
+                ->log('to_update');
+
             return back()->with('info', 'Transaction has been processed already.');
         }
-        
+
         $p_s = array('failed', 'pending', 'succeed');
         $_s = array('rejected', 'pending', 'succeed');
 
@@ -149,13 +158,13 @@ class TransactionController extends Controller
         } else {
             $amount = $transaction->amount;
         }
-        
+
         try {
             $transaction->update($request->merge(['amount' => $amount])->all());
         } catch(\Throwable $e) {
             return back()->with('error', 'Transaction could not be updated. Check that the necessary inputs are valid and try again.');
         }
-        
+
         if ($userIsToBePaid) {
             // Credit a user with a payout
             $recipient = $transaction->user;
@@ -173,21 +182,11 @@ class TransactionController extends Controller
                 $this->transactionService->makeReferral($the_transaction_user, $referrer);
             }
         }
-        
+
         // Send notification
         $this->transactionService->notifyUser($transaction);
 
         return back()->with('info', 'Transaction updated successfully!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
