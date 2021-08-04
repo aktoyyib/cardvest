@@ -27,7 +27,7 @@ class TransactionController extends Controller
     public function index()
     {
         $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->paginate(10);
-        
+
         return view('transactions', compact('transactions'));
     }
 
@@ -65,12 +65,12 @@ class TransactionController extends Controller
             'card_id.required' => 'You must select a gift card to continue',
             'images.required' => 'You must upload the shot of the gift card'
         ]);
-        
+
         //  Check if the card_id is valid
         if (is_null(Card::find($request->card_id))) {
             return back()->with('warning','Please select a valid card to continue.');
         }
-        
+
         //  Check if bank is valid
         if (isset($request->to_bank) && is_null(Bank::find($request->bank))) {
             return back()->with('warning','Please select a valid bank or un-check the bank payment option.');
@@ -100,7 +100,7 @@ class TransactionController extends Controller
         if (is_null(Card::find($request->card_id))) {
             return back()->with('warning','Please select a valid card to continue.');
         }
-        
+
         return $this->transactionService->buyCard($request);
     }
 
