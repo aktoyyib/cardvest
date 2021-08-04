@@ -45,7 +45,7 @@
                                             {{ $transaction->reference }} <br>
                                         </td>
                                         <td class="data-col activity-browser">
-                                            @if(!is_null($activity->changes['old')])
+                                            @if(!is_null($activity->changes['old']))
                                             @foreach($activity->changes['old'] as $key_i => $value_i)
                                                     @foreach($activity->changes['attributes'] as $key_j => $value_j)
                                                         @if($key_i == 'amount')
