@@ -23,4 +23,12 @@ class Bank extends Model
     public function withdrawals() {
         return $this->hasMany(Withdrawal::class);
     }
+
+    public function lightDelete() {
+        $this->update(['deleted' => true]);
+    }
+
+    public function scopeActive($query) {
+        $query->where('deleted', false);
+    }
 }

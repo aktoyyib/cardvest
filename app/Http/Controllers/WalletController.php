@@ -46,10 +46,7 @@ class WalletController extends Controller
      */
     public function destroy(Bank $bank)
     {
-        if (!$bank->withdrawals->isEmpty() || !$bank->transactions->isEmpty()) {
-            return back()->with('warning', 'You cannot remove bank account as it is currently in use.');
-        }
-        $bank->delete();
+        $bank->lightDelete();
         return back()->with('success', 'Bank account successfully removed');
     }
 

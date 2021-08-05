@@ -407,7 +407,7 @@
                 <tr class="data-item">
                   <td class="data-col dt-tnxno" colspan="4">
                     <div class="alert alert-danger text-center">
-                      No Withdrawals
+                      You have no active bank account.
                     </div>
                   </td>
                 </tr><!-- .data-item -->

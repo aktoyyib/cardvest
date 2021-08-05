@@ -20,7 +20,7 @@ class HomeController extends Controller
     {
         $user = auth()->user();
         $withdrawals = $user->withdrawals()->desc()->simplePaginate(3);
-        $banks = $user->wallet->bank_accounts;
+        $banks = $user->wallet->bank_accounts()->active()->get();
         $sold = $user->transactions()->completed()->cardSale()->sum('amount');
         $bought = $user->transactions()->completed()->cardPurchase()->sum('amount');
         $transactions = auth()->user()->transactions()->cardSaleOrPurchase()->desc()->take(3)->get();
