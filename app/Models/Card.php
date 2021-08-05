@@ -4,18 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Scopes\ActiveScope;
+use Illuminate\Database\Eloquent\Builder;
 
 class Card extends Model
 {
     use HasFactory;
 
     protected $guarded = ['id'];
-
-    // protected static function booted()
-    // {
-    //     static::addGlobalScope(new ActiveScope);
-    // }
 
     public function category()
     {
@@ -49,5 +44,14 @@ class Card extends Model
     public function scopeActive($query)
     {
         return $query->where('active', true);
+    }
+
+    public function scopeLive($query)
+    {
+        return $query->where('deleted', false);
+    }
+
+    public function lightDelete() {
+        $this->update(['deleted' => true]);
     }
 }

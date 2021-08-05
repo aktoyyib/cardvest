@@ -100,9 +100,7 @@ class CardController extends Controller
 
     public function destroy(Card $card)
     {
-        if ($card->transactions()->count() > 0) return back()->with('warning', 'Card cannot be removed!');
-        
-        $card->delete();
+        $card->lightDelete();
         return back()->with('success', 'Card successfully removed!');
     }
 

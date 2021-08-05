@@ -15,22 +15,22 @@ class Category extends Model
 
     public function cards_you_sell()
     {
-        return $this->hasMany(Card::class)->where('type', 'sell')->active();
+        return $this->hasMany(Card::class)->where('type', 'sell')->active()->live();
     }
 
     // To support migration cards should be changed to cards_you_sell
     public function cards()
     {
-        return $this->hasMany(Card::class)->where('type', 'sell')->active();
+        return $this->hasMany(Card::class)->where('type', 'sell')->active()->live();
     }
 
     public function cards_you_buy()
     {
-        return $this->hasMany(Card::class)->where('type', 'buy');
+        return $this->hasMany(Card::class)->where('type', 'buy')->active()->live();
     }
 
     public function all_cards()
     {
-        return $this->hasMany(Card::class);
+        return $this->hasMany(Card::class)->live();
     }
 }
