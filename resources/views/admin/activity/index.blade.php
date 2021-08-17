@@ -40,23 +40,25 @@
                                         </td>
                                         <td class="data-col activity-device">
                                             {{ $activity->causer->username }} <br>
-                                            <span class="badge badge-secondary badge-{{ $activity->description == 'viewed' ? 'info' : '' }}">{{ config('activities')[$activity->description] }}</span>
+                                            <span class="badge badge-secondary text-uppercase badge-{{ $activity->description == 'viewed' ? 'info' : '' }}">{{ config('activities')[$activity->description] }}</span>
                                         </td>
                                         <td class="data-col activity-device">
                                             {{ $transaction->reference }} <br>
                                         </td>
                                         <td class="data-col activity-browser">
                                             @if($activity->changes && $activity->changes->count())
-                                            @foreach($activity->changes['old'] as $key_i => $value_i)
-                                                    @foreach($activity->changes['attributes'] as $key_j => $value_j)
-                                                        @if($key_i == 'amount')
-                                                            <span class="badge badge-danger">{{ to_decimal($value_i) }}</span> to
-                                                            <span class="badge badge-success">{{ to_decimal($value_j) }}</span> <br>
-                                                        @else
-                                                            <span class="badge badge-danger">{{ $value_i }}</span> to
-                                                            <span class="badge badge-success">{{ $value_j }}</span> <br>
-                                                        @endif
-                                                    @endforeach
+                                            @foreach($activity->changes['old'] as $key => $value)
+                                                    @php
+                                                        $newValue = $activity->changes['attributes'][$key];
+                                                    @endphp
+
+                                                    @if($key == 'amount')
+                                                        <span class="badge badge-danger">{{ to_naira($value) }}</span> to
+                                                        <span class="badge badge-success">{{ to_naira($newValue) }}</span> <br>
+                                                    @else
+                                                        <span class="badge badge-danger text-uppercase">{{ $value }}</span> to
+                                                        <span class="badge badge-success text-uppercase">{{ $newValue }}</span> <br>
+                                                    @endif
                                             @endforeach
                                             @endif
                                         </td>
