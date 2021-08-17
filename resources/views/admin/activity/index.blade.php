@@ -51,13 +51,13 @@
                                                     @php
                                                         $newValue = $activity->changes['attributes'][$key];
                                                     @endphp
-
+                                                    <span class="badge badge-primary">{{ $key }}</span>
                                                     @if($key == 'amount')
-                                                        <span class="badge badge-danger">{{ to_naira($value) }}</span> to
-                                                        <span class="badge badge-success">{{ to_naira($newValue) }}</span> <br>
+                                                        <span class="badge badge-warning">{{ to_naira($value) }} ---->
+                                                        {{ to_naira($newValue) }}</span> <br>
                                                     @else
-                                                        <span class="badge badge-danger text-uppercase">{{ $value }}</span> to
-                                                        <span class="badge badge-success text-uppercase">{{ $newValue }}</span> <br>
+                                                        <span class="badge badge-warning text-uppercase">{{ $value ?? "-" }} ---->
+                                                        {{ $newValue }}</span> <br>
                                                     @endif
                                             @endforeach
                                             @endif
