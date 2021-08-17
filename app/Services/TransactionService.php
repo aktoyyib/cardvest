@@ -38,7 +38,7 @@ class TransactionService
 
         // Generate transaction reference code
         $ref = 'REFERRAL_BONUS';
-        
+
         // Credit the referrer
         $recipient->credit($bonus_amount);
 
@@ -65,7 +65,7 @@ class TransactionService
         $reference = Flutterwave::generateReference();
 
         DB::beginTransaction();
-        
+
         try {
             // Make transfer here with flutterwave api
             $data = [
@@ -77,16 +77,16 @@ class TransactionService
                 "debit_currency"=>"NGN",
                 'reference' => $reference
             ];
-            
+
             // If not successful, status of withdrawal remains pending
-            
+
             $user->debit($amount*100);
             $user->refresh();
-            
+
             $amount = $amount * 100;
             $request->merge(['amount' => $amount, 'balance' => $user->balance(), 'reference' => $reference, 'bank_id' => $request->bank, 'status' => 'succeed']);
             $withdrawal = Withdrawal::create($request->all());
-    
+
             $user->withdrawals()->save($withdrawal);
 
             // Send the money to the user
@@ -95,12 +95,12 @@ class TransactionService
             if ($transfer['status'] !== 'success') {
                 $withdrawal->update(['status' => 'pending']);
             }
-            
+
         } catch (\Throwable $e) {
             DB::rollback();
             throw $e;
         }
-        
+
         DB::commit();
 
         return $withdrawal;
@@ -124,31 +124,31 @@ class TransactionService
         $amount = $card->rate * $request->amount * 100;
         $unit = $request->amount;
         $bank = null;
-        
+
         $data = array();
-        
+
         $ref = $this->createReference('sell');
 
         DB::beginTransaction();
 
         try {
-            
+
             if (isset($request->to_bank) && isset($request->bank)) {
                 $bank = $request->bank;
             }
 
-            // Save Images 
+            // Save Images
             // if($request->hasfile('images')) {
             //     foreach($request->file('images') as $image)
             //     {
             //         $filename=$image->getClientOriginalName();
-            //         // $image->move(public_path().'/images/', $name);  
+            //         // $image->move(public_path().'/images/', $name);
             //         $data[] = $filename;
             //         $path = $image->storeAs(
             //             'gift-cards', $filename
             //         );
             //     }
-                
+
             // }
 
             $request->merge(['card_id' => $card->id, 'bank' => $bank, 'amount' => $amount, 'type'=> 'sell', 'balance' => $user->balance(), 'reference' => $ref, 'status' => 'pending', 'unit' => $unit]);
@@ -156,7 +156,7 @@ class TransactionService
 
             $transaction = Transaction::create($request->all());
             $user->transactions()->save($transaction);
-            
+
             if (is_null($request->images)) {
                 $transaction->images = json_encode([]);
             }
@@ -182,7 +182,7 @@ class TransactionService
         $card = Card::find($request->card_id);
         $amount = $card->rate * $request->amount * 100;
         $unit = $request->amount;
-        
+
         // Debit the user
         //This generates a payment reference
         $reference = Flutterwave::generateReference();
@@ -198,7 +198,7 @@ class TransactionService
             $transaction->update([
                 'admin_comment' => 'Payment pending!',
             ]);
-            
+
             // Initialize Payment
             // Enter the details of the payment
             $data = [
@@ -222,7 +222,7 @@ class TransactionService
             ];
 
             $payment = Flutterwave::initializePayment($data);
- 
+
 
             if ($payment['status'] !== 'success') {
                 // notify something went wrong
@@ -236,7 +236,7 @@ class TransactionService
             DB::rollback();
             return back()->with('error', 'An error occured!');
         }
-        
+
 
         // Return a response to the user
         return redirect()->route('transaction.index')->with('success', 'You request has been noted and will be attended to with 5-10 minutes.');
@@ -248,7 +248,7 @@ class TransactionService
         if (isset($request->role)) {
             $role = $request->role;
         }
-        
+
         DB::beginTransaction();
 
         try {
@@ -279,7 +279,7 @@ class TransactionService
             $request->merge(['amount' => $amount, 'type'=> 'payout', 'role' => $role, 'balance' => $sender->balance(), 'reference' => $ref, 'recipient' => $recipient->id, 'status' => 'succeed', 'unit' => 0]);
             // dd($request);
             $transfer = Transaction::create($request->all());
-            
+
             // Save users transaction
             $sender->transactions()->save($transfer);
         } catch (\Throwable $e) {
@@ -301,9 +301,9 @@ class TransactionService
         }
 
         $transactionID = Flutterwave::getTransactionIDFromCallback();
-        
+
         $data = Flutterwave::verifyTransaction($transactionID);
-        
+
         return $this->processCharge($data);
     }
 
@@ -332,7 +332,7 @@ class TransactionService
 
             // Get the withdrawal from your DB using the withdrawal reference (reference)
             $withdrawal = Withdrawal::where('reference', $transfer['data']['reference'])->first();
-            
+
             Log::info(json_encode($withdrawal));
             // exit();
             if($transfer['data']['status'] === 'SUCCESSFUL') {
@@ -350,7 +350,7 @@ class TransactionService
                 // initial state is pending
                 $withdrawal->admin_comment = $transfer['data']['complete_message'];
             }
-            
+
             $withdrawal->save();
         }
     }
@@ -358,7 +358,7 @@ class TransactionService
     protected function createReference($type) {
 
         $random = Str::random(10);
-        
+
         switch ($type) {
             case 'withdrawal':
                 $reference = 'CVT'. $random .'WTH';
@@ -384,7 +384,7 @@ class TransactionService
 
     protected function processCharge($data, $isWebhook = false) {
         Log::info(request()->all());
-        
+
         if ($isWebhook) {
             // Get the transaction from your DB using the transaction reference (txref)
             $transaction = Transaction::where('reference', request()->data['tx_ref'])->first();
@@ -397,12 +397,12 @@ class TransactionService
         if (is_null($transaction)) {
             return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Invalid Transaction. This could mean the payment failed or was cancelled. Thank you!');
         }
-        
+
         // Check if you have previously given value for the transaction. If you have, redirect to your successpage else, continue
         if ($transaction->payment_status === 'succeed' && $transaction->status === 'succeed') {
             return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful! Check the transaction tab for update. It should take 15-20 minutes!');
         }
-        
+
         // Confirm that the $data['data']['status'] is 'successful'
         if ($data['data']['status']  !== 'successful') {
             $transaction->delete();
@@ -430,30 +430,8 @@ class TransactionService
     }
 
     public function addToAudienceList(User $user) {
-        $mailchimp = new \MailchimpMarketing\ApiClient();
-
-        $mailchimp->setConfig([
-        'apiKey' => env('MAILCHIMP_KEY'),
-        'server' => env('MAILCHIMP_PREFIX')
-        ]);
-
-        // $response = $mailchimp->ping->get();
-        // dd($response);
-
-        $list_id = env('MAILCHIMP_LIST_ID');
-
-        // $response = $mailchimp->lists->getListMembersInfo($list_id);
-        // dd($response);
-
         try {
-            $response = $mailchimp->lists->addListMember($list_id, [
-                "email_address" => $user->email,
-                "status" => "subscribed",
-                "merge_fields" => [
-                "FNAME" => $user->username,
-                "PHONE" => $user->phonenumber
-                ]
-            ]);
+            Newsletter::subscribeOrUpdate($user->email, ['FNAME'=> $user->username, 'PHONE' => $user->phonenumber], 'subscribers');
             Log::info('User added to email list successfully!');
         } catch (\Throwable $e) {
             Log::info(json_encode($e));

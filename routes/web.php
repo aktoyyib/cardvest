@@ -24,6 +24,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Facades\Notification;
 use App\Notifications\Order as OrderNotification;
 use App\Notifications\OrderProcessed;
+use App\Services\TransactionService;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,24 +60,10 @@ Route::get('/notification', function () {
                 ->toMail($transaction->user);
 });
 
-Route::get('email', function() {
+Route::get('email', function(TransactionService $transactionService) {
     $user = App\Models\User::find(5);
     // SendWelcomeMail::dispatchAfterResponse($user);
-    // $mailchimp = new MailchimpMarketing\ApiClient();
-
-    // $mailchimp->setConfig([
-    // 'apiKey' => env('MAILCHIMP_KEY'),
-    // 'server' => env('MAILCHIMP_PREFIX')
-    // ]);
-
-    // // $response = $mailchimp->ping->get();
-    // // dd($response);
-
-    // $list_id = env('MAILCHIMP_LIST_ID');
-
-    // $response = $mailchimp->lists->getListMembersInfo($list_id);
-    // dd($response);
-
+    dd($transactionService->addToAudienceList($user));
     // return new App\Mail\WelcomeToCardvest($user);
 });
 
