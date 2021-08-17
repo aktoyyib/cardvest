@@ -9,7 +9,7 @@ class ActivityController extends Controller
 {
     public function index()
     {
-        $activities = Activity::where('log_name', 'admin.transactions')->simplePaginate(40);
+        $activities = Activity::where('log_name', 'admin.transactions')->orderBy('created_at', 'asc')->simplePaginate(40);
         return view('admin.activity.index', compact('activities'));
     }
 }
