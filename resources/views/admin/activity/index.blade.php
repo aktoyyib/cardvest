@@ -56,7 +56,7 @@
                                                         <span class="badge badge-warning">{{ to_naira($value) }} ---->
                                                         {{ to_naira($newValue) }}</span> <br>
                                                     @else
-                                                        <span class="badge badge-warning text-uppercase">{{ $value ?? "-" }} ---->
+                                                        <span class="badge badge-warning text-uppercase">{{ $value ?? "[Nil]  " }} ---->
                                                         {{ $newValue }}</span> <br>
                                                     @endif
                                             @endforeach
