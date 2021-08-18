@@ -18,7 +18,6 @@
 </head>
 
 <body class="page-ath">
-
   <div class="container h-75">
     <div class="row h-full justify-content-center align-items-center">
       <div class="col">

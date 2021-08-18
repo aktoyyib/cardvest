@@ -12,10 +12,11 @@ use Spatie\Activitylog\Traits\CausesActivity;
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasWallet;
 use App\Traits\Referral;
+use App\Traits\Banning;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasWallet, HasRoles, Referral, CausesActivity;
+    use HasApiTokens, HasFactory, Notifiable, HasWallet, HasRoles, Referral, CausesActivity, Banning;
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +25,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'username',
-        'phonenumber',
+        'phonenumber',  
         'email',
         'password',
         'referrer_id'
