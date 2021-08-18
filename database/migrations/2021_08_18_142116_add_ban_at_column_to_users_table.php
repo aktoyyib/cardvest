@@ -14,7 +14,7 @@ class AddBanAtColumnToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dateTime('banned_at')->default(null);
+            $table->string('banned_at');
         });
     }
 

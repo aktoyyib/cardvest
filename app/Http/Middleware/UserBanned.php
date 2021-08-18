@@ -17,7 +17,9 @@ class UserBanned
     public function handle(Request $request, Closure $next)
     {
         // Check if user is banned
-        
+        if (auth()->user()->isBanned()) {
+            return redirect()->route('banned');
+        }
         return $next($request);
     }
 }

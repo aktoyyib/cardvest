@@ -2,7 +2,20 @@
 
 @section('title', 'Cardvest - Admin User\'s List')
 @section('content')
-<div class="page-content">
+<div class="page-content" x-data="{
+  open: false,
+  userId: null,
+  userName: '',
+  terms: null,
+  duration: 0,
+
+  banUser(id, userName) {
+    this.id = id;
+    this.userName = userName;
+
+    $('#modal-ban').modal();
+  }
+}">
   <div class="container">
     <div class="row">
       <div class="col-lg-3 aside sidebar-left">
@@ -57,8 +70,8 @@
                         <ul class="dropdown-list">
                           <li><a href="{{ route('users.show', $user) }}"><em class="ti ti-eye"></em> View Details</a>
                           </li>
-                          <!-- <li><a href="#"><em class="ti ti-na"></em> Suspend</a></li>
-                                                      <li><a href="#"><em class="ti ti-trash"></em> Delete</a></li> -->
+                          <li><a x-on:click="banUser({{ $user->id }}, '{{ $user->username }}')"><em class="ti ti-na"></em> Suspend</a></li>
+                          {{-- <li><a href="#"><em class="ti ti-trash"></em> Delete</a></li> --}}
                         </ul>
                       </div>
                     </div>
@@ -69,6 +82,8 @@
                 @endforelse
               </tbody>
             </table>
+
+            <a href="#" data-toggle="modal" data-target="#modal-ban" class="btn btn-primary">Modal Centered</a>
           </div><!-- .card-innr -->
           <div class="card-footer bg-white">
             {{ $users->links() }}
@@ -77,11 +92,52 @@
       </div>
     </div>
   </div><!-- .container -->
+
+  <!-- Modal User Banning -->
+<div class="modal fade" id="modal-ban" tabindex="-1">
+  <div class="modal-dialog modal-dialog-sm modal-dialog-centered">
+      <div class="modal-content">
+          <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em class="ti ti-close"></em></a>
+          <div class="popup-body">
+              <h3 class="popup-title">Ban User (<small x-text="userName"></small>)</h3>
+              <form action="">
+                @csrf
+                <div class="row justify-content-center">
+                  <div class="col-md-12">
+                      <div class="input-item input-with-label">
+                          <label class="input-item-label">Ban Terms</label>
+                          <div class="select-wrapper">
+                              <select class="input-bordered" x-model="terms" name="terms">
+                                  <option value="permanent">Indefinitely</option>
+                                  <option value="temporary">Temporarily</option>
+                              </select>
+                          </div>
+                      </div>
+                      <div class="input-item input-with-label" x-show="terms==='temporary'">
+                          <label class="input-item-label">Duration (In days)</label>
+                          <input class="input-bordered" x-model="duration" type="number" min="0" placeholder="Ban Duration" name="duration">
+                      </div>
+  
+                      <button class="btn btn-primary btn-block">Proceed</button>
+                  </div>
+                  
+                </div>
+              </form>
+          </div>
+      </div><!-- .modal-content -->
+  </div><!-- .modal-dialog -->
+</div>
+<!-- Modal User Banning End -->
+
 </div><!-- .page-content -->
+
+
 @endsection()
 
 @push('scripts')
+<script src="//unpkg.com/alpinejs" defer></script>
 <script>
+  
 
 </script>
 @endpush

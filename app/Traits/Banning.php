@@ -36,4 +36,12 @@ trait Banning
 
       return true;
     }
+
+    public function banTerms() : string
+    {
+      if ($this->banned_at == 0)
+        return 'permanently';
+        
+      return 'temporarily';
+    }
 }

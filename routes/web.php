@@ -67,6 +67,8 @@ Route::get('email', function(TransactionService $transactionService) {
     // return new App\Mail\WelcomeToCardvest($user);
 });
 
+Route::view('/account/status', 'banned')->name('banned');
+
 Route::get('fetch-banks', [WalletController::class, 'banks'])->name('banks');
 Route::post('verify-bank', [WalletController::class, 'verify'])->name('verify');
 
@@ -77,7 +79,7 @@ Route::get('/register', [RegisteredUserController::class, 'create'])
                 ->middleware(['guest', 'referral'])
                 ->name('register');
 
-Route::group(['middleware' => ['auth']], function () {
+Route::group(['middleware' => ['auth', 'ban']], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [HomeController::class, 'index']);
     Route::get('profile', [HomeController::class, 'profile'])->name('profile');
