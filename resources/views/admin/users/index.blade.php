@@ -8,10 +8,12 @@
   userName: '',
   terms: null,
   duration: 0,
+  actionRoute: '',
 
   banUser(id, userName) {
-    this.id = id;
+    this.userId = id;
     this.userName = userName;
+    this.actionRoute = `/admin/users/${this.userName}/suspend`;
 
     $('#modal-ban').modal();
   }
@@ -53,7 +55,12 @@
                     </div>
                   </td>
                   <td class="data-col dt-email">
-                    <span class="sub sub-s2 sub-email">{{ $user->email }}</span>
+                    <span class="sub sub-s2 sub-email">
+                      {{ $user->email }} 
+                      @if ($user->isBanned())
+                        <span class="text-danger fa fa-ban"></span>
+                      @endif
+                    </span>
                   </td>
                   <!-- <td class="data-col dt-status">
                                           <span class="dt-status-md badge badge-outline badge-success badge-md">Active</span>
@@ -63,15 +70,22 @@
                     <span class="lead lead-btoken">{{ to_naira($user->balance()) }}</span>
                   </td>
                   <td class="data-col text-right">
-                    <div class="relative d-inline-block">
+                    <div class="relative d-inline-block" x-cloak>
                       <a href="#" class="btn btn-light-alt btn-xs btn-icon toggle-tigger"><em
                           class="ti ti-more-alt"></em></a>
                       <div class="toggle-class dropdown-content dropdown-content-top-left">
                         <ul class="dropdown-list">
                           <li><a href="{{ route('users.show', $user) }}"><em class="ti ti-eye"></em> View Details</a>
                           </li>
-                          <li><a x-on:click="banUser({{ $user->id }}, '{{ $user->username }}')"><em class="ti ti-na"></em> Suspend</a></li>
-                          {{-- <li><a href="#"><em class="ti ti-trash"></em> Delete</a></li> --}}
+                          @if ($user->isBanned())
+                          <li><a href onclick="event.preventDefault();
+                            document.getElementById('ban-form-{{ $user->id }}').submit();"><em class="fa fa-toggle-on"></em> Lift Ban</a></li>
+                          <form id="ban-form-{{ $user->id }}" action="{{ route('users.liftban', $user) }}" method="POST" class="d-none">
+                            @csrf
+                          </form>
+                          @else
+                          <li><a href x-on:click.prevent="banUser({{ $user->id }}, '{{ $user->username }}')"><em class="ti ti-na"></em> Suspend</a></li>
+                          @endif
                         </ul>
                       </div>
                     </div>
@@ -83,7 +97,6 @@
               </tbody>
             </table>
 
-            <a href="#" data-toggle="modal" data-target="#modal-ban" class="btn btn-primary">Modal Centered</a>
           </div><!-- .card-innr -->
           <div class="card-footer bg-white">
             {{ $users->links() }}
@@ -100,7 +113,7 @@
           <a href="#" class="modal-close" data-dismiss="modal" aria-label="Close"><em class="ti ti-close"></em></a>
           <div class="popup-body">
               <h3 class="popup-title">Ban User (<small x-text="userName"></small>)</h3>
-              <form action="">
+              <form x-bind:action="actionRoute" method="post">
                 @csrf
                 <div class="row justify-content-center">
                   <div class="col-md-12">
@@ -113,10 +126,12 @@
                               </select>
                           </div>
                       </div>
-                      <div class="input-item input-with-label" x-show="terms==='temporary'">
+                      <template x-if="terms==='temporary'">
+                        <div class="input-item input-with-label">
                           <label class="input-item-label">Duration (In days)</label>
                           <input class="input-bordered" x-model="duration" type="number" min="0" placeholder="Ban Duration" name="duration">
-                      </div>
+                        </div>
+                      </template>
   
                       <button class="btn btn-primary btn-block">Proceed</button>
                   </div>
@@ -140,4 +155,10 @@
   
 
 </script>
+@endpush
+
+@push('css')
+  <style>
+    [x-cloak] { display: none !important; }
+  </style>
 @endpush

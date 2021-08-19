@@ -20,6 +20,7 @@ class UserBanned
         if (auth()->user()->isBanned()) {
             return redirect()->route('banned');
         }
+
         return $next($request);
     }
 }

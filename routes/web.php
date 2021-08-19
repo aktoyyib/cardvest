@@ -106,6 +106,8 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
         Route::get('', AdminController::class)->name('admin.dashboard');
         Route::get('dashboard', AdminController::class)->name('admin.dashboard');
 
+        Route::post('users/{user:username}/suspend', [Users::class, 'banUser'])->name('users.ban');
+        Route::post('users/{user:username}/unsuspend', [Users::class, 'liftBan'])->name('users.liftban');
         Route::resource('users', Users::class)->only('index', 'show');
 
         Route::group(['middleware' => ['role:Super Admin']], function() {

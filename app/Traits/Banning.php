@@ -11,20 +11,23 @@ trait Banning
     public function ban(int $forDays = null)
     {
       if (is_null($forDays)) 
-        $this->update(['banned_at' => 0]);
+        $this->banned_at = 0;
       else 
-        $this->update(['banned_at' => Carbon::now()->addDays($forDays)]);
+        $this->banned_at = Carbon::now()->addDays($forDays);
+      
+      $this->save();
     }
 
-    public function liftBan(int $forDays = null)
+    public function liftBan()
     {
-      $this->update(['banned_at' => null]);
+      $this->banned_at = null;
+      $this->save();
     }
 
     public function isBanned() : bool
     {
       if (is_null($this->banned_at)) return false;
-
+      
       // Check if its permanently
       if ($this->banned_at == 0) return true;
 
@@ -33,13 +36,12 @@ trait Banning
         $this->liftBan();
         return false;
       }
-
       return true;
     }
 
     public function banTerms() : string
     {
-      if ($this->banned_at == 0)
+      if (is_numeric($this->banned_at) && $this->banned_at == 0)
         return 'permanently';
         
       return 'temporarily';
