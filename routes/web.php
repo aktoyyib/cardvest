@@ -15,6 +15,8 @@ use App\Http\Controllers\Admin\TransactionController as Transactions;
 use App\Http\Controllers\Admin\WithdrawalController as Withdrawals;
 use App\Http\Controllers\Admin\CategoryController as Categories;
 use App\Http\Controllers\Admin\CardController as Cards;
+use App\Http\Controllers\Admin\PushNotificationController;
+
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Jobs\SendWelcomeMail;
 use Illuminate\Support\Facades\Log;
@@ -131,5 +133,8 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
 
         Route::delete('/cards/{card}/disable', [Cards::class, 'disable'])->name('cards.disable');
         Route::resource('cards', Cards::class);
+
+        // Push Notification Campaign routes
+        Route::get('/push-notifications', [PushNotificationController::class, 'index'])->name('push-notification-campaign');
     });
 });
