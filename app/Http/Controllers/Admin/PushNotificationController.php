@@ -14,40 +14,38 @@ use Illuminate\Notifications\Notification;
 
 class PushNotificationController extends Controller
 {
+    protected $channels = [
+        'default' => 'general',
+        'notifications' => 'campaign'
+    ];
+
     public function index()
     {
         // return view('admin.push-notifications.index');$channelName = 'news';
-        $channelName = 'news';
-        $recipient= 'ExponentPushToken[0yOCmBN4Aj8WRMqNUsHm-O]';
-        
-        // You can quickly bootup an expo instance
-        $expo = \ExponentPhpSDK\Expo::normalSetup();
-        
-        // Subscribe the recipient to the server
-        $expo->subscribe($channelName, $recipient);
-        
-        // Build the notification data
-        $notification = ['body' => 'Hello World!'];
-        
-        // Notify an interest with a notification
-        $expo->notify([$channelName], $notification);
     }
 
     public function pushNotification(Request $request)
     {
-        // Construct the push notification object
-        // Send it with expo-sdk-package
-        $channelName = 'news';
-        $recipient= 'ExponentPushToken[0yOCmBN4Aj8WRMqNUsHm-O]';
+        $request->validate([
+            'title' => ['required', 'string',  'max:255'],
+            'body' => ['required', 'string'],
+            'channel' => ['required', 'string',  Rule::in(['default', 'notification'])]
+        ]);
+
+        $channelName = $channels[$request->channel];
         
         // You can quickly bootup an expo instance
         $expo = \ExponentPhpSDK\Expo::normalSetup();
         
-        // Subscribe the recipient to the server
-        $expo->subscribe($channelName, $recipient);
-        
         // Build the notification data
-        $notification = ['body' => 'Hello World!'];
+        $notification = [
+            'title'  => $request->title,
+            'body' => $request->body,
+            'data' => json_encode(array(
+                'type' => 'modal',//transactional
+                // 'page' => 'transaction'
+            ))
+        ];
         
         // Notify an interest with a notification
         $expo->notify([$channelName], $notification);
@@ -73,6 +71,14 @@ class PushNotificationController extends Controller
         // Check if its a beat or register
         if ($request->type != 'beat') {
             MobileApp::create($request->except(['type']));
+            $channelName = $channels['default'];
+            $recipient= $request->token;
+            
+            // You can quickly bootup an expo instance
+            $expo = \ExponentPhpSDK\Expo::normalSetup();
+            
+            // Subscribe the recipient to the server
+            $expo->subscribe($channelName, $recipient);
         } else {
             $mobile = MobileApp::where('token', $request->token)->first();
             
