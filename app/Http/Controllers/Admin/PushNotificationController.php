@@ -21,7 +21,7 @@ class PushNotificationController extends Controller
 
     public function index()
     {
-        // return view('admin.push-notifications.index');$channelName = 'news';
+        return view('admin.push-notifications.index');
     }
 
     public function pushNotification(Request $request)
@@ -29,10 +29,10 @@ class PushNotificationController extends Controller
         $request->validate([
             'title' => ['required', 'string',  'max:255'],
             'body' => ['required', 'string'],
-            'channel' => ['required', 'string',  Rule::in(['default', 'notification'])]
+            'channel' => ['required', 'string',  Rule::in(['default', 'notifications'])]
         ]);
 
-        $channelName = $channels[$request->channel];
+        $channelName = $this->channels[$request->channel];
         
         // You can quickly bootup an expo instance
         $expo = \ExponentPhpSDK\Expo::normalSetup();
@@ -47,8 +47,13 @@ class PushNotificationController extends Controller
             ))
         ];
         
-        // Notify an interest with a notification
-        $expo->notify([$channelName], $notification);
+        try {// Notify an interest with a notification
+            $expo->notify([$channelName], $notification);
+        } catch (\ExponentPhpSDK\Exceptions\UnexpectedResponseException $e) {
+            return back()->with('error', 'Unable to send push notification campaign now. Try again later.');
+        }
+
+        return back()->with('success', 'Push Notification Campaign sent successfully!');
     }
 
     public function storeToken(Request $request)
@@ -71,7 +76,7 @@ class PushNotificationController extends Controller
         // Check if its a beat or register
         if ($request->type != 'beat') {
             MobileApp::create($request->except(['type']));
-            $channelName = $channels['default'];
+            $channelName = $this->channels['notifications'];
             $recipient= $request->token;
             
             // You can quickly bootup an expo instance
@@ -79,6 +84,8 @@ class PushNotificationController extends Controller
             
             // Subscribe the recipient to the server
             $expo->subscribe($channelName, $recipient);
+            // Subscribe all tokens to the general notification
+            $expo->subscribe($this->channels['default'], $recipient);
         } else {
             $mobile = MobileApp::where('token', $request->token)->first();
             

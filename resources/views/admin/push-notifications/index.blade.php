@@ -16,7 +16,7 @@
             <div class="card-head">
               <h4 class="card-title">Create Campaign</h4>
             </div>
-            <form action="{{ route('transactions.store') }}" method="post">
+            <form action="{{ route('push-notification-now') }}" method="post">
               @csrf
               <input type="hidden" name="role" value="admin">
               <div class="input-item input-with-label">
@@ -27,8 +27,10 @@
               
               <div class="input-item input-with-label">
                 <label class="input-item-label">Campaign Content</label>
-                <textarea class="input-bordered" name="content" placeholder="Campaign Content"></textarea>
+                <textarea class="input-bordered" name="body" placeholder="Campaign Content"></textarea>
               </div>
+
+              <input type="hidden" name="channel" value="notifications">
 
               <div class="token-buy text-center">
                 <button class="btn btn-primary">Create Campaign</button>
