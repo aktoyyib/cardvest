@@ -18,11 +18,8 @@ class CreateMobileAppsTable extends Migration
             $table->string('token');
             $table->enum('type', ['expo', 'native'])->default('expo');
             $table->string('description')->nullable();
-            $table->foreignId('user_id')
-                ->nullable()
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamp('last_seen')->nullable();
             $table->enum('status', ['active', 'undetermined'])->default('active');
             $table->timestamps();

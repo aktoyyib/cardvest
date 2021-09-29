@@ -14,18 +14,6 @@ class MobileAppController extends Controller
         
     }
 
-    public function storeToken(Request $request)
-    {
-        // Expected parameters
-        $param = 
-        [
-            'token' => 'ExponentToken[******************]',
-            'description' => '- Android X',
-            'user_id' => 1,
-            'type' => 'beat'
-        ];
-    }
-
     public function destroy(MobileApp $mobileApp)
     {
         // Delete a mobile apps token

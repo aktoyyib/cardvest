@@ -12,6 +12,8 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\WalletController;
 use App\Http\Controllers\API\ReferralController;
 
+use App\Http\Controllers\Admin\PushNotificationController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -82,6 +84,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Referrals
     Route::get('/referrals', [ReferralController::class, 'index']);
+
+    // Push Notification's Route
+    Route::post('/push-notification/register', [PushNotificationController::class, 'storeToken']);
 });
 
 Route::fallback(function () {
