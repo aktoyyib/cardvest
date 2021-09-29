@@ -136,5 +136,6 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
 
         // Push Notification Campaign routes
         Route::get('/push-notifications', [PushNotificationController::class, 'index'])->name('push-notification-campaign');
+        Route::post('/push-notifications/send', [PushNotificationController::class, 'pushNotification'])->name('push-notification-now');
     });
 });

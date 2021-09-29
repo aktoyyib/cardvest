@@ -8,16 +8,49 @@ use Illuminate\Validation\Rule;
 use App\Models\MobileApp;
 use Carbon\Carbon;
 
+use NotificationChannels\ExpoPushNotifications\ExpoChannel;
+use NotificationChannels\ExpoPushNotifications\ExpoMessage;
+use Illuminate\Notifications\Notification;
+
 class PushNotificationController extends Controller
 {
     public function index()
     {
-        return view('admin.push-notifications.index');
+        // return view('admin.push-notifications.index');$channelName = 'news';
+        $channelName = 'news';
+        $recipient= 'ExponentPushToken[0yOCmBN4Aj8WRMqNUsHm-O]';
+        
+        // You can quickly bootup an expo instance
+        $expo = \ExponentPhpSDK\Expo::normalSetup();
+        
+        // Subscribe the recipient to the server
+        $expo->subscribe($channelName, $recipient);
+        
+        // Build the notification data
+        $notification = ['body' => 'Hello World!'];
+        
+        // Notify an interest with a notification
+        $expo->notify([$channelName], $notification);
     }
 
     public function pushNotification(Request $request)
     {
-        //
+        // Construct the push notification object
+        // Send it with expo-sdk-package
+        $channelName = 'news';
+        $recipient= 'ExponentPushToken[0yOCmBN4Aj8WRMqNUsHm-O]';
+        
+        // You can quickly bootup an expo instance
+        $expo = \ExponentPhpSDK\Expo::normalSetup();
+        
+        // Subscribe the recipient to the server
+        $expo->subscribe($channelName, $recipient);
+        
+        // Build the notification data
+        $notification = ['body' => 'Hello World!'];
+        
+        // Notify an interest with a notification
+        $expo->notify([$channelName], $notification);
     }
 
     public function storeToken(Request $request)
