@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\NotificationChannels\PushNotificationChannel;
 
 use App\Models\Transaction;
 class OrderProcessed extends Notification
@@ -37,7 +38,7 @@ class OrderProcessed extends Notification
     public function via($notifiable)
     {
         // return ['database'];
-        return ['database', 'mail'];
+        return ['database', 'mail', PushNotificationChannel::class]; // PushNotificationChannel::class
     }
 
     /**
@@ -70,6 +71,22 @@ class OrderProcessed extends Notification
             'amount' => to_naira($this->transaction->amount),
             'status' => $this->transaction->status,
             'remark' => $this->transaction->admin_comment
+        ];
+    }
+
+    /**
+     * Get the push notification representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toPushNotification($notifiable)
+    {
+        return [
+            // description, amount, status, payment_status, comment
+            'description' => ucfirst($this->transaction->type)." $".$this->transaction->unit." ".$this->card->name." at ".$this->card->rate."/$",
+            'status' => $this->transaction->status,
+            'user' => $this->user
         ];
     }
 }
