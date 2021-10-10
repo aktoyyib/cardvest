@@ -66,7 +66,6 @@ class PushNotificationController extends Controller
 
     public function storeToken(Request $request)
     {
-        Log::info("Token: ".$request->token);
         // Expected parameters
         // $param = 
         // [
@@ -84,7 +83,13 @@ class PushNotificationController extends Controller
 
         // Check if its a beat or register
         if ($request->type != 'beat') {
-            MobileApp::create($request->except(['type']));
+            MobileApp::updateOrCreate(
+                ['user_id' => $request->user_id,],
+                [
+                    'description' => $request->description,
+                    'token' => $request->token,
+                ]
+            );
             $channelName = $this->channels['notifications'];
             $recipient= $request->token;
             
