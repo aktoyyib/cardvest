@@ -13,10 +13,11 @@ use Spatie\Permission\Traits\HasRoles;
 use App\Traits\HasWallet;
 use App\Traits\Referral;
 use App\Traits\Banning;
+use App\Traits\MobilePushId;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasWallet, HasRoles, Referral, CausesActivity, Banning;
+    use HasApiTokens, HasFactory, Notifiable, HasWallet, HasRoles, Referral, CausesActivity, Banning, MobilePushId;
 
     /**
      * The attributes that are mass assignable.
