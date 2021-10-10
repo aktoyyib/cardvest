@@ -20,8 +20,7 @@ class PushNotificationChannel
         // Check if the user is using the mobile application
         $user = $notifyData['user'];
 
-        
-
         // If yes, send the notification to their mobile
+        Log::warning("Push Notification send called");
     }
 }
