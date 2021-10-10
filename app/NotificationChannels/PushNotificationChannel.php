@@ -50,8 +50,9 @@ class PushNotificationChannel
             // Notify an interest with a notification
             $expo->notify([$channelName], $notificationData);
             
-        } catch (\ExponentPhpSDK\Exceptions\UnexpectedResponseException $e) {
+        } catch (\Throwable $e) {
             report($e);
+            throw \Exception($pushNotificationToken);
         }
     }
 }
