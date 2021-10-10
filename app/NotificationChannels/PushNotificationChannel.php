@@ -22,6 +22,36 @@ class PushNotificationChannel
         $user = $notifyData['user'];
 
         // If yes, send the notification to their mobile
-        Log::warning("Push Notification send called");
+        $pushNotificationID = $user->mobilePushId;
+
+        if (is_null($pushNotificationToken)) return;
+
+        $pushNotificationToken = $pushNotificationID->token;
+
+        // Instantiate Expo SDK
+        $expo = \ExponentPhpSDK\Expo::normalSetup();
+
+        // Build the notification data
+        $notificationData = [
+            'title'  => $notifyData['title'],
+            'body' => $notifyData['description'],
+            'data' => json_encode(array(
+                'type' => $notifyData['notification_category'],
+                'url' => $notifyData['url']
+            ))
+        ];
+
+        try {
+            $channelName = 'user_'.$user->id;
+
+            // Subscribe the recipient to the server
+            $expo->subscribe($channelName, $pushNotificationToken);
+
+            // Notify an interest with a notification
+            $expo->notify([$channelName], $notificationData);
+            
+        } catch (\ExponentPhpSDK\Exceptions\UnexpectedResponseException $e) {
+            report($e);
+        }
     }
 }

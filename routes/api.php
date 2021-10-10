@@ -86,6 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/referrals', [ReferralController::class, 'index']);
 
     // Push Notification's Route
+    Route::get('/push-notification/health', [PushNotificationController::class, 'health']);
     Route::post('/push-notification/register', [PushNotificationController::class, 'storeToken']);
 });
 

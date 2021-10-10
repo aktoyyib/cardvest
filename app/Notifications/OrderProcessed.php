@@ -83,11 +83,16 @@ class OrderProcessed extends Notification
      */
     public function toPushNotification($notifiable)
     {
+        $appDeepLink = "cardvest://transactions/".$this->transaction->reference;
+
         return [
-            // description, amount, status, payment_status, comment
+            // description, amount, status, payment_status, comment, title
             'description' => ucfirst($this->transaction->type)." $".$this->transaction->unit." ".$this->card->name." at ".$this->card->rate."/$",
             'status' => $this->transaction->status,
-            'user' => $this->user
+            'user' => $this->user,
+            'title' => 'Giftcard Order Proceed',
+            'url' => $appDeepLink,
+            'notification_category' => 'transactional'
         ];
     }
 }

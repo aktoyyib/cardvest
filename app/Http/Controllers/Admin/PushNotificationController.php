@@ -24,6 +24,13 @@ class PushNotificationController extends Controller
         return view('admin.push-notifications.index');
     }
 
+    public function health()
+    {
+        $expo = \ExponentPhpSDK\Expo::normalSetup();
+
+        return response('Push Notification channel is healthy');
+    }
+
     public function pushNotification(Request $request)
     {
         $request->validate([
@@ -42,8 +49,8 @@ class PushNotificationController extends Controller
             'title'  => $request->title,
             'body' => $request->body,
             'data' => json_encode(array(
-                'type' => 'modal',//transactional
-                // 'page' => 'transaction'
+                'type' => 'news',
+                'url' => 'cardvest://news'
             ))
         ];
         
