@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use NotificationChannels\ExpoPushNotifications\ExpoChannel;
 use NotificationChannels\ExpoPushNotifications\ExpoMessage;
 use Illuminate\Notifications\Notification;
+use Log;
 
 class PushNotificationController extends Controller
 {
@@ -65,6 +66,7 @@ class PushNotificationController extends Controller
 
     public function storeToken(Request $request)
     {
+        Log::info("Token: ".$request->token);
         // Expected parameters
         // $param = 
         // [
