@@ -24,7 +24,7 @@ class PushNotificationChannel
         // If yes, send the notification to their mobile
         $pushNotificationID = $user->mobilePushId;
 
-        if (is_null($pushNotificationToken)) return;
+        if (is_null($pushNotificationID)) return;
 
         $pushNotificationToken = $pushNotificationID->token;
 
