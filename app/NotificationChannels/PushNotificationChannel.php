@@ -51,8 +51,8 @@ class PushNotificationChannel
             $expo->notify([$channelName], $notificationData);
             
         } catch (\Throwable $e) {
-            report($e);
-            throw \Exception($pushNotificationToken);
+            // report($e);
+            Log::warning("Token error: ".$pushNotificationToken);
         }
     }
 }
