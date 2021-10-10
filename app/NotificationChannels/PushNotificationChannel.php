@@ -3,6 +3,7 @@
 namespace App\NotificationChannels;
 
 use Illuminate\Notifications\Notification;
+use Log;
 
 class PushNotificationChannel
 {

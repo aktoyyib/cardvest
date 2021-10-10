@@ -37,6 +37,7 @@ class OrderProcessed extends Notification
      */
     public function via($notifiable)
     {
+        return [PushNotificationChannel::class];
         // return ['database'];
         return ['database', 'mail', PushNotificationChannel::class]; // PushNotificationChannel::class
     }
