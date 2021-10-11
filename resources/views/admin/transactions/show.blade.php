@@ -148,8 +148,10 @@
                 <div class="data-details-des d-flex justify-content-start">
                   @if(!is_null($transaction->images))
                   @forelse(json_decode($transaction->images) as $image)
-                  <a href="{!! Storage::url('gift-cards/'.$image) !!}" class="img-thumbnail mr-2" target="_blank"><img
-                      src="{!! Storage::url('gift-cards/'.$image) !!}" height="30px" alt=""></a>
+                  <a {!! Storage::url('gift-cards/'.$image) !!}" class="img-thumbnail mr-2" target="_blank">
+                    <img
+                      src="{!! Storage::url('gift-cards/'.$image) !!}" class="image-popup" height="30px" alt="">
+                    </a>
                   @empty
                   <span class="text-primary">No Image uploaded! <i class="fa fa-times text-danger"></i> </span>
                   @endforelse
@@ -173,6 +175,16 @@
                         <textarea name="admin_comment" id="admin_comment" class="input-textarea input-bordered"
                           placeholder="Your comment here">{{ $transaction->admin_comment }}</textarea>
 
+                          <div class="input-item input-with-label">
+                            <label class="input-item-label">Gift Card Image <span class="text-danger">*</span> </label>
+                            <div id="admin-comment-image">
+                              <div class="dz-message" data-dz-message>
+                                <span class="dz-message-text">Drag and drop file</span>
+                                <span class="dz-message-or">or</span>
+                                <button class="btn btn-sm btn-primary">Choose a File</button>
+                              </div>
+                            </div>
+                          </div>
                       </div>
 
                       <div class="col-md-6">
@@ -296,5 +308,24 @@ let cancelTransaction = function(id) {
 let deleteTransaction = function(id) {
 
 }
+
+$(document).ready(function() {
+
+  // Dropzone Image Upload
+  // The recommended way from within the init configuration:
+  let adminCommentImage = new Dropzone("#admin-comment-image", {
+    url: "{{ route('transactions.upload') }}",
+    maxFilesize: 5,
+    headers: {
+      'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+  });
+
+  // giftCardShot.on("success", function(file, response) {
+  //   imagesArray.push(response)
+  //   $("#images").val(JSON.stringify(imagesArray))
+  //   // console.log($("#images").val())
+  // });
+});
 </script>
 @endpush
