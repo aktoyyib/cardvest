@@ -106,13 +106,14 @@ class TransactionService
         return $withdrawal;
     }
 
-    public function uploadImage(Request $request) {
+    public function uploadImage(Request $request, string $uploadFolder = null) {
+        $uploadFolder = is_null($uploadFolder) ? 'gift-cards' : $uploadFolder;
         // Save the image
         $file = $request->file('file');
         $filename = Str::slug(Str::random(2), '-') . time().'.'.$file->extension();
 
         $path = $file->storeAs(
-            'gift-cards', $filename
+            $uploadFolder , $filename
         );
 
         return $filename;
