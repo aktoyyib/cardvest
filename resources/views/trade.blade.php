@@ -77,7 +77,6 @@
 
                     <input type="hidden" id="images" multiple="multiple" name="images">
 
-
                   </div>
 
                   <div class="row">
