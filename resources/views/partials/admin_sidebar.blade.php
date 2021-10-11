@@ -13,6 +13,7 @@
         <li><a href="{{ route('withdrawals.index') }}"><em class="ikon ikon-user"></em> Withdrawals</a></li>
         <li><a href="{{ route('categories.index') }}"><em class="ikon ikon-exchange"></em> Gift Cards</a></li>
         <li><a href="{{ route('transactions.create') }}"><em class="ikon ikon-exchange"></em> Send Funds</a></li>
+        <li><a href="{{ route('push-notification-campaign') }}"><em class="ikon fa fa-bell"></em> Create Campaign</a></li>
     </ul>
   </div>
 </div>
