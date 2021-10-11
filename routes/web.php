@@ -110,6 +110,7 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
 
         Route::post('users/{user:username}/suspend', [Users::class, 'banUser'])->name('users.ban');
         Route::post('users/{user:username}/unsuspend', [Users::class, 'liftBan'])->name('users.liftban');
+        Route::get('users/search', [Users::class, 'search'])->name('users.search');
         Route::resource('users', Users::class)->only('index', 'show');
 
         Route::group(['middleware' => ['role:Super Admin']], function() {
