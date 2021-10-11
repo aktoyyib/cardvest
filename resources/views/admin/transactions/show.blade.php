@@ -175,13 +175,13 @@
                         <textarea name="admin_comment" id="admin_comment" class="input-textarea input-bordered"
                           placeholder="Your comment here">{{ $transaction->admin_comment }}</textarea>
 
-                          <div class="input-item input-with-label">
-                            <label class="input-item-label">Gift Card Image <span class="text-danger">*</span> </label>
+                          <div class="input-item input-with-label mt-3">
+                            <label class="input-item-label">Add Image to Comment <span class="text-danger">*</span> </label>
                             <div id="admin-comment-image">
                               <div class="dz-message" data-dz-message>
                                 <span class="dz-message-text">Drag and drop file</span>
                                 <span class="dz-message-or">or</span>
-                                <button class="btn btn-sm btn-primary">Choose a File</button>
+                                <button class="btn btn-sm btn-primary" type="button">Choose a File</button>
                               </div>
                             </div>
                           </div>
@@ -291,9 +291,6 @@ let approveTransaction = function(event) {
     })
     .then((willDelete) => {
       if (willDelete) {
-        swal("Thank you! Transaction successfully updated!", {
-          icon: "success",
-        });
         $('#transaction-update').submit();
       } else {
 
@@ -314,7 +311,7 @@ $(document).ready(function() {
   // Dropzone Image Upload
   // The recommended way from within the init configuration:
   let adminCommentImage = new Dropzone("#admin-comment-image", {
-    url: "{{ route('transactions.upload') }}",
+    url: "{{ route('transactions.upload', $transaction) }}",
     maxFilesize: 5,
     headers: {
       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

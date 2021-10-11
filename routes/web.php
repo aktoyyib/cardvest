@@ -125,7 +125,7 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
         });
 
         Route::get('transactions/search', [Transactions::class, 'search'])->name('transactions.search');
-        Route::post('transactions/admin-comment-image', [Transactions::class, 'adminCommentImageUpload'])->name('transactions.upload');
+        Route::post('transactions/admin-comment-image/{transaction}', [Transactions::class, 'adminCommentImageUpload'])->name('transactions.upload');
         Route::resource('transactions', Transactions::class)->only(['index', 'store', 'show', 'edit', 'update', 'destroy']);
 
         Route::resource('withdrawals', Withdrawals::class);

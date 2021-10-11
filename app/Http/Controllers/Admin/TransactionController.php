@@ -201,9 +201,12 @@ class TransactionController extends Controller
         return back()->with('info', 'Transaction updated successfully!');
     }
 
-    public function adminCommentImageUpload(Request $request)
+    public function adminCommentImageUpload(Request $request, Transaction $transaction)
     {
-        return $this->transactionService->uploadImage($request);
+        $fileName = $this->transactionService->uploadImage($request, 'admin-comment-images');
+        $transaction->update([
+            'admin_images' => $fileName
+        ]);
     }
 
 }

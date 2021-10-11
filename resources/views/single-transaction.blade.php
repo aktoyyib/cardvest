@@ -91,8 +91,12 @@
         <ul class="data-details-list">
           <li>
             <div class="data-details-head">Admin Feedback</div>
-            <div class="data-details-des">
+            <div class="data-details-des d-flex flex-column">
               <strong>{{ $transaction->admin_comment ?? '-' }}</strong>
+              @if($transaction->admin_images)
+              <p class="text-primary">View Image Uploaded by Amdin</p>
+              <img src="{!! Storage::url(''.$transaction->admin_images) !!}" href="{!! Storage::url(''.$transaction->admin_images) !!}" class="image-popup img-thumbnail" width="100" alt="">
+              @endif
             </div>
           </li>
         </ul>

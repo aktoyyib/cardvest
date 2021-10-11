@@ -116,7 +116,7 @@ class TransactionService
             $uploadFolder , $filename
         );
 
-        return $filename;
+        return $path;
     }
 
     public function sellCard(Request $request) {
