@@ -20,7 +20,7 @@ class UserController extends Controller
         $param = request()->query('search');
         $users = User::query();
         $users = $users->where('email', 'LIKE', "%{$param}%")
-                ->where('username', 'LIKE', "%{$param}%")
+                ->orWhere('username', 'LIKE', "%{$param}%")
                 ->simplePaginate(25);
 
         return view('admin.users.search', compact('users'));

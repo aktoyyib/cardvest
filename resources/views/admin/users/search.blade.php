@@ -112,7 +112,7 @@
                   <tr>
                     <td colspan="4">
                       <div class="alert alert-warning alert-center my-3">
-                        <p>User with username <strong>{{ request()->search }}</strong> not found!</p>
+                        <p>User with username/email <strong>{{ request()->search }}</strong> not found!</p>
                       </div>
                     </td>
                   </tr>
