@@ -15,6 +15,17 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    public function search()
+    {
+        $param = request()->query('search');
+        $users = User::query();
+        $users = $users->where('email', 'LIKE', "%{$param}%")
+                ->where('username', 'LIKE', "%{$param}%")
+                ->simplePaginate(25);
+
+        return view('admin.users.search', compact('users'));
+    }
+
     public function show(User $user)
     {
         return view('admin.users.show', compact('user'));
