@@ -148,9 +148,9 @@
                 <div class="data-details-des d-flex justify-content-start">
                   @if(!is_null($transaction->images))
                   @forelse(json_decode($transaction->images) as $image)
-                  <a {!! Storage::url('gift-cards/'.$image) !!}" class="img-thumbnail mr-2" target="_blank">
+                  <a class="img-thumbnail mr-2" target="_blank">
                     <img
-                      src="{!! Storage::url('gift-cards/'.$image) !!}" href="{!! Storage::url('gift-cards/'.$image) !!}" class="image-popup" height="30px" alt="">
+                      src="{!! Storage::url($image) !!}" href="{!! Storage::url($image) !!}" class="image-popup" height="30px" alt="">
                     </a>
                   @empty
                   <span class="text-primary">No Image uploaded! <i class="fa fa-times text-danger"></i> </span>
