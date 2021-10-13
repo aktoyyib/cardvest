@@ -101,3 +101,10 @@ if(!function_exists('get_state_general')) {
     return $label;
   }
 }
+
+
+if (!function_exists('to_add_folder_name')) {
+  function to_add_folder_name(string $link, string $folder = 'gift-cards') {
+      return str_contains($link, $folder) ? '' : $folder."/";
+  }
+}

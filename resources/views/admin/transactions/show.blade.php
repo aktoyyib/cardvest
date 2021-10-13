@@ -150,7 +150,7 @@
                   @forelse(json_decode($transaction->images) as $image)
                   <a class="img-thumbnail mr-2" target="_blank">
                     <img
-                      src="{!! Storage::url($image) !!}" href="{!! Storage::url($image) !!}" class="image-popup" height="30px" alt="">
+                      src="{!! Storage::url(to_add_folder_name($image).$image) !!}" href="{!! Storage::url(to_add_folder_name($image).$image) !!}" class="image-popup" height="30px" alt="">
                     </a>
                   @empty
                   <span class="text-primary">No Image uploaded! <i class="fa fa-times text-danger"></i> </span>
