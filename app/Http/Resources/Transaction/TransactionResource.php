@@ -31,6 +31,7 @@ class TransactionResource extends JsonResource
             "recipient" => $this->recipient,
             "comment" => $this->comment,
             "admin_comment" => $this->admin_comment,
+            "admin_images" => $this->admin_images,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
             "deleted_at" => $this->deleted_at,
