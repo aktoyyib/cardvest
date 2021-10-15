@@ -25,6 +25,7 @@ class CardController extends Controller
 
     public function cardsUsersCanBuy()
     {
-        return CardResource::collection(Card::buy()->get());
+        // return CardResource::collection(Card::buy()->get());
+        return CardResource::collection(Card::active()->live()->buy()->get());
     }
 }
