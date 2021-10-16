@@ -57,7 +57,8 @@ class PushNotificationController extends Controller
         
         try {// Notify an interest with a notification
             $expo->notify([$channelName], $notification);
-        } catch (\ExponentPhpSDK\Exceptions\UnexpectedResponseException $e) {
+        } catch (\Throwable $e) {
+            report($e);
             return back()->with('error', 'Unable to send push notification campaign now. Try again later.');
         }
 
