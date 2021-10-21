@@ -99,7 +99,7 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
 
     Route::post('withdraw-funds', [WithdrawalController::class, 'store'])->name('withdraw');
 
-    Route::get('wallet', [WalletController::class, 'index'])->name('wallet.index');
+    Route::get('wallet/{currency}', [WalletController::class, 'show'])->name('wallet.show');
     Route::post('wallet/bank/add', [WalletController::class, 'store'])->name('wallet.store');
     Route::delete('wallet/bank/remove/{bank}', [WalletController::class, 'destroy'])->name('wallet.removebank');
 
