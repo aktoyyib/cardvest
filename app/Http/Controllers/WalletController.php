@@ -10,6 +10,22 @@ use Illuminate\Support\Facades\Http;
 
 class WalletController extends Controller
 {
+    public function show(string $currency)
+    {
+        // Fetcht the users ($currency) wallet
+        $wallet = auth()->user()
+            ->fiat_wallets()->where('currency', $currency)->first();
+        
+        if (is_null($wallet)) {
+            return redirect()->route('home');
+        }
+
+        $user = auth()->user();
+        $withdrawals = $user->withdrawals()->desc()->simplePaginate(3);
+        $banks = $user->wallet->bank_accounts()->active()->get();
+        // return $banks;
+        return view('wallet', compact('user', 'wallet', 'banks', 'withdrawals'));
+    }
     /**
      * Store a newly created resource in storage.
      *
