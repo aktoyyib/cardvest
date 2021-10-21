@@ -297,12 +297,22 @@
             <form action="{{ route('withdraw') }}" method="post">
               @csrf
               <div class="input-item input-with-label">
+                <label class="input-item-label">Select Wallet</label>
+                <div class="select-wrapper">
+                  <select class="select select-block select-bordered" name="wallet" required>
+                    <option>Select</option>
+                    <option>Naira - &#8358;2,612</option>
+                    <option>Cedis - &#8373;2,612</option>
+                  </select>
+                </div>
+              </div>
+              <div class="input-item input-with-label">
                 <label class="input-item-label">Enter amount to withdraw</label>
                 <input class="input-bordered input-with-hint" type="number" min="0" step="0.01" name="amount"
                   placeholder="Amount" required>
               </div>
               <div class="input-item input-with-label">
-                <label class="input-item-label">Select Bank Account</label>
+                <label class="input-item-label">Select Banking Account</label>
                 <div class="select-wrapper">
                   <select class="select select-block select-bordered" name="bank" required>
                     <option>Select</option>
