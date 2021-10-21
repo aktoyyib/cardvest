@@ -6,8 +6,13 @@ namespace App\Traits;
 
 trait HasWallet
 {
+    // I will leave this relationship (in order not to break the whole website)
     public function wallet() {
         return $this->hasOne('App\Models\Wallet');
+    }
+
+    public function fiat_wallets() {
+        return $this->hasMany('App\Models\Wallet')->where('type', 'fiat');
     }
 
     /**
