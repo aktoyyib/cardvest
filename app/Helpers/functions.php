@@ -27,6 +27,26 @@ if (!function_exists('random_color')) {
   }
 }
 
+if (!function_exists('cur_symbol')) {
+  function cur_symbol($cur) {
+      $code = '';
+      switch ($cur) {
+        case 'NGN':
+          $code = "&#8358";
+          break;
+
+        case 'GHS':
+          $code = "&#8373";
+          break;
+        
+        default:
+          $code = "&#8358";
+          break;
+      }
+      return $code;
+  }
+}
+
 if (!function_exists('to_money')) {
   function to_money($value) {
       return number_format($value, 2, '.', $sep = ',');
