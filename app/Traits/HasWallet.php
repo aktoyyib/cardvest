@@ -8,7 +8,7 @@ trait HasWallet
 {
     // I will leave this relationship (in order not to break the whole website)
     public function wallet() {
-        return $this->hasOne('App\Models\Wallet');
+        return $this->hasOne('App\Models\Wallet')->where('isDefault', true);
     }
 
     public function fiat_wallets() {

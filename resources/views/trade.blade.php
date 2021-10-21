@@ -81,6 +81,25 @@
 
                   <div class="row">
                     <div class="col-md-6">
+                      <span>
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Select Wallet ()</label>
+                          <div class="select-wrapper">
+                            <select class="select select-block select-bordered" id="currency" name="currency">
+                              @foreach($wallets as $wallet)
+                              <option value="{{ $wallet->currency }}">{{ $wallet->name }} - {!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                          <span class="error"></span>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
+                      
                       <div class="input-item">
                         <input type="checkbox" name="to_bank" id="bank_account_direct"
                           class="input-checkbox input-checkbox-md">
@@ -89,6 +108,7 @@
                         </label>
                       </div>
                     </div>
+
                     <div class="col-md-6" id="banks" style="display: none;">
                       <span>
                         <div class="input-item input-with-label">
@@ -106,6 +126,7 @@
                       </span>
                     </div>
                   </div>
+
                   <div class="row">
                     <div class="col-md-6">
                       <div class="input-item input-with-label">
@@ -444,10 +465,33 @@ $(document).ready(function() {
   // ******************************** //
 
   // ****************************** //
-  // bank accounts
+  // BANK ACCOUNTS SECTION
+
+  let buildSelect = function(banks, key = 'id') {
+    var selectOptions = `<option value="0">Select</option>`
+    // Load the category cards into the card select input
+    banks.forEach((bank) => {
+      selectOptions += `<option value="${bank[key]}">${bank.name}</option>`
+    })
+
+    return selectOptions;
+  }
+
   let bankToggle = $('#bank_account_direct')
   let banksBox = $('#banks')
+  let currencyInput = $('#currency')
   let bankInput = $('#bank')
+
+  // Banks
+  let wallets = @json($wallets);
+
+  currencyInput.change(function() {
+    let _currency = this.value;
+    let _wallet = wallets.find(w => w.currency === _currency);
+    let _banks = _wallet.bank_accounts;
+    let _bankOptions = buildSelect(_banks);
+    bankInput.empty().append(_bankOptions);
+  })
 
   bankToggle.click(function() {
     var isChecked = this.checked
@@ -482,7 +526,7 @@ $(document).ready(function() {
     var isValid = false
     var params = $(element).data('multiples')
 
-    if (params === undefined) {
+    if (params === undefined || params === null) {
       params = jsonParams
     }
 

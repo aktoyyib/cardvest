@@ -41,7 +41,9 @@ class TransactionController extends Controller
         $categories = Category::all();
         $cardsToBuy = Card::active()->live()->where('type', 'buy')->get();
         $banks = auth()->user()->wallet->bank_accounts->all();
-        return view('trade', compact('categories', 'cardsToBuy', 'banks'));
+        $wallets = auth()->user()->fiat_wallets;
+        // return $wallets;
+        return view('trade', compact('categories', 'cardsToBuy', 'banks', 'wallets'));
     }
 
     /**
@@ -59,7 +61,8 @@ class TransactionController extends Controller
             'to_bank' => 'nullable',
             'bank' => 'nullable|numeric',
             'comment' => 'nullable|string',
-            'images' => 'required'
+            'images' => 'required',
+            'currency' => 'required'
         ], [
             'card_id.numeric' => 'A valid gift card must be selected',
             'card_id.required' => 'You must select a gift card to continue',
