@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddCurrencyToWalletTable extends Migration
+class AddTypeToWalletTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,7 @@ class AddCurrencyToWalletTable extends Migration
      */
     public function up()
     {
-        Schema::table('wallet', function (Blueprint $table) {
-            $table->enum('currency', ['NGN', 'GHS'])->default('NGN');
+        Schema::table('wallets', function (Blueprint $table) {
             $table->enum('type', ['fiat', 'crypto'])->default('fiat');
         });
     }
@@ -26,8 +25,8 @@ class AddCurrencyToWalletTable extends Migration
      */
     public function down()
     {
-        Schema::table('wallet', function (Blueprint $table) {
-            $table->dropColumn(['currency', 'type']);
+        Schema::table('wallets', function (Blueprint $table) {
+            $table->dropColumn(['type']);
         });
     }
 }
