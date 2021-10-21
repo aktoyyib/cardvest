@@ -83,11 +83,11 @@
                     <div class="col-md-6">
                       <span>
                         <div class="input-item input-with-label">
-                          <label class="input-item-label">Select Wallet ()</label>
+                          <label class="input-item-label">Payout Wallet</label>
                           <div class="select-wrapper">
                             <select class="select select-block select-bordered" id="currency" name="currency">
                               @foreach($wallets as $wallet)
-                              <option value="{{ $wallet->currency }}">{{ $wallet->name }} - {!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }}</option>
+                              <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} - {!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }}</option>
                               @endforeach
                             </select>
                           </div>
