@@ -19,9 +19,8 @@
                 <span class="lead">{{ to_naira($user->balance()) }} <span>NGN</span></span>
               </div>
               <div class="token-pay-currency border-0">
-                <small>Default Currency</small>
                 <a href="#" class="link ucap link-light toggle-tigger toggle-caret text-white">NGN</a>
-                <div class="toggle-class dropdown-content" style="right: -20%; left: unset;">
+                <div class="toggle-class dropdown-content" style="right: -40%; left: unset;">
                     <ul class="dropdown-list">
                         <li><a href="#">BTC</a></li>
                         <li><a href="#">LTC</a></li>
