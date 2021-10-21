@@ -36,11 +36,11 @@
               <ul class="token-balance-list justify-content-between">
                   <li class="token-balance-sub">
                       <span class="lead">2,646</span>
-                      <span class="sub"><a href="/">&#8373; (CEDIS) <i class="fa fa-external-link"></i></a> </span>
+                      <span class="sub"><a href="{{ route('wallet.show', 'NGN') }}">&#8373; (CEDIS) <i class="fa fa-external-link"></i></a> </span>
                   </li>
                   <li class="token-balance-sub">
                       <span class="lead">1,265</span>
-                      <span class="sub"><a href="/">&#8358; (NAIRA) <i class="fa fa-external-link"></i></a> </span>
+                      <span class="sub"><a href="{{ route('wallet.show', 'GHS') }}">&#8358; (NAIRA) <i class="fa fa-external-link"></i></a> </span>
                   </li>
               </ul>
             </div>
