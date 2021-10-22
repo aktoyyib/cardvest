@@ -47,7 +47,7 @@
           </div>
         </div>
 
-        <div class="token-transaction card d-none d-lg-block" style="height: calc(100% - 170px)">
+        <div class="token-transaction card d-none d-lg-block" >
           <div class="card-innr">
             <div class="card-head has-aside">
               <h4 class="card-title">Transaction History</h4>
@@ -105,7 +105,7 @@
       </div>
 
       <div class="col-xl-8">
-        <div class="content-area card">
+        <div class="content-area card card-full-height">
           <div class="card-innr">
             <div class="card-head">
               <h4 class="card-title">Rate Calculator</h4>
@@ -423,7 +423,7 @@
     </div><!-- .row -->
 
     <div class="row">
-      <div class="col-lg-5">
+      <div class="col-lg-8">
         <div class="token-transaction card card-full-height">
           <div class="card-innr">
             <div class="card-head has-aside">
@@ -481,48 +481,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3">
-        <div class="token-calculator card card-full-height">
-          <div class="card-innr">
-            <div class="card-head">
-              <h4 class="card-title">Add Bank Account</h4>
-            </div>
-            @if($banks->count() < 3) <form action="{{ route('wallet.store') }}" method="post">
-              @csrf
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Number</label>
-                <input class="input-bordered" type="text" id="banknumber" name="banknumber"
-                  placeholder="Acc No">
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Select Bank Account <span class="fa fa-spinner fa-spin" id="bank-loader"
-                    style="diplay: none;"></span></label>
-                <div class="select-wrapper">
-                  <select class="input-bordered" name="bankname" id="bank-list">
 
-                  </select>
-                </div>
-              </div>
-              <input type="hidden" name="accountname" id="accountname">
-              <input type="hidden" name="code" id="bank-code">
-              <span class="fa fa-spinner fa-spin" id="verify-loader" style="diplay: none;"></span>
-
-              <div class="d-block">
-                <button type="button" class="btn btn-primary btn-block" id="verify-account">Check</button>
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Name</label>
-                <input class="input-bordered" type="text" id="account-name" placeholder="Acc Name"
-                  disabled>
-              </div>
-              <div class="token-buy d-block">
-                <button type="submit" class="btn btn-primary" id="add-account" disabled>Add Account</button>
-              </div>
-              </form>
-              @endif
-          </div>
-        </div>
-      </div>
       <div class="col-xl-4">
         <div class="token-sales card card-full-height">
           <div class="card-innr">
@@ -548,29 +507,29 @@ $.ajaxSetup({
 });
 
 $(document).ready(function() {
-  $('#bank-loader').show()
-  $('#bank-list').prop('disabled', true);
+  // $('#bank-loader').show()
+  // $('#bank-list').prop('disabled', true);
 
-  $.get("{{ route('banks') }}", function(data, status) {
-    // var data = data.json()
+  // $.get("{{ route('banks') }}", function(data, status) {
+  //   // var data = data.json()
 
-    if (data.status === 'success') {
-      loadBanks(data.data)
-    }
-  })
+  //   if (data.status === 'success') {
+  //     loadBanks(data.data)
+  //   }
+  // })
 
-  let banknumber = $('#banknumber')
-  let bankname = $('#bank-list')
-  let verify = $('#verify-account')
+  // let banknumber = $('#banknumber')
+  // let bankname = $('#bank-list')
+  // let verify = $('#verify-account')
 
-  verify.click(function(event) {
-    // !banknumber.val() || !bankname.val()
-    if (!banknumber.val() || (!bankname.val() || bankname.val() === 'null')) {
-      return
-    }
-    var bank = JSON.parse(bankname.val())
-    verifyAccount(banknumber.val(), bank.code)
-  })
+  // verify.click(function(event) {
+  //   // !banknumber.val() || !bankname.val()
+  //   if (!banknumber.val() || (!bankname.val() || bankname.val() === 'null')) {
+  //     return
+  //   }
+  //   var bank = JSON.parse(bankname.val())
+  //   verifyAccount(banknumber.val(), bank.code)
+  // })
 
   // *************************** //
   // Rate Calculator widget begins here
@@ -748,49 +707,49 @@ $(document).ready(function() {
 
 });
 
-let loadBanks = function(banks) {
-  var options = '<option value="null">Select Bank</option>'
+// let loadBanks = function(banks) {
+//   var options = '<option value="null">Select Bank</option>'
 
-  banks.forEach(bank => {
-    options += '<option value=\'' + JSON.stringify(bank) + '\'>' + bank.name + '</option>'
-  });
+//   banks.forEach(bank => {
+//     options += '<option value=\'' + JSON.stringify(bank) + '\'>' + bank.name + '</option>'
+//   });
 
-  $('#bank-list').append(options);
-  $('#bank-list').prop('disabled', false);
+//   $('#bank-list').append(options);
+//   $('#bank-list').prop('disabled', false);
 
-  $('#bank-loader').hide()
-}
+//   $('#bank-loader').hide()
+// }
 
-let verifyloader = $('#verify-loader');
-let accountNameInput = $('#accountname');
-let displayName = $('#account-name');
-let codeInput = $('#bank-code');
-let submitAccount = $('#add-account');
-verifyloader.hide();
+// let verifyloader = $('#verify-loader');
+// let accountNameInput = $('#accountname');
+// let displayName = $('#account-name');
+// let codeInput = $('#bank-code');
+// let submitAccount = $('#add-account');
+// verifyloader.hide();
 
-let verifyAccount = function(acc_num, bnk_name) {
-  verifyloader.show();
+// let verifyAccount = function(acc_num, bnk_name) {
+//   verifyloader.show();
 
-  $.post("{{ route('verify') }}", {
-      'banknumber': acc_num,
-      'bankname': bnk_name
-    },
-    function(data, status) {
-      verifyloader.hide();
-      data = JSON.parse(data)
+//   $.post("{{ route('verify') }}", {
+//       'banknumber': acc_num,
+//       'bankname': bnk_name
+//     },
+//     function(data, status) {
+//       verifyloader.hide();
+//       data = JSON.parse(data)
 
-      if (data.status === 'success') {
-        data = data.data
-        displayName.val(data.account_name)
-        accountNameInput.val(data.account_name)
-        submitAccount.prop('disabled', false)
-      } else {
-        displayName.val(data.message)
-        accountNameInput.val('')
-        accountNameInput.prop('disabled', true)
-        submitAccount.prop('disabled', true)
-      }
-    })
-}
+//       if (data.status === 'success') {
+//         data = data.data
+//         displayName.val(data.account_name)
+//         accountNameInput.val(data.account_name)
+//         submitAccount.prop('disabled', false)
+//       } else {
+//         displayName.val(data.message)
+//         accountNameInput.val('')
+//         accountNameInput.prop('disabled', true)
+//         submitAccount.prop('disabled', true)
+//       }
+//     })
+// }
 </script>
 @endpush
