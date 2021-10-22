@@ -88,4 +88,15 @@ class WalletController extends Controller
         
         return response($response);
     }
+
+    public function setDefaultCurrency(Request $request)
+    {
+        $request->validate([
+            'currency' => 'required|string'
+        ]);
+
+        // Logic to change default currency
+        return back()->with('success', 'Your default currency has been set to '.$request->currency.' successfully!');
+    }
+
 }
