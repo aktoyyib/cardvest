@@ -493,11 +493,11 @@ $(document).ready(function() {
   // ****************************** //
   // BANK ACCOUNTS SECTION
 
-  let buildSelect = function(banks, key = 'id') {
+  let buildSelect = function(banks, key = 'id', value = 'bankname') {
     var selectOptions = `<option value="0">Select</option>`
     // Load the category cards into the card select input
     banks.forEach((bank) => {
-      selectOptions += `<option value="${bank[key]}">${bank.name}</option>`
+      selectOptions += `<option value="${bank[key]}">${bank[value]}</option>`
     })
 
     return selectOptions;
