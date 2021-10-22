@@ -62,7 +62,7 @@ class TransactionController extends Controller
             'bank' => 'nullable|numeric',
             'comment' => 'nullable|string',
             'images' => 'required',
-            'currency' => 'required'
+            'currency' => 'required|string'
         ], [
             'card_id.numeric' => 'A valid gift card must be selected',
             'card_id.required' => 'You must select a gift card to continue',
@@ -90,10 +90,12 @@ class TransactionController extends Controller
      */
     public function buy(Request $request)
     {
+        return $request->all();
         $request->validate([
             'card_id' => 'required|numeric',
             'amount' => 'required|numeric|min:0',
-            'comment' => 'nullable|string'
+            'comment' => 'nullable|string',
+            'currency' => 'required|string'
         ], [
             'card_id.numeric' => 'A valid gift card must be selected',
             'card_id.required' => 'You must select a gift card to continue'
