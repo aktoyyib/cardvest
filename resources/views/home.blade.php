@@ -22,9 +22,13 @@
                 <a href="#" class="link ucap link-light toggle-tigger toggle-caret text-white">NGN</a>
                 <div class="toggle-class dropdown-content" style="right: -40%; left: unset;">
                     <ul class="dropdown-list">
-                        <li><a href="#">BTC</a></li>
-                        <li><a href="#">LTC</a></li>
-                        <li><a href="#">USD</a></li>
+                        @foreach($wallets as $wallet)
+                        <li><a href="{{ route('wallet.set-currency') }}" onclick="event.preventDefault();
+                                                document.getElementById('{{ $wallet->currency }}').submit();">{{ $wallet->currency }}</a></li>
+                        <form id="{{ $wallet->currency }}" action="{{ route('wallet.set-currency') }}">
+                          <input type="hidden" name="currency" value="{{ $wallet->currency }}">
+                        </form>
+                        @endforeach
                     </ul>
                 </div>
               </div>
