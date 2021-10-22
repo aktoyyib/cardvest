@@ -150,11 +150,11 @@
 
                     <span>
                       <div class="input-item input-with-label">
-                        <label class="input-item-label">Payout Wallet</label>
+                        <label class="input-item-label">Currency</label>
                         <div class="select-wrapper">
                           <select class="select select-block select-bordered" id="currency" name="currency">
                             @foreach($wallets as $wallet)
-                            <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} - {!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }}</option>
+                            <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} ({!! cur_symbol($wallet->currency) !!})</option>
                             @endforeach
                           </select>
                         </div>
@@ -216,11 +216,11 @@
 
                     <span>
                       <div class="input-item input-with-label">
-                        <label class="input-item-label">Payout Wallet</label>
+                        <label class="input-item-label">Currency</label>
                         <div class="select-wrapper">
                           <select class="select select-block select-bordered" id="currency-buy" name="currency">
                             @foreach($wallets as $wallet)
-                            <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} - {!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }}</option>
+                            <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} ({!! cur_symbol($wallet->currency) !!})</option>
                             @endforeach
                           </select>
                         </div>
@@ -336,7 +336,7 @@
               </div>
               <div class="input-item input-with-label">
                 <label class="input-item-label">Enter amount to withdraw</label>
-                <input class="input-bordered input-with-hint" type="number" min="0" step="0.01" name="amount"
+                <input class="input-bordered" type="number" min="0" step="0.01" name="amount"
                   placeholder="Amount" required>
               </div>
               <div class="input-item input-with-label">
@@ -493,7 +493,7 @@
               @csrf
               <div class="input-item input-with-label">
                 <label class="input-item-label">Account Number</label>
-                <input class="input-bordered input-with-hint" type="text" id="banknumber" name="banknumber"
+                <input class="input-bordered" type="text" id="banknumber" name="banknumber"
                   placeholder="Acc No">
               </div>
               <div class="input-item input-with-label">
@@ -514,7 +514,7 @@
               </div>
               <div class="input-item input-with-label">
                 <label class="input-item-label">Account Name</label>
-                <input class="input-bordered input-with-hint" type="text" id="account-name" placeholder="Acc Name"
+                <input class="input-bordered" type="text" id="account-name" placeholder="Acc Name"
                   disabled>
               </div>
               <div class="token-buy d-block">
