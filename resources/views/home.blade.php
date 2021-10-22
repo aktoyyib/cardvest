@@ -143,21 +143,35 @@
 
                   </div>
                   <div class="col-md-6">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="input-item input-with-label">
-                          <label class="input-item-label">Amount</label>
-                          <input class="input-bordered" type="number" id="gift-card-amount" placeholder="Amount in USD">
-                        </div>
-                      </div>
+                    <div class="input-item input-with-label">
+                      <label class="input-item-label">Amount</label>
+                      <input class="input-bordered" type="number" id="gift-card-amount" placeholder="Amount in USD">
                     </div>
+
+                    <span>
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">Payout Wallet</label>
+                        <div class="select-wrapper">
+                          <select class="select select-block select-bordered" id="currency" name="currency">
+                            @foreach($wallets as $wallet)
+                            <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} - {!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }}</option>
+                            @endforeach
+                          </select>
+                        </div>
+                        <span class="error"></span>
+                      </div>
+                    </span>
+
                     <div class="token-overview-wrap mt-0">
                       <div class="token-overview">
                         <div class="row">
                           <div class="col">
-                            <div class="token-bonus token-bonus-sale pt-1">
+                            <div class="token-bonus-sale pt-1 mb-0">
                               <span class="token-overview-title"> = </span>
                               <span class="token-overview-value bonus-on-sale" id="gift-card-equiv">0.00</span>
+                            </div>
+                            <div class="token-bonus token-bonus-sale pt-1" id="sell-payout-box" style="display: none;">
+                              <span class="token-overview-value bonus-on-sale">(<span id="sell-payout">0.00</span>)</span>
                             </div>
                           </div>
                         </div>
@@ -191,24 +205,39 @@
                       </select>
                     </div>
 
+                    <div class="input-item input-with-label">
+                      <label class="input-item-label">Amount</label>
+                      <input class="input-bordered" type="number" id="buy-gift-card-amount"
+                        placeholder="Amount in USD">
+                    </div>
+
                   </div>
                   <div class="col-md-6">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="input-item input-with-label">
-                          <label class="input-item-label">Amount</label>
-                          <input class="input-bordered" type="number" id="buy-gift-card-amount"
-                            placeholder="Amount in USD">
+
+                    <span>
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">Payout Wallet</label>
+                        <div class="select-wrapper">
+                          <select class="select select-block select-bordered" id="currency-buy" name="currency">
+                            @foreach($wallets as $wallet)
+                            <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} - {!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }}</option>
+                            @endforeach
+                          </select>
                         </div>
+                        <span class="error"></span>
                       </div>
-                    </div>
+                    </span>
+
                     <div class="token-overview-wrap mt-0">
                       <div class="token-overview">
                         <div class="row">
                           <div class="col">
-                            <div class="token-bonus token-bonus-sale pt-1">
+                            <div class="token-bonus-sale pt-1 mb-0">
                               <span class="token-overview-title"> = </span>
                               <span class="token-overview-value bonus-on-sale" id="buy-gift-card-equiv">0.00</span>
+                            </div>
+                            <div class="token-bonus token-bonus-sale pt-1" id="buy-payout-box" style="display: none;">
+                              <span class="token-overview-value bonus-on-sale">(<span id="buy-payout">0.00</span>)</span>
                             </div>
                           </div>
                         </div>
@@ -545,6 +574,9 @@ $(document).ready(function() {
     verifyAccount(banknumber.val(), bank.code)
   })
 
+
+  let sellTotal = 0;
+  let buyTotal = 0;
   let categories = @json($categories);
   let cardBox = $('#gift-card');
   let cardCategoryBox = $('#gift-card-category');
@@ -574,7 +606,7 @@ $(document).ready(function() {
     })
     // console.log(curCard);
     var rate = curCard.rate
-    calculateRate(amt, rate)
+    sellTotal = calculateRate(amt, rate)
   });
 
   let loadCard = function(categories, id) {
@@ -617,9 +649,52 @@ $(document).ready(function() {
     if (buyRate == undefined) return
     var amount = this.value
 
-    calculateRate(amount, buyRate, totalBuyBox)
+    buyTotal = calculateRate(amount, buyRate, totalBuyBox)
   })
 
+  // ***********************
+  // Wallet Feature 
+
+  // Wallets
+  let wallets = @json($wallets);
+  // Wallet inputs
+  let currencyInput = $('#currency'); // For Card Sale
+  let buyCurrencyInput = $('#currency-buy'); // For Card Buying
+
+  let buildSelect = function(banks, key = 'id') {
+    var selectOptions = `<option value="0">Select</option>`
+    // Load the category cards into the card select input
+    banks.forEach((bank) => {
+      selectOptions += `<option value="${bank[key]}">${bank.name}</option>`
+    })
+
+    return selectOptions;
+  }
+
+
+  // FOr Sell CaRD
+  currencyInput.change(function() {
+    let _currency = this.value;
+
+
+    if (_currency !== 'NGN') {
+      convertPayout(sellTotal, true);
+    } else {
+      convertPayout(sellTotal, false);
+    }
+  })
+
+
+  // For Buy Card
+  buyCurrencyInput.change(function() {
+    let _currency = this.value;
+
+    if (_currency !== 'NGN') {
+      convertPayout(buyTotal, true, type = 'buy');
+    } else {
+      convertPayout(buyTotal, false, type = 'buy');
+    }
+  })
 
   // ******************************** //
 
@@ -637,7 +712,23 @@ $(document).ready(function() {
       totalBox.text(formatter.format(total))
     else
       element.text(formatter.format(total))
+
+    return total;
   }
+
+
+  let convertPayout = function(amount, display = false, type = 'sell') {
+    if (!display) return $(`#${type}-payout-box`).hide();
+    // create a formatter
+    var formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'GHS'
+    })
+    
+    $(`#${type}-payout`).text(formatter.format(amount));
+    $(`#${type}-payout-box`).show();
+  }
+
 });
 
 let loadBanks = function(banks) {
