@@ -140,6 +140,9 @@
                             <li class="list-group-item"><strong>Total:</strong> <span
                                 class="float-right text-primary font-weight-bold" id="gift-card-equiv">NGN 0.00</span>
                             </li>
+                            <li class="list-group-item" id="sell-payout-box" style="display: none;"><strong>Payout Total:</strong> <span
+                                class="float-right text-primary font-weight-bold" id="sell-payout">NGN 0.00</span>
+                            </li>
                           </ul>
                         </div>
                       </div>
@@ -214,6 +217,24 @@
 
                   <div class="row">
                     <div class="col-md-6">
+                      <span>
+                        <div class="input-item input-with-label">
+                          <label class="input-item-label">Payout Wallet</label>
+                          <div class="select-wrapper">
+                            <select class="select select-block select-bordered" id="currency-buy" name="currency">
+                              @foreach($wallets as $wallet)
+                              <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} - {!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }}</option>
+                              @endforeach
+                            </select>
+                          </div>
+                          <span class="error"></span>
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-md-6">
                       <div class="input-item input-with-label">
                         <label class="input-item-label">Calculated Amount</label>
                         <div class="content-area card border-primary ">
@@ -224,6 +245,10 @@
                             <!---->
                             <li class="list-group-item"><strong>Total:</strong> <span
                                 class="float-right text-primary font-weight-bold" id="buy-gift-card-equiv">NGN
+                                0.00</span>
+                            </li>
+                            <li class="list-group-item" id="buy-payout-box" style="display: none"><strong>Total Payment:</strong> <span
+                                class="float-right text-primary font-weight-bold" id="buy-payout">NGN
                                 0.00</span>
                             </li>
                           </ul>
@@ -320,7 +345,8 @@ $(document).ready(function() {
   //   console.log(file.name)
   // });
 
-
+  let sellTotal = 0;
+  let buyTotal = 0;
   let categories = @json($categories);
   let cardBox = $('#gift-card');
   let cardCategoryBox = $('#gift-card-category');
@@ -386,7 +412,7 @@ $(document).ready(function() {
     })
     // console.log(curCard);
     var rate = curCard.rate
-    calculateRate(amt, rate)
+    sellTotal = calculateRate(amt, rate)
   });
 
   let loadCard = function(categories, id) {
@@ -458,7 +484,7 @@ $(document).ready(function() {
     if (buyRate == undefined) return
     var amount = this.value
 
-    calculateRate(amount, buyRate, totalBuyBox)
+    buyTotal = calculateRate(amount, buyRate, totalBuyBox)
   })
 
 
@@ -479,18 +505,37 @@ $(document).ready(function() {
 
   let bankToggle = $('#bank_account_direct')
   let banksBox = $('#banks')
-  let currencyInput = $('#currency')
+  let currencyInput = $('#currency'); // For Card Sale
+  let buyCurrencyInput = $('#currency-buy'); // For Card Buying
   let bankInput = $('#bank')
 
   // Banks
   let wallets = @json($wallets);
-
+  
+  // For Card Sale
   currencyInput.change(function() {
     let _currency = this.value;
     let _wallet = wallets.find(w => w.currency === _currency);
     let _banks = _wallet.bank_accounts;
     let _bankOptions = buildSelect(_banks);
     bankInput.empty().append(_bankOptions);
+
+    if (_currency !== 'NGN') {
+      convertPayout(sellTotal, true);
+    } else {
+      convertPayout(sellTotal, false);
+    }
+  })
+
+  // For Card Buy
+  buyCurrencyInput.change(function() {
+    let _currency = this.value;
+
+    if (_currency !== 'NGN') {
+      convertPayout(buyTotal, true, type = 'buy');
+    } else {
+      convertPayout(buyTotal, false, type = 'buy');
+    }
   })
 
   bankToggle.click(function() {
@@ -519,6 +564,20 @@ $(document).ready(function() {
       totalBox.text(formatter.format(total))
     else
       element.text(formatter.format(total))
+
+    return total;
+  }
+
+  let convertPayout = function(amount, display = false, type = 'sell') {
+    if (!display) return $(`#${type}-payout-box`).hide();
+    // create a formatter
+    var formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'GHS'
+    })
+    
+    $(`#${type}-payout`).text(formatter.format(amount));
+    $(`#${type}-payout-box`).show();
   }
 
   // JQUERY VALIDATION
