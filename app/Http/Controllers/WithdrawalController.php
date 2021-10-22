@@ -24,7 +24,8 @@ class WithdrawalController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:0',
-            'bank' => 'required'
+            'bank' => 'required',
+            'currency' => 'required|string'
         ]);
 
         $user = auth()->user();

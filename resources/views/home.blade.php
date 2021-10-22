@@ -327,10 +327,10 @@
               <div class="input-item input-with-label">
                 <label class="input-item-label">Select Wallet</label>
                 <div class="select-wrapper">
-                  <select class="select select-block select-bordered" name="wallet" required>
-                    <option>Select</option>
-                    <option>Naira - &#8358;2,612</option>
-                    <option>Cedis - &#8373;2,612</option>
+                  <select class="select select-block select-bordered" id="withdrawal-wallet" name="currency" required>
+                    @foreach($wallets as $wallet)
+                    <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} ({!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }})</option>
+                    @endforeach
                   </select>
                 </div>
               </div>
@@ -342,13 +342,11 @@
               <div class="input-item input-with-label">
                 <label class="input-item-label">Select Banking Account</label>
                 <div class="select-wrapper">
-                  <select class="select select-block select-bordered" name="bank" required>
+                  <select class="select select-block select-bordered" name="bank" id="withdrawal-banks" required>
                     <option>Select</option>
-                    @forelse($user->wallet->bank_accounts as $bank)
-                    <option value="{{ $bank->id }}">{{ $bank->bankname }} - {{$bank->banknumber}}</option>
-                    @empty
-                    <option>---</option>
-                    @endforelse
+                    @foreach($banks as $bank)
+                    <option value="{{ $bank->id }}">{{ $bank->bankname }}</option>
+                    @endforeach
                   </select>
                 </div>
               </div>
@@ -574,7 +572,9 @@ $(document).ready(function() {
     verifyAccount(banknumber.val(), bank.code)
   })
 
-
+  // *************************** //
+  // Rate Calculator widget begins here
+  // ============================== //
   let sellTotal = 0;
   let buyTotal = 0;
   let categories = @json($categories);
@@ -661,11 +661,11 @@ $(document).ready(function() {
   let currencyInput = $('#currency'); // For Card Sale
   let buyCurrencyInput = $('#currency-buy'); // For Card Buying
 
-  let buildSelect = function(banks, key = 'id') {
+  let buildSelect = function(banks, key = 'id', value = 'bankname') {
     var selectOptions = `<option value="0">Select</option>`
     // Load the category cards into the card select input
     banks.forEach((bank) => {
-      selectOptions += `<option value="${bank[key]}">${bank.name}</option>`
+      selectOptions += `<option value="${bank[key]}">${bank[value]}</option>`
     })
 
     return selectOptions;
@@ -728,6 +728,23 @@ $(document).ready(function() {
     $(`#${type}-payout`).text(formatter.format(amount));
     $(`#${type}-payout-box`).show();
   }
+
+  // *************************** //
+  // Rate Calculator widget Ends here
+  // ============================== //
+
+  // *************************** //
+  // Withdrawal Widget Begins Here
+  // ============================== //
+  let withdrawalWalletInput = $('#withdrawal-wallet');
+  let withdrawalBanksInput = $('#withdrawal-banks');
+
+  withdrawalWalletInput.change(function() {
+    let _wallet = wallets.find(w => w.currency === this.value);
+    let _banks = _wallet.bank_accounts;
+    let _bankOptions = buildSelect(_banks);
+    withdrawalBanksInput.empty().append(_bankOptions);
+  });
 
 });
 
