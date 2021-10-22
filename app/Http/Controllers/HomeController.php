@@ -27,8 +27,9 @@ class HomeController extends Controller
         // return $transactions;
         $categories = Category::all();
         $cardsToBuy = Card::active()->live()->where('type', 'buy')->get();
+        $wallets = auth()->user()->fiat_wallets;
         
-        return view('home', compact('user', 'withdrawals', 'banks', 'sold', 'bought', 'transactions', 'categories', 'cardsToBuy'));
+        return view('home', compact('user', 'withdrawals', 'banks', 'sold', 'bought', 'transactions', 'categories', 'cardsToBuy', 'wallets'));
     }
 
     /**
