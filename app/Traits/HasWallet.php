@@ -3,6 +3,8 @@
 
 namespace App\Traits;
 
+use App\Models\Wallet;
+
 
 trait HasWallet
 {
@@ -123,4 +125,9 @@ trait HasWallet
         return $this->wallet->currency;
     }
 
+    protected function getWallet(string $currency) : Wallet
+    {
+        if (is_null($currency)) return $this->wallet;
+        else return $this->fiat_wallets()->currency($currency);
+    }
 }
