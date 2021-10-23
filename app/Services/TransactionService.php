@@ -379,13 +379,18 @@ class TransactionService
 
     protected function processCharge($data, $isWebhook = false) {
         Log::info(request()->all());
+        
 
         if ($isWebhook) {
             // Get the transaction from your DB using the transaction reference (txref)
             $transaction = Transaction::where('reference', request()->data['tx_ref'])->first();
         } else {
+            $reference = request()->has('tx_ref') ? request()->tx_ref : request()->transaction_id;
+            // Get the transaction from your DB using the transaction reference
+            $transaction = Transaction::where('reference', $reference)->first();
+
             // Get the transaction from your DB using the transaction reference (txref)
-            $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
+            // $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
         }
 
         // Handle when transaction is null. In case webhook is ahead of direct callback or vice-versa
@@ -398,22 +403,32 @@ class TransactionService
             return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful! Check the transaction tab for update. It should take 15-20 minutes!');
         }
 
+        // ************ Old implementation ************** //
         // Confirm that the $data['data']['status'] is 'successful'
-        if ($data['data']['status']  !== 'successful') {
+        // if ($data['data']['status']  !== 'successful') {
+        //     $transaction->delete();
+        //     return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed!');
+        // }
+        // // Confirm that the currency on your db transaction is equal to the returned currency
+        // if ($data['data']['currency']  !== 'NGN') {
+        //     $transaction->delete();
+        //     return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [CE]');
+        // }
+        // // Confirm that the db transaction amount is equal to the returned amount
+        // $amt = $transaction->amount/100;
+        // if ($data['data']['amount']  !== $amt) {
+        //     $transaction->delete();
+        //     return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [AE]');
+        // }
+        // *************** Ends Here ***** //
+
+        // ***** New Implementation ******** //
+        if (!PaymentGateway::currency($transaction->currency)->isSuccessfulAndValid($data, $transaction)) {
             $transaction->delete();
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed!');
+            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment not successful');
         }
-        // Confirm that the currency on your db transaction is equal to the returned currency
-        if ($data['data']['currency']  !== 'NGN') {
-            $transaction->delete();
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [CE]');
-        }
-        // Confirm that the db transaction amount is equal to the returned amount
-        $amt = $transaction->amount/100;
-        if ($data['data']['amount']  !== $amt) {
-            $transaction->delete();
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [AE]');
-        }
+        // ******** Ends Here ********* //
+
         // Update the db transaction record (including parameters that didn't exist before the transaction is completed. for audit purpose)
         // Give value for the transaction
         // Update the transaction to note that you have given value for the transaction
