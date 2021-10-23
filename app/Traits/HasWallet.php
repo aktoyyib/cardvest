@@ -50,7 +50,7 @@ trait HasWallet
      * @param integer $amount (in kobo)
      * @param bool $bonus
      */
-    public function credit($amount, $bonus = false, string $currency = null)
+    public function credit($amount, string $currency = null, $bonus = false)
     {
         $wallet = $this->getWallet($currency);
 
@@ -68,7 +68,7 @@ trait HasWallet
      * @param integer $amount (in kobo)
      * @param bool $bonus
      */
-    public function debit($amount, $bonus = false, string $currency = null)
+    public function debit($amount, string $currency = null, $bonus = false)
     {
         $wallet = $this->getWallet($currency);
 
