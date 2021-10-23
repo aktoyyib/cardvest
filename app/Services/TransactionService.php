@@ -307,16 +307,19 @@ class TransactionService
     }
 
     public function callback() {
+        $reference = request()->has('tx_ref') ? request()->tx_ref : request()->transaction_id;
+        // Get the transaction from your DB using the transaction reference
+        $transaction = Transaction::where('reference', $reference)->first();
+        if (is_null($transaction)) return redirect()->route('transaction.index')->with('error', 'Payment invalid and could not be processed!');
+
         if (request()->has('status') && request()->status == 'cancelled') {
-            // Get the transaction from your DB using the transaction reference (txref)
-            $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
-            if (!is_null($transaction)) $transaction->delete();
+            $transaction->delete();
             return redirect()->route('transaction.index')->with('error', 'Payment cancelled please try again.');
         }
 
-        $transactionID = Flutterwave::getTransactionIDFromCallback();
+        // $transactionID = Flutterwave::getTransactionIDFromCallback();
 
-        $data = Flutterwave::verifyTransaction($transactionID);
+        $data = PayentGateway::currency($transaction->currency)->verifyTransaction();
 
         return $this->processCharge($data);
     }
