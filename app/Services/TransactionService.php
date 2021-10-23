@@ -41,6 +41,13 @@ class TransactionService
         // Generate transaction reference code
         $ref = 'REFERRAL_BONUS';
 
+        // Get the users default currency
+        $currency = auth()->user()->currency();
+
+        // Convert the referral bonus to the respective currency
+        $bonus_amount = convert_to($bonus_amount, $currency);
+
+
         // Credit the referrer
         $recipient->credit($bonus_amount);
 
@@ -51,7 +58,8 @@ class TransactionService
             'reference' => $ref,
             'status' => 'succeed',
             'amount' => $bonus_amount,
-            'unit' => 0
+            'unit' => 0,
+            'currency' => $currency
         ]);
 
         $user->referrer_settled = true;
