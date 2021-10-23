@@ -12,7 +12,7 @@ use KingFlamez\Rave\Facades\Rave as Flutterwave;
 class FlutterPayment implements Payment
 {
 
-    public function withdraw(Withdrawal $withdrawal, String $currency) : array
+    public function withdraw(Withdrawal $withdrawal) : array
     {
         $reference = $withdrawal->reference;
         $bank = $withdrawal->bank;
@@ -25,8 +25,8 @@ class FlutterPayment implements Payment
                 "account_number" => $bank->banknumber,
                 "amount" => $withdrawal->amount,
                 "narration" => "Cardvest - Funds withdrawal " . $reference,
-                "currency" => $user->currency(),
-                "debit_currency" => $user->currency(),
+                "currency" => $withdrawal->currency(),
+                "debit_currency" => $withdrawal->currency(),
                 'reference' => $reference
             ];
 
