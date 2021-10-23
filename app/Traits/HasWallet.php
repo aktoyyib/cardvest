@@ -103,13 +103,19 @@ trait HasWallet
 
     }
 
-    public function balance() {
-        return $this->wallet->balance;
+    public function balance(string $currency = null) {
+        if (is_null($currency)) $wallet = $this->wallet;
+        else $wallet = $this->fiat_wallets()->currency($currency);
+
+        return $wallet->balance;
     }
 
-    public function getTotalBalance() {
-        $balance = $this->wallet->balance;
-        $bonus = $this->wallet->bonus;
+    public function getTotalBalance(string $currency = null) {
+        if (is_null($currency)) $wallet = $this->wallet;
+        else $wallet = $this->fiat_wallets()->currency($currency);
+        
+        $balance = $wallet->balance;
+        $bonus = $wallet->bonus;
         return ($balance + $bonus);
     }
 
