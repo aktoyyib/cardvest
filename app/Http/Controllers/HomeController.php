@@ -85,9 +85,10 @@ class HomeController extends Controller
 
         $pending_referral = $user->referrals()->where('referrer_settled', false)->count();
         $details['pending_referrals'] = $pending_referral;
+        $wallets = auth()->user()->fiat_wallets;
 
         // return $details;
-        return view('referrals', compact('user', 'details'));
+        return view('referrals', compact('user', 'details', 'wallets'));
     }
     
 }
