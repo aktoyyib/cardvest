@@ -14,10 +14,10 @@
               </div>
               <div class="token-balance-text">
                 <h6 class="card-sub-title">Main Balance</h6>
-                <span class="lead">{{ to_naira($user->balance()) }} <span>NGN</span></span>
+                <span class="lead">{{ to_naira($user->balance()) }} <span>{{ auth()->user()->wallet->currency }}</span></span>
               </div>
               <div class="token-pay-currency border-0">
-                <a href="#" class="link ucap link-light toggle-tigger toggle-caret text-white">NGN</a>
+                <a href="#" class="link ucap link-light toggle-tigger toggle-caret text-white">{{ auth()->user()->wallet->currency }}</a>
                 <div class="toggle-class dropdown-content" style="right: -40%; left: unset;">
                     <ul class="dropdown-list">
                         @foreach($wallets as $wallet)
