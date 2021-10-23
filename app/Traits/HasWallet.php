@@ -98,4 +98,8 @@ trait HasWallet
         return ($balance + $bonus);
     }
 
+    public function curency() {
+        return $this->wallet->currency;
+    }
+
 }
