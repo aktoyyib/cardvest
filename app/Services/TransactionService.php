@@ -68,25 +68,26 @@ class TransactionService
 
     public  function makeWithdrawal(Request $request) {
         $amount = $request->amount;
+        $currency = $request->currency;
         $user = Auth::user();
 
         $bank = Bank::find($request->bank);
         // Create Reference Code
-        $reference = Flutterwave::generateReference();
+        $reference = PaymentGateway::currency($currency)->generateReference();
 
         DB::beginTransaction();
 
         try {
             // Make transfer here with flutterwave api
-            $data = [
-                "account_bank"=> $bank->code,
-                "account_number"=> $bank->banknumber,
-                "amount"=> $amount,
-                "narration"=> "Cardvest - Funds withdrawal ".$reference,
-                "currency"=>"NGN",
-                "debit_currency"=>"NGN",
-                'reference' => $reference
-            ];
+            // $data = [
+            //     "account_bank"=> $bank->code,
+            //     "account_number"=> $bank->banknumber,
+            //     "amount"=> $amount,
+            //     "narration"=> "Cardvest - Funds withdrawal ".$reference,
+            //     "currency"=>"NGN",
+            //     "debit_currency"=>"NGN",
+            //     'reference' => $reference,
+            // ];
 
             // If not successful, status of withdrawal remains pending
 
@@ -100,7 +101,8 @@ class TransactionService
             $user->withdrawals()->save($withdrawal);
 
             // Send the money to the user
-            $transfer = Flutterwave::transfers()->initiate($data);
+            $transfer = PaymentGateway::currency($currency)->withdraw($withdrawal);
+            // $transfer = Flutterwave::transfers()->initiate($data);
 
             if ($transfer['status'] !== 'success') {
                 $withdrawal->update(['status' => 'pending']);
