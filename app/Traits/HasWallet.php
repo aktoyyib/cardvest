@@ -54,12 +54,15 @@ trait HasWallet
      */
     public function credit($amount, $bonus = false, string $currency = null)
     {
+        if (is_null($currency)) $wallet = $this->wallet;
+        else $wallet = $this->fiat_wallets()->currency($currency);
+
         if ($bonus) {
-            $balance = $this->wallet->bonus + $amount;
-            $this->wallet()->update(['bonus' => $balance]);
+            $balance = $wallet->bonus + $amount;
+            $wallet()->update(['bonus' => $balance]);
         } else {
-            $balance = $this->wallet->balance + $amount;
-            $this->wallet()->update(['balance' => $balance]);
+            $balance = $wallet->balance + $amount;
+            $wallet()->update(['balance' => $balance]);
         }
     }
 
@@ -68,10 +71,13 @@ trait HasWallet
      * @param integer $amount (in kobo)
      * @param bool $bonus
      */
-    public function debit($amount, $bonus = false)
+    public function debit($amount, $bonus = false, string $currency = null)
     {
-        $balance = $this->wallet->balance;
-        $bonusBal = $this->wallet->bonus;
+        if (is_null($currency)) $wallet = $this->wallet;
+        else $wallet = $this->fiat_wallets()->currency($currency);
+
+        $balance = $wallet->balance;
+        $bonusBal = $wallet->bonus;
 
         // To know if the bonus will be spent
         // Negative value indicates that Main Balance can bear the charges
@@ -82,16 +88,16 @@ trait HasWallet
         // If not debit the bonus wallet too.
         if ($bonus && ($deficit > 0)) {
             // For Bonus to be considered, then balance is not enough and should now be 0
-            $this->wallet()->update(['balance' => 0]);
+            $wallet()->update(['balance' => 0]);
 
             // Deduct the deficit from the bonus
             $bonusBalance = $bonusBal - $deficit;
 
-            $this->wallet()->update(['bonus' => $bonusBalance]);
+            $wallet()->update(['bonus' => $bonusBalance]);
         } else {
-            $balance = $this->wallet->balance - $amount;
+            $balance = $wallet->balance - $amount;
 
-            $this->wallet()->update(['balance' => $balance]);
+            $wallet()->update(['balance' => $balance]);
         }
 
 
