@@ -32,15 +32,15 @@ if (!function_exists('cur_symbol')) {
       $code = '';
       switch ($cur) {
         case 'NGN':
-          $code = "&#8358";
+          $code = "&#8358;";
           break;
 
         case 'GHS':
-          $code = "&#8373";
+          $code = "&#8373;";
           break;
         
         default:
-          $code = "&#8358";
+          $code = "&#8358;";
           break;
       }
       return $code;
