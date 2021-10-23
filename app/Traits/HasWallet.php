@@ -36,11 +36,14 @@ trait HasWallet
      * @param  integer $amount
      * @return boolean
      */
-    public function isAbsolutelySufficient($amount)
+    public function isAbsolutelySufficient($amount, string $currency = null)
     {
+        if (is_null($currency)) $wallet = $this->wallet;
+        else $wallet = $this->fiat_wallets()->currency($currency);
+
         // Get the total balance (Balance + Bonus)
-        $balance = $this->wallet->balance;
-        $bonus = $this->wallet->bonus;
+        $balance = $wallet->balance;
+        $bonus = $wallet->bonus;
         return ($balance + $bonus) >= $amount;
     }
 
@@ -49,7 +52,7 @@ trait HasWallet
      * @param integer $amount (in kobo)
      * @param bool $bonus
      */
-    public function credit($amount, $bonus = false)
+    public function credit($amount, $bonus = false, string $currency = null)
     {
         if ($bonus) {
             $balance = $this->wallet->bonus + $amount;
