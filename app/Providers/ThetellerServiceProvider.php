@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\Payment\PaySwitch;
+use App\Services\Payment\Payswitch;
 use Illuminate\Support\ServiceProvider;
 
 class ThetellerServiceProvider extends ServiceProvider
