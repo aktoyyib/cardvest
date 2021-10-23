@@ -373,29 +373,7 @@ class TransactionService
     }
 
     protected function createReference($type) {
-
-        $random = Str::random(10);
-
-        switch ($type) {
-            case 'withdrawal':
-                $reference = 'CVT'. $random .'WTH';
-                break;
-            case 'buy':
-                $reference = 'CVT'. $random .'INV';
-                break;
-            case 'sell':
-                $reference = 'CVT'. $random .'SEL';
-                break;
-            case 'deposit':
-                $reference = 'CVT'. $random .'CDR';
-                break;
-            case 'reversal':
-                $reference = 'CVT'. $random .'-RVS';
-                break;
-            default:
-                $reference = 'CVT'. $random .'-PAY';
-                break;
-        }
+        $reference = "CV" . Str::random(10);
         return strtoupper($reference);
     }
 
