@@ -215,27 +215,27 @@ class TransactionService
 
             // Initialize Payment
             // Enter the details of the payment
-            $data = [
-                'amount' => $transaction->amount/100,
-                'email' => $user->email,
-                'tx_ref' => $reference,
-                "auth_model" => "USSD",
-                'currency' => "NGN",
-                'redirect_url' => route('callback'),
-                'customer' => [
-                    'email' => $user->email,
-                    "phone_number" => $user->phonenumber,
-                    "name" => $user->username
-                ],
+            // $data = [
+            //     'amount' => $transaction->amount/100,
+            //     'email' => $user->email,
+            //     'tx_ref' => $reference,
+            //     "auth_model" => "USSD",
+            //     'currency' => "NGN",
+            //     'redirect_url' => route('callback'),
+            //     'customer' => [
+            //         'email' => $user->email,
+            //         "phone_number" => $user->phonenumber,
+            //         "name" => $user->username
+            //     ],
 
-                "customizations" => [
-                    "title" => "Cardvest",
-                    "description" => "Buy $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
-                    "logo" => asset('images/logo-sm.png')
-                ]
-            ];
+            //     "customizations" => [
+            //         "title" => "Cardvest",
+            //         "description" => "Buy $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
+            //         "logo" => asset('images/logo-sm.png')
+            //     ]
+            // ];
 
-            $payment = PaymentGateway::currency($request->currency)->initializePayment($data);
+            $payment = PaymentGateway::currency($request->currency)->makePayment($transaction, route('callback'));
 
 
             if ($payment['status'] !== 'success') {
