@@ -95,7 +95,15 @@ class WalletController extends Controller
             'currency' => 'required|string'
         ]);
 
+        $currency = $request->currency;
+
         // Logic to change default currency
+        $wallet = auth()->user()->fiat_wallets()->where('currency', $currency)->first();
+        $currentDefaultWallet = auth()->user()->wallet;
+        
+        $wallet->makeDefault();
+        $currentDefaultWallet->removeDefault();
+
         return back()->with('success', 'Your default currency has been set to '.$request->currency.' successfully!');
     }
 

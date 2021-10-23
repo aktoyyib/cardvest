@@ -35,4 +35,16 @@ class Wallet extends Model
     {
         return $this->banks[$this->bankname];
     }
+
+    public function makeDefault()
+    {
+        $this->isDefault = true;
+        $this->save();
+    }
+
+    public function removeDefault()
+    {
+        $this->isDefault = false;
+        $this->save();
+    }
 }
