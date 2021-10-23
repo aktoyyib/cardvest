@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\Log;
 use App\Notifications\Order;
 use App\Notifications\OrderProcessed;
 use Illuminate\Support\Facades\Notification;
+use App\Payment\PaymentGateway;
+
 
 class TransactionService
 {
@@ -186,7 +188,8 @@ class TransactionService
 
         // Debit the user
         //This generates a payment reference
-        $reference = Flutterwave::generateReference();
+        $reference = PaymentGateway::currency($request->currency)->generateReference();
+        // $reference = Flutterwave::generateReference();
 
         DB::beginTransaction();
 
@@ -222,7 +225,7 @@ class TransactionService
                 ]
             ];
 
-            $payment = Flutterwave::initializePayment($data);
+            $payment = PaymentGateway::currency($request->currency)->initializePayment($data);
 
 
             if ($payment['status'] !== 'success') {
