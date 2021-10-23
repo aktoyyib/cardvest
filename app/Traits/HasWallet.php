@@ -6,11 +6,12 @@ namespace App\Traits;
 
 trait HasWallet
 {
-    // I will leave this relationship (in order not to break the whole website)
+    // Returns the default wallet
     public function wallet() {
         return $this->hasOne('App\Models\Wallet')->where('isDefault', true);
     }
 
+    // Returns all wallets
     public function fiat_wallets() {
         return $this->hasMany('App\Models\Wallet')->where('type', 'fiat');
     }
@@ -20,9 +21,14 @@ trait HasWallet
      * @param  integer $amount (in kobo)
      * @return boolean
      */
-    public function isSufficient($amount)
+    public function isSufficient($amount, string $currency = null)
     {
-        return $this->wallet->balance >= $amount;
+        if (is_null($currency))
+            $wallet = $this->wallet;
+        else
+            $wallet = $this->fiat_wallets()->currency($currency);
+
+        return $wallet->balance >= $amount;
     }
 
     /**
