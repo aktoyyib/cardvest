@@ -47,4 +47,9 @@ class Wallet extends Model
         $this->isDefault = false;
         $this->save();
     }
+
+    public function scopeCurrency($query, $currency) 
+    {
+        $query->where('currency', $currency)->first();
+    }
 }
