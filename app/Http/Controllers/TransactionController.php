@@ -90,7 +90,6 @@ class TransactionController extends Controller
      */
     public function buy(Request $request)
     {
-        return $request->all();
         $request->validate([
             'card_id' => 'required|numeric',
             'amount' => 'required|numeric|min:0',
