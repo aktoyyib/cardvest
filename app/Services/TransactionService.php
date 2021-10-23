@@ -49,7 +49,7 @@ class TransactionService
 
 
         // Credit the referrer
-        $recipient->credit($bonus_amount);
+        $recipient->credit($bonus_amount, $currency);
 
         Transaction::create([
             'user_id'=> $recipient->id,
@@ -91,7 +91,7 @@ class TransactionService
 
             // If not successful, status of withdrawal remains pending
 
-            $user->debit($amount*100);
+            $user->debit($amount*100, $currency);
             $user->refresh();
 
             $amount = $amount * 100;
