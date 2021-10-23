@@ -80,7 +80,7 @@
                       </div>
                       <div>
                         <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
-                        <span class="sub sub-symbol">NGN</span>
+                        <span class="sub sub-symbol">{{ $transaction->currency }}</span>
                       </div>
                   </td>
                   <td class="data-col dt-type">
@@ -377,7 +377,7 @@
               <thead>
                 <tr class="data-item data-head">
                   <th class="data-col dt-tnxno">Bank Details</th>
-                  <th class="data-col dt-token">Amount <small>NGN</small></th>
+                  <th class="data-col dt-token">Amount</th>
                   <th class="data-col dt-amount">Date</th>
                   <th class="data-col"></th>
                 </tr>
@@ -395,7 +395,7 @@
                   </td>
                   <td class="data-col dt-token">
                     <span class="lead token-amount">{{ to_naira($withdrawal->amount) }}</span>
-                    <span class="sub sub-symbol">{{ to_naira($withdrawal->amount) }} <small>(NGN)</small></span>
+                    <span class="sub sub-symbol">{{ to_naira($withdrawal->amount) }} <small>({{ $withdrawal->currency }})</small></span>
                   </td>
                   <td class="dt-type-md data-col dt-amount">
                     <span class="lead amount-pay">{{ $withdrawal->getDate() }}</span>
