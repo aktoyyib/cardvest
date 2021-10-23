@@ -25,10 +25,7 @@ trait HasWallet
      */
     public function isSufficient($amount, string $currency = null)
     {
-        if (is_null($currency))
-            $wallet = $this->wallet;
-        else
-            $wallet = $this->fiat_wallets()->currency($currency);
+        $wallet = $this->getWallet($currency);
 
         return $wallet->balance >= $amount;
     }
@@ -40,8 +37,7 @@ trait HasWallet
      */
     public function isAbsolutelySufficient($amount, string $currency = null)
     {
-        if (is_null($currency)) $wallet = $this->wallet;
-        else $wallet = $this->fiat_wallets()->currency($currency);
+        $wallet = $this->getWallet($currency);
 
         // Get the total balance (Balance + Bonus)
         $balance = $wallet->balance;
@@ -56,8 +52,7 @@ trait HasWallet
      */
     public function credit($amount, $bonus = false, string $currency = null)
     {
-        if (is_null($currency)) $wallet = $this->wallet;
-        else $wallet = $this->fiat_wallets()->currency($currency);
+        $wallet = $this->getWallet($currency);
 
         if ($bonus) {
             $balance = $wallet->bonus + $amount;
@@ -75,8 +70,7 @@ trait HasWallet
      */
     public function debit($amount, $bonus = false, string $currency = null)
     {
-        if (is_null($currency)) $wallet = $this->wallet;
-        else $wallet = $this->fiat_wallets()->currency($currency);
+        $wallet = $this->getWallet($currency);
 
         $balance = $wallet->balance;
         $bonusBal = $wallet->bonus;
@@ -106,15 +100,13 @@ trait HasWallet
     }
 
     public function balance(string $currency = null) {
-        if (is_null($currency)) $wallet = $this->wallet;
-        else $wallet = $this->fiat_wallets()->currency($currency);
+        $wallet = $this->getWallet($currency);
 
         return $wallet->balance;
     }
 
     public function getTotalBalance(string $currency = null) {
-        if (is_null($currency)) $wallet = $this->wallet;
-        else $wallet = $this->fiat_wallets()->currency($currency);
+        $wallet = $this->getWallet($currency);
         
         $balance = $wallet->balance;
         $bonus = $wallet->bonus;
