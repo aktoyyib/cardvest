@@ -42,7 +42,7 @@
               </td>
               <td class="data-col dt-token">
                 <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
-                <span class="sub sub-symbol">NGN</span>
+                <span class="sub sub-symbol">{{$transaction->currency }}</span>
               </td>
               <td class="data-col dt-token dt-type-md">
                 <span class="lead token-amount">{{ $transaction->card->category->name }}</span>

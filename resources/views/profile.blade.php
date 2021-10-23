@@ -145,7 +145,7 @@
                 <tr>
                   <td>
                     <div class="d-flex align-items-center">
-                      <span class="lead">&#8358;{{ to_naira($payout->amount) }}</span>
+                      <span class="lead">{!! cur_symbol($payout->currency) !!} {{ to_naira($payout->amount) }}</span>
                     </div>
                   </td>
                   <td class="d-none d-sm-table-cell tnx-date">
