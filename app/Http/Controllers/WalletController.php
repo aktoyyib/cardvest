@@ -14,8 +14,8 @@ class WalletController extends Controller
     {
         // Fetcht the users ($currency) wallet
         $wallet = auth()->user()
-            ->fiat_wallets()->where('currency', $currency)->first();
-        
+            ->fiat_wallets()->currency($currency)->first();
+
         if (is_null($wallet)) {
             return redirect()->route('home');
         }
@@ -23,7 +23,7 @@ class WalletController extends Controller
         $user = auth()->user();
         $withdrawals = $user->withdrawals()->desc()->simplePaginate(3);
         $banks = $user->wallet->bank_accounts()->active()->get();
-        // return $banks;
+        // return $wallet;
         return view('wallet', compact('user', 'wallet', 'banks', 'withdrawals'));
     }
     /**
@@ -43,14 +43,14 @@ class WalletController extends Controller
         $bank = json_decode($request->bankname);
         $request->merge(['bankname' => $bank->name, 'code' => $bank->code]);
         // return $request;
-        
+
         // Get the users wallet
         $wallet = auth()->user()->wallet;
         // Create a Bank Account
         $bank = Bank::create($request->all());
         // Attach bank to wallet
         $wallet->bank_accounts()->save($bank);
-        
+
         return back()->with('success', 'Bank account successfully added!');
     }
 
@@ -69,7 +69,7 @@ class WalletController extends Controller
     public function banks()
     {
         $banks = Flutterwave::banks()->nigeria();
-        
+
         return response($banks);
     }
 
@@ -79,13 +79,13 @@ class WalletController extends Controller
             'banknumber' => 'required|min:10',
             'bankname' => 'required',
         ]);
-        
+
         $response = Http::withToken(config('flutterwave.secretKey'))
                         ->post('https://api.flutterwave.com/v3/accounts/resolve', [
                             'account_number' => $request->banknumber,
                             'account_bank' => $request->bankname
                         ]);
-        
+
         return response($response);
     }
 
@@ -100,7 +100,7 @@ class WalletController extends Controller
         // Logic to change default currency
         $wallet = auth()->user()->fiat_wallets()->where('currency', $currency)->first();
         $currentDefaultWallet = auth()->user()->wallet;
-        
+
         $wallet->makeDefault();
         $currentDefaultWallet->removeDefault();
 
