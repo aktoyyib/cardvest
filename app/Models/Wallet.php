@@ -15,6 +15,7 @@ class Wallet extends Model
      * @var array
      */
     protected $with = ['bank_accounts'];
+    protected $fillable = ['currency'];
 
     public function user()
     {
@@ -48,7 +49,7 @@ class Wallet extends Model
         $this->save();
     }
 
-    public function scopeCurrency($query, $currency) 
+    public function scopeCurrency($query, $currency)
     {
         $query->where('currency', $currency)->first();
     }
