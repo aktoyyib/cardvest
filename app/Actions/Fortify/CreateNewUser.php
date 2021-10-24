@@ -19,12 +19,12 @@ class CreateNewUser implements CreatesNewUsers
     use PasswordValidationRules;
 
     protected $transactionService;
-    
+
     public function __construct(TransactionService $transactionService)
     {
         $this->transactionService = $transactionService;
     }
-    
+
     /**
      * Validate and create a newly registered user.
      *
@@ -46,10 +46,10 @@ class CreateNewUser implements CreatesNewUsers
             ],
             'password' => $this->passwordRules(),
         ])->validate();
-        
+
         // Referral System
         $referrer = null;
-        
+
         // Check if there is this user was referred
         if (request()->hasCookie('cardvest_referrer')) {
             $referrer = User::whereUsername(request()->cookie('cardvest_referrer'))->first();
@@ -61,7 +61,7 @@ class CreateNewUser implements CreatesNewUsers
         DB::beginTransaction();
 
         try {
-            
+
             $user = User::create([
                 'username' => $input['username'],
                 'phonenumber' => $input['phonenumber'],
@@ -69,9 +69,9 @@ class CreateNewUser implements CreatesNewUsers
                 'password' => Hash::make($input['password']),
                 'referrer_id' => $referrer_id,
             ]);
-    
+
             $wallet = Wallet::create([]);
-    
+
             $wallet->user()->associate($user);
             $wallet->save();
 
@@ -81,11 +81,11 @@ class CreateNewUser implements CreatesNewUsers
         }
 
         DB::commit();
-        
+
         // Delete the referral cookie only if the registration was successful
         if (request()->hasCookie('cardvest_referrer')) {
             cookie()->queue(cookie()->forget('cardvest_referrer'));
-            
+
             //  Attach the referrer to the user
             $user->referrer()->associate($referrer);
             $user->save();
