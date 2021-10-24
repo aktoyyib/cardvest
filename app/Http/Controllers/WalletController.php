@@ -7,6 +7,7 @@ use App\Models\Bank;
 use Illuminate\Http\Request;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 use Illuminate\Support\Facades\Http;
+use App\Payment\PaymentGateway;
 
 class WalletController extends Controller
 {
@@ -66,9 +67,13 @@ class WalletController extends Controller
         return back()->with('success', 'Bank account successfully removed');
     }
 
-    public function banks()
+    public function banks(Request $request)
     {
-        $banks = Flutterwave::banks()->nigeria();
+        $request->validate([
+            'currency' => 'required|string'
+        ]);
+
+        $banks = PaymentGateway::currency(request()->currency)->banks()->nigeria();
 
         return response($banks);
     }
