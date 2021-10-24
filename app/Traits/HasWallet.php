@@ -117,7 +117,7 @@ trait HasWallet
         return $this->wallet->currency;
     }
 
-    protected function getWallet(string $currency) : Wallet
+    protected function getWallet(string $currency = null) : Wallet
     {
         if (is_null($currency)) return $this->wallet;
         else return $this->fiat_wallets()->currency($currency);
