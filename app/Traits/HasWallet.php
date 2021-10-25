@@ -107,7 +107,7 @@ trait HasWallet
 
     public function getTotalBalance(string $currency = null) {
         $wallet = $this->getWallet($currency);
-        
+
         $balance = $wallet->balance;
         $bonus = $wallet->bonus;
         return ($balance + $bonus);
@@ -120,6 +120,6 @@ trait HasWallet
     protected function getWallet(string $currency = null) : Wallet
     {
         if (is_null($currency)) return $this->wallet;
-        else return $this->fiat_wallets()->currency($currency);
+        else return $this->fiat_wallets()->currency($currency)->first();
     }
 }
