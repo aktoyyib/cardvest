@@ -23,7 +23,7 @@ class WalletController extends Controller
 
         $user = auth()->user();
         $withdrawals = $user->withdrawals()->desc()->simplePaginate(3);
-        $banks = $user->wallet->bank_accounts()->active()->get();
+        $banks = $wallet->bank_accounts()->active()->get();
         // return $wallet;
         return view('wallet', compact('user', 'wallet', 'banks', 'withdrawals'));
     }
@@ -73,7 +73,7 @@ class WalletController extends Controller
             'currency' => 'required|string'
         ]);
 
-        $banks = PaymentGateway::currency(request()->currency)->banks()->nigeria();
+        $banks = PaymentGateway::currency(request()->currency)->fetchBanks();
 
         return response($banks);
     }
