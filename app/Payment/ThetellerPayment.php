@@ -18,14 +18,38 @@ class ThetellerPayment implements Payment
 
         $description = "Cardvest - Funds withdrawal " . $reference;
 
+
+        // Deciding if its mobile account or bank account
+        // should be decided when adding bank account details to the wallet
+        // account_issuer => GIP or [MTN, ATL, VDF, TGO]
+        // account_bank => ABG etc
+
+        // What if I store the bank.code as account_issuer.account_bank
+        // TO parse it:
+        // Get the first 3 char
+        // If its GIP, then check the next 3 char to get the account_bank &&
+        //     processing_code = 404020
+        // Else Just uset the first 3 char alone (No account_bank) &&
+        //     processgin_code = 404000
+        $bank_extracts = explode(".", $bank->code);
+        $account_issuer = $bank_extracts[0];
+        $account_bank = null;
+
+        if (strtoupper($account_issuer) === 'GIP') {
+            $account_bank = $bank_extracts[1];
+            $processing_code = '404020';
+        } else {
+            $processing_code = '404000';
+        }
+
         try {
             // Make transfer here with flutterwave api
             $data = [
-                "account_bank" => $bank->code,
-                "account_issuer" => $bank->issuer,
+                "account_bank" => $account_bank, // Not used for mobile money
+                "account_issuer" => $account_issuer, // Dynamic : GIP or [MTN, ATL, VDF, TGO]
                 "account_number" => $bank->banknumber,
                 "amount" => $withdrawal->amount,
-                "processing_code"=>"404000",
+                "processing_code"=> $processing_code,
                 "r-switch"=> "FLT",
                 'transaction_id' => $reference,
                 'desc' => $description,
