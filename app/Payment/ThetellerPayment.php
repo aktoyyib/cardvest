@@ -21,7 +21,7 @@ class ThetellerPayment implements Payment
         try {
             // Make transfer here with flutterwave api
             $data = [
-                // "account_bank" => $bank->code,
+                "account_bank" => $bank->code,
                 "account_issuer" => $bank->issuer,
                 "account_number" => $bank->banknumber,
                 "amount" => $withdrawal->amount,
