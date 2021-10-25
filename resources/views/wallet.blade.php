@@ -196,21 +196,24 @@
             <div class="card-head">
               <h4 class="card-title">Add Bank Account</h4>
             </div>
-            @if($banks->count() < 3) <form action="{{ route('wallet.store') }}" method="post">
+              @if($banks->count() < 3) <form action="{{ route('wallet.store') }}" method="post">
               @csrf
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Number</label>
-                <input class="input-bordered " type="text" id="banknumber" name="banknumber"
-                  placeholder="Acc No">
-              </div>
+                <div class="alert alert-warning">
+                    <small>For mobile banking, enter the phone number of your mobile wallet</small>
+                </div>
               <div class="input-item input-with-label">
                 <label class="input-item-label">Select Bank Account <span class="fa fa-spinner fa-spin" id="bank-loader"
                     style="diplay: none;"></span></label>
                 <div class="select-wrapper">
-                  <select class="input-bordered" name="bankname" id="bank-list">
+                  <select class="select select-block select-bordered" name="bankname" id="bank-list">
 
                   </select>
                 </div>
+              </div>
+              <div class="input-item input-with-label">
+                <label class="input-item-label">Account Number</label>
+                <input class="input-bordered " type="text" id="banknumber" name="banknumber"
+                placeholder="Acc No">
               </div>
               <input type="hidden" name="accountname" id="accountname">
               <input type="hidden" name="code" id="bank-code">
