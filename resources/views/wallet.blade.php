@@ -9,19 +9,18 @@
     <div class="row">
       <div class="col-lg-4">
         <div class="token-statistics card card-token height-auto">
-          <div class="card-innr">
-            <div class="token-balance token-balance-with-icon">
-              <div class="token-balance-icon">
-                <img src="images/logo-sm.png" alt="logo">
-              </div>
-              <div class="token-balance-text">
-                <h6 class="card-sub-title">{{ $wallet->name }} Balance</h6>
-                <span class="lead">{{ to_naira($wallet->balance) }} <span>{{ $wallet->currency }}</span></span>
+            <div class="card-innr">
+              <div class="token-balance token-balance-with-icon">
+                <div class="token-balance-icon">
+                  <img src="{{ asset('images/logo-sm.png')}}" alt="logo">
+                </div>
+                <div class="token-balance-text">
+                  <h6 class="card-sub-title">Main Balance</h6>
+                  <span class="lead">{{ to_naira($wallet->balance) }} <span>{{ $wallet->currency }}</span></span>
+                </div>
               </div>
             </div>
-
           </div>
-        </div>
 
         <div class="token-calculator card height-auto">
           <div class="card-innr">
@@ -30,6 +29,7 @@
             </div>
             <form action="{{ route('withdraw') }}" method="post">
               @csrf
+              <input type="hidden" name="currency" value="{{ $wallet->currency }}">
               <div class="input-item input-with-label">
                 <label class="input-item-label">Enter amount to withdraw</label>
                 <input class="input-bordered " type="number" min="0" step="0.01" name="amount"
@@ -40,7 +40,7 @@
                 <div class="select-wrapper">
                   <select class="select select-block select-bordered" name="bank" required>
                     <option>Select</option>
-                    @forelse($user->wallet->bank_accounts as $bank)
+                    @forelse($wallet->bank_accounts as $bank)
                     <option value="{{ $bank->id }}">{{ $bank->bankname }} - {{$bank->banknumber}}</option>
                     @empty
                     <option>---</option>
@@ -48,12 +48,12 @@
                   </select>
                 </div>
               </div>
-              @if ($user->wallet->bank_accounts->count() === 0)
+              @if ($wallet->bank_accounts->count() === 0)
               <small class="text-danger">Add Bank account to enable withdrawal</small>
               @endif
               <div class="token-buy text-center">
                 <button class="btn btn-primary"
-                  {{ $user->wallet->bank_accounts->count() === 0 ? 'disabled' : '' }}>Proceed</button>
+                  {{ $wallet->bank_accounts->count() === 0 ? 'disabled' : '' }}>Proceed</button>
               </div>
             </form>
           </div>
@@ -115,7 +115,7 @@
 
           </div>
           <div class="card-footer bg-white text-center my-2">
-            
+
           </div>
         </div>
       </div>
@@ -125,10 +125,10 @@
     <div class="row">
 
       <div class="col-lg-4">
-        
+
       </div>
 
-      
+
     </div><!-- .row -->
 
     <div class="row">
@@ -312,19 +312,25 @@ $(document).ready(function() {
     }
   }
 
+
+  let wallet = @json($wallet);
+
   // Data and Logics
   $('#bank-loader').show()
   $('#bank-list').prop('disabled', true);
 
-  $.get("{{ route('banks') }}", function(data, status) {
-    // var data = data.json()
+  $.get(
+    "{{ route('banks') }}",
+    { currency: wallet.currency },
+    function(data, status) {
+        // var data = data.json()
 
-    if (data.status === 'success') {
-      loadBanks(data.data)
+        if (data.status === 'success') {
+        loadBanks(data.data)
+        }
     }
-  })
+  )
 
-  let wallet = @json($wallet);
 
   // Inputs for the banking details
   let banknumber = $('#banknumber');
