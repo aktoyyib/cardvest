@@ -22,7 +22,7 @@ class WalletController extends Controller
         }
 
         $user = auth()->user();
-        $withdrawals = $user->withdrawals()->desc()->simplePaginate(3);
+        $withdrawals = $user->withdrawals()->currency($currency)->desc()->simplePaginate(4);
         $banks = $wallet->bank_accounts()->active()->get();
         // return $wallet;
         return view('wallet', compact('user', 'wallet', 'banks', 'withdrawals'));
