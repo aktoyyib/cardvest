@@ -4,7 +4,7 @@
 namespace App\Payment;
 
 use App\Payment\FlutterPayment;
-use App\Payment\ThetellerPayment;
+use App\Payment\FlutterCedisPayment;
 
 class PaymentGateway
 {
@@ -19,21 +19,21 @@ class PaymentGateway
             return (new FlutterPayment())->$method(...$arguments);
         }
         if ($currency == config('currency.list.ghana')) {
-            return (new ThetellerPayment())->$method(...$arguments);
+            return (new FlutterCedisPayment())->$method(...$arguments);
         }
 
         throw new \Exception('Invalid currency processing');
     }
 
     // Return the proper payment class based on a set currency
-    // Recommended 
+    // Recommended
     public static function currency(string $currency)
     {
         if ($currency == config('currency.list.nigeria')) {
             return (new FlutterPayment());
         }
         if ($currency == config('currency.list.ghana')) {
-            return (new ThetellerPayment());
+            return (new FlutterCedisPayment());
         }
 
         throw new \Exception('Invalid currency processing');
