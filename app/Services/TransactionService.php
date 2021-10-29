@@ -78,19 +78,6 @@ class TransactionService
         DB::beginTransaction();
 
         try {
-            // Make transfer here with flutterwave api
-            // $data = [
-            //     "account_bank"=> $bank->code,
-            //     "account_number"=> $bank->banknumber,
-            //     "amount"=> $amount,
-            //     "narration"=> "Cardvest - Funds withdrawal ".$reference,
-            //     "currency"=>"NGN",
-            //     "debit_currency"=>"NGN",
-            //     'reference' => $reference,
-            // ];
-
-            // If not successful, status of withdrawal remains pending
-
             $user->debit($amount*100, $currency);
             $user->refresh();
 
@@ -379,7 +366,7 @@ class TransactionService
 
     protected function processCharge($data, $isWebhook = false) {
         Log::info(request()->all());
-        
+
 
         if ($isWebhook) {
             // Get the transaction from your DB using the transaction reference (txref)
