@@ -38,14 +38,12 @@
               <hr class="bg-warning">
               <!-- <h6 class="card-sub-title">Your Wallets</h6> -->
               <ul class="token-balance-list justify-content-between">
+                  @foreach ($wallets as $wallet)
                   <li class="token-balance-sub">
-                      <span class="lead">2,646</span>
-                      <span class="sub"><a href="{{ route('wallet.show', 'GHS') }}">&#8373; (CEDIS) <i class="fa fa-external-link"></i></a> </span>
+                      <span class="lead">{{ to_naira($wallet->balance) }}</span>
+                      <span class="sub"><a href="{{ route('wallet.show', $wallet->currency) }}">{!! cur_symbol($wallet->currency) !!} <span class="text-uppercase">({{ $wallet->name }}) </span> <i class="fa fa-external-link"></i></a> </span>
                   </li>
-                  <li class="token-balance-sub">
-                      <span class="lead">1,265</span>
-                      <span class="sub"><a href="{{ route('wallet.show', 'NGN') }}">&#8358; (NAIRA) <i class="fa fa-external-link"></i></a> </span>
-                  </li>
+                  @endforeach
               </ul>
             </div>
           </div>
