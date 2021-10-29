@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 interface Payment
 {
-    public function withdraw(\App\Models\Withdrawal $withdrawal, String $currency) : array;
+    public function withdraw(\App\Models\Withdrawal $withdrawal) : array;
     public function makePayment(Transaction $transaction, String $callback_url) : String;
 
     // Should return a 1-level array/object with status, currency and other relevant data
