@@ -196,42 +196,44 @@
             <div class="card-head">
               <h4 class="card-title">Add Bank Account</h4>
             </div>
-              @if($banks->count() < 3) <form action="{{ route('wallet.store') }}" method="post">
-              @csrf
+            @if($banks->count() < 3)
+            <form action="{{ route('wallet.store') }}" method="post">
+                <input type="hidden" name="currency" value="{{ $wallet->currency }}">
+                @csrf
                 <div class="alert alert-warning">
                     <small>For mobile banking, enter the phone number of your mobile wallet</small>
                 </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Select Bank Account <span class="fa fa-spinner fa-spin" id="bank-loader"
-                    style="diplay: none;"></span></label>
-                <div class="select-wrapper">
-                  <select class="select select-block select-bordered" name="bankname" id="bank-list">
+                <div class="input-item input-with-label">
+                    <label class="input-item-label">Select Bank Account <span class="fa fa-spinner fa-spin" id="bank-loader"
+                        style="diplay: none;"></span></label>
+                    <div class="select-wrapper">
+                    <select class="select select-block select-bordered" name="bankname" id="bank-list">
 
-                  </select>
+                    </select>
+                    </div>
                 </div>
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Number</label>
-                <input class="input-bordered " type="text" id="banknumber" name="banknumber"
-                placeholder="Acc No">
-              </div>
-              <input type="hidden" name="accountname" id="accountname">
-              <input type="hidden" name="code" id="bank-code">
-              <span class="fa fa-spinner fa-spin" id="verify-loader" style="diplay: none;"></span>
+                <div class="input-item input-with-label">
+                    <label class="input-item-label">Account Number</label>
+                    <input class="input-bordered " type="text" id="banknumber" name="banknumber"
+                    placeholder="Acc No">
+                </div>
+                <input type="hidden" name="accountname" id="accountname">
+                <input type="hidden" name="code" id="bank-code">
+                <span class="fa fa-spinner fa-spin" id="verify-loader" style="diplay: none;"></span>
 
-              <div class="d-block">
-                <button type="button" class="btn btn-primary btn-block" id="verify-account">Check</button>
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Name</label>
-                <input class="input-bordered" type="text" id="account-name" placeholder="Acc Name"
-                  disabled>
-              </div>
-              <div class="token-buy d-block">
-                <button type="submit" class="btn btn-primary btn-block" id="add-account" disabled>Add Account</button>
-              </div>
-              </form>
-              @endif
+                <div class="d-block">
+                    <button type="button" class="btn btn-primary btn-block" id="verify-account">Check</button>
+                </div>
+                <div class="input-item input-with-label">
+                    <label class="input-item-label">Account Name</label>
+                    <input class="input-bordered" type="text" id="account-name" placeholder="Acc Name"
+                    disabled>
+                </div>
+                <div class="token-buy d-block">
+                    <button type="submit" class="btn btn-primary btn-block" id="add-account" disabled>Add Account</button>
+                </div>
+            </form>
+            @endif
           </div>
         </div>
       </div>
