@@ -30,7 +30,7 @@ class WithdrawalController extends Controller
 
         $user = auth()->user();
 
-        if (!$user->isSufficient($request->amount, $request->currency)) {
+        if (!$user->isSufficient($request->amount * 100, $request->currency)) {
             return back()->with('error', 'Your withdrawal wallet is insufficient!');
         }
 
