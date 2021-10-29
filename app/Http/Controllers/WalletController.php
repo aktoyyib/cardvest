@@ -39,6 +39,7 @@ class WalletController extends Controller
             'banknumber' => 'required|string|min:10|max:10',
             'bankname' => 'required|string|max:255',
             'accountname' => 'required|string|max:255',
+            'currency' => 'required|string'
         ]);
 
         $bank = json_decode($request->bankname);
@@ -46,7 +47,7 @@ class WalletController extends Controller
         // return $request;
 
         // Get the users wallet
-        $wallet = auth()->user()->wallet;
+        $wallet = auth()->user()->fiat_wallets()->currency($request->currency)->first();
         // Create a Bank Account
         $bank = Bank::create($request->all());
         // Attach bank to wallet
