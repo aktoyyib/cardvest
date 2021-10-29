@@ -56,10 +56,10 @@ trait HasWallet
 
         if ($bonus) {
             $balance = $wallet->bonus + $amount;
-            $wallet()->update(['bonus' => $balance]);
+            $wallet->update(['bonus' => $balance]);
         } else {
             $balance = $wallet->balance + $amount;
-            $wallet()->update(['balance' => $balance]);
+            $wallet->update(['balance' => $balance]);
         }
     }
 
@@ -84,16 +84,16 @@ trait HasWallet
         // If not debit the bonus wallet too.
         if ($bonus && ($deficit > 0)) {
             // For Bonus to be considered, then balance is not enough and should now be 0
-            $wallet()->update(['balance' => 0]);
+            $wallet->update(['balance' => 0]);
 
             // Deduct the deficit from the bonus
             $bonusBalance = $bonusBal - $deficit;
 
-            $wallet()->update(['bonus' => $bonusBalance]);
+            $wallet->update(['bonus' => $bonusBalance]);
         } else {
             $balance = $wallet->balance - $amount;
 
-            $wallet()->update(['balance' => $balance]);
+            $wallet->update(['balance' => $balance]);
         }
 
 
