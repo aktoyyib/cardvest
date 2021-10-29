@@ -347,7 +347,7 @@
                 <label class="input-item-label">Select Banking Account</label>
                 <div class="select-wrapper">
                   <select class="select select-block select-bordered" name="bank" id="withdrawal-banks" required>
-                    <option>Select</option>
+                    <option value="">Select</option>
                     @foreach($banks as $bank)
                     <option value="{{ $bank->id }}">{{ $bank->bankname }}</option>
                     @endforeach
@@ -584,7 +584,7 @@ $(document).ready(function() {
 
 
 
-    var cardOptions = `<option>Select</option>`
+    var cardOptions = `<option value="">Select</option>`
     // Load the category cards into the card select input
     currentCategory.cards.forEach((card) => {
       cardOptions += `<option value="${card.id}">${card.name} - (${card.rate}/$)</option>`
@@ -596,7 +596,7 @@ $(document).ready(function() {
     // console.log(cardOptions)
   }
 
-  // For the BUy Card 
+  // For the BUy Card
   // ********************************* //
   var buyRate = undefined
 
@@ -616,7 +616,7 @@ $(document).ready(function() {
   })
 
   // ***********************
-  // Wallet Feature 
+  // Wallet Feature
 
   // Wallets
   let wallets = @json($wallets);
@@ -625,7 +625,7 @@ $(document).ready(function() {
   let buyCurrencyInput = $('#currency-buy'); // For Card Buying
 
   let buildSelect = function(banks, key = 'id', value = 'bankname') {
-    var selectOptions = `<option value="0">Select</option>`
+    var selectOptions = `<option value="">Select</option>`
     // Load the category cards into the card select input
     banks.forEach((bank) => {
       selectOptions += `<option value="${bank[key]}">${bank[value]}</option>`
@@ -687,7 +687,7 @@ $(document).ready(function() {
       style: 'currency',
       currency: 'GHS'
     })
-    
+
     $(`#${type}-payout`).text(formatter.format(amount));
     $(`#${type}-payout-box`).show();
   }
