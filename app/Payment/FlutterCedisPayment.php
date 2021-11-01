@@ -70,9 +70,10 @@ class FlutterCedisPayment implements Payment
                     "description" => "Buy $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
                     "logo" => asset('images/logo-sm.png')
                 ],
+                // Please specify the following parameters in body: phone_number, network
             ];
 
-            $payment = Flutterwave::payments()->momoGH($data);
+            $payment = Flutterwave::initializePayment($data);
 
             return $payment;
 
