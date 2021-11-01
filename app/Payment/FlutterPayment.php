@@ -51,7 +51,7 @@ class FlutterPayment implements Payment
                 'amount' => $transaction->amount/100,
                 'email' => $user->email,
                 'tx_ref' => $transaction->reference,
-                'currency' => $user->currency(),
+                'currency' => $transaction->currency,
                 'redirect_url' => $callback_url,
                 'customer' => [
                     'email' => $user->email,
