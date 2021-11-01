@@ -164,6 +164,7 @@ class TransactionService
             $transaction->save();
 
         } catch (Throwable $e) {
+            report($e);
             DB::rollback();
             return back()->with('error', 'An error occured!');
         }
