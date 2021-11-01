@@ -38,7 +38,7 @@ class FlutterPayment implements Payment
         }
     }
 
-    public function makePayment(Transaction $transaction, String $callback_url) : String
+    public function makePayment(Transaction $transaction, String $callback_url) : Array
     {
         // Needed: transaction, card, amount, user, reference, callback_url
         $user = $transaction->user;
@@ -68,13 +68,7 @@ class FlutterPayment implements Payment
 
             $payment = Flutterwave::initializePayment($data);
 
-
-            if ($payment['status'] !== 'success') {
-                // notify something went wrong
-                abort(500, 'Payment could not be initialised');
-            }
-
-            return $payment['data']['link'];
+            return $payment;
 
         } catch (\Throwable $e) {
             throw $e;
