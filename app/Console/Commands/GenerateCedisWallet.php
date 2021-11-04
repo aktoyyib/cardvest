@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\User;
+use App\Models\Wallet;
 
 class GenerateCedisWallet extends Command
 {
@@ -12,7 +13,7 @@ class GenerateCedisWallet extends Command
      *
      * @var string
      */
-    protected $signature = 'balance:wallet {currency}';
+    protected $signature = 'balance:wallet -c {currency} -n {name}';
 
     /**
      * The console command description.
@@ -39,8 +40,9 @@ class GenerateCedisWallet extends Command
     public function handle()
     {
         $currency = $this->argument('currency');
-        // $currency = $this->argument('currency');
-        $user = User::all();
+        $name = $this->argument('name');
+
+        $users = User::all();
 
         if (strtolower($currency) === 'count') {
             $this->comment('Currently we have '.$user->count(). ' users!');
@@ -49,14 +51,19 @@ class GenerateCedisWallet extends Command
 
         if ($currency != 'GHS') return 0;
 
-        $wallet = Wallet::create([
-            'currency' => $currency
-        ]);
+        foreach ($users as $user) {
+            if (is_null($user->fiat_wallets()->currency($currency)->first())) {
+                $wallet = Wallet::create([
+                    'currency' => $currency,
+                    'name' => $name
+                ]);
 
-        $wallet->user()->associate($user);
-        $wallet->save();
+                $wallet->user()->associate($user);
+                $wallet->save();
+            }
+        }
 
-        $this->comment('Currently we have '.$user->count(). ' users!');
+        $this->comment(ucfirst($name) . ' wallet created for all users successfully!');
         return 0;
     }
 }
