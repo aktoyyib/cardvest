@@ -223,6 +223,7 @@ class TransactionService
 
     public function makeTransfer(Request $request, User $sender, User $recipient) {
         $amount = $request->amount * 100;
+        $currency = $request->currency;
 
         if (isset($request->role)) {
             $role = $request->role;
@@ -235,21 +236,21 @@ class TransactionService
             if ($request->has('debit')) {
                 // Credit users wallet with the amount (Only if the role is user or funder)
                 if ($role == 'user') {
-                    $sender->credit($amount);
+                    $sender->credit($amount, $currency);
                     $sender->refresh();
                 }
                 // Debit the recipients wallet with the amount
-                $recipient->debit($amount);
+                $recipient->debit($amount, $currency);
                 // Create Reference Code
                 $ref = $this->createReference('reversal');
             } else {
                 // Credit users wallet with the amount (Only if the role is user or funder)
                 if ($role == 'user') {
-                    $sender->debit($amount);
+                    $sender->debit($amount, $currency);
                     $sender->refresh();
                 }
                 // Debit the recipients wallet with the amount
-                $recipient->credit($amount);
+                $recipient->credit($amount, $currency);
                 // Create Reference Code
                 $ref = $this->createReference('transfer');
             }
