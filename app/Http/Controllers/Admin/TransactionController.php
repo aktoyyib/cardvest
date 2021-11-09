@@ -181,7 +181,12 @@ class TransactionController extends Controller
         if ($userIsToBePaid) {
             // Credit a user with a payout
             $recipient = $transaction->user;
-            $this->transactionService->makeTransfer($request->merge(['role' => 'admin', 'admin_comment' => 'Card Payout', 'amount' => $amount/100]), auth()->user(), $recipient);
+            $this->transactionService->makeTransfer($request->merge([
+                'role' => 'admin',
+                'admin_comment' => 'Card Payout',
+                'amount' => $amount/100,
+                'currency' => $transaction->currency
+            ]), auth()->user(), $recipient);
         }
 
         // Settle the referrer of the owner of the transaction
