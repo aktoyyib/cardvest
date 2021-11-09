@@ -13,7 +13,7 @@ class GenerateCedisWallet extends Command
      *
      * @var string
      */
-    protected $signature = 'balance:wallet -c {currency} -n {name}';
+    protected $signature = 'balance:wallet {currency} {name}';
 
     /**
      * The console command description.
@@ -39,6 +39,11 @@ class GenerateCedisWallet extends Command
      */
     public function handle()
     {
+        $this->warn('This action resets all users default wallet to Naira!');
+        if (!$this->confirm('Do you wish to continue?')) {
+            return 0;
+        }
+
         $currency = $this->argument('currency');
         $name = $this->argument('name');
 
@@ -50,6 +55,16 @@ class GenerateCedisWallet extends Command
         }
 
         if ($currency != 'GHS') return 0;
+
+        // Progress Bar should be implemented
+
+        // Make all users Naira wallet default
+        $wallets = Wallet::where('currency', 'NGN')->get();
+        foreach ($wallets as $wallet) {
+            $wallet->isDefault = true;
+            $wallet->name = "Naira";
+            $wallet->save();
+        }
 
         foreach ($users as $user) {
             if (is_null($user->fiat_wallets()->currency($currency)->first())) {
