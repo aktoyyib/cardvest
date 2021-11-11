@@ -10,9 +10,9 @@ use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 use App\Services\TransactionService;
 
-use DB;
 use App\Models\Wallet;
 use App\Jobs\SendWelcomeMail;
+use Illuminate\Support\Facades\DB;
 
 class CreateNewUser implements CreatesNewUsers
 {
@@ -70,14 +70,28 @@ class CreateNewUser implements CreatesNewUsers
                 'referrer_id' => $referrer_id,
             ]);
 
-            $wallet = Wallet::create([]);
+            // $nairWallet->user()->associate($user);
+            // $nairWallet->save();
 
-            $wallet->user()->associate($user);
-            $wallet->save();
+            // $cedisWallet->user()->associate($user);
+            // $cedisWallet->save();
+
+            // OR
+            $user->fiat_wallets()->createMany([
+                [
+                    'currency' => 'NGN',
+                    'name' => 'Naira',
+                    'isDefault' => true // Making naira the default wallet
+                ],
+                [
+                    'currency' => 'GHS',
+                    'name' => 'Cedis'
+                ]
+            ]);
 
         } catch (\Throwable $e) {
             DB::rollback();
-            dd($e);
+            return null;
         }
 
         DB::commit();
