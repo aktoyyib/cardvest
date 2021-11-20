@@ -10,9 +10,7 @@ use App\Models\Bank;
 use App\Models\Withdrawal;
 use App\Models\Transaction;
 use App\Models\User;
-use Auth;
 use Illuminate\Http\Request;
-use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
@@ -22,7 +20,8 @@ use App\Notifications\Order;
 use App\Notifications\OrderProcessed;
 use Illuminate\Support\Facades\Notification;
 use App\Payment\PaymentGateway;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionService
 {
