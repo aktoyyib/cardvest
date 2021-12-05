@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\WithdrawalController as Withdrawals;
 use App\Http\Controllers\Admin\CategoryController as Categories;
 use App\Http\Controllers\Admin\CardController as Cards;
 use App\Http\Controllers\Admin\PushNotificationController;
+use App\Http\Controllers\Admin\SettingController;
+
 
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Jobs\SendWelcomeMail;
@@ -124,6 +126,8 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
             Route::get('transactions/create', [Transactions::class, 'create'])->name('transactions.create');
 
             Route::get('activities', [\App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activities.index');
+            Route::get('general-settings', [SettingController::class, 'index'])->name('settings');
+            Route::post('general-settings', [SettingController::class, 'store'])->name('settings.store');
         });
 
         Route::get('transactions/search', [Transactions::class, 'search'])->name('transactions.search');
