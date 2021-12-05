@@ -9,6 +9,7 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\NotificationController;
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\UserController as Users;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\TransactionController as Transactions;
@@ -123,6 +124,7 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
             Route::get('transactions/create', [Transactions::class, 'create'])->name('transactions.create');
 
             Route::get('activities', [\App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activities.index');
+            Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics');
         });
 
         Route::get('transactions/search', [Transactions::class, 'search'])->name('transactions.search');
