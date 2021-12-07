@@ -548,6 +548,7 @@ $(document).ready(function() {
   let amountBuyBox = $('#buy-gift-card-amount');
   amountBuyBox.prop('disabled', true)
   let totalBuyBox = $('#buy-gift-card-equiv');
+  const CEDIS_RATE = @json(App\Models\Setting::where('key', 'cedis_to_naira')->first()).value;
 
   let currentCategory = null
 
@@ -610,7 +611,7 @@ $(document).ready(function() {
     if (buyRate == undefined) return
     var amount = this.value
 
-    buyTotal = calculateRate(amount, buyRate, totalBuyBox)
+    buyTotal = calculateRate(amount, buyRate, totalBuyBox, tradetype = 'buy')
   })
 
   // ***********************
@@ -639,9 +640,9 @@ $(document).ready(function() {
 
 
     if (_currency !== 'NGN') {
-      convertPayout(sellTotal, true);
+      showOtherPayout(sellTotal, true);
     } else {
-      convertPayout(sellTotal, false);
+      showOtherPayout(sellTotal, false);
     }
   })
 
@@ -651,15 +652,15 @@ $(document).ready(function() {
     let _currency = this.value;
 
     if (_currency !== 'NGN') {
-      convertPayout(buyTotal, true, type = 'buy');
+      showOtherPayout(buyTotal, true, type = 'buy');
     } else {
-      convertPayout(buyTotal, false, type = 'buy');
+      showOtherPayout(buyTotal, false, type = 'buy');
     }
   })
 
   // ******************************** //
 
-  let calculateRate = function(amount, rate, element = null) {
+  let calculateRate = function(amount, rate, element = null, tradetype = 'sell') {
     // console.log(rate)
     var total = Number(amount) * rate
 
@@ -674,19 +675,20 @@ $(document).ready(function() {
     else
       element.text(formatter.format(total))
 
+    // create a formatter
+    let cedisFormatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'GHS'
+    })
+    // If currency is not NGN
+    $(`#${tradetype}-payout`).text(cedisFormatter.format(total / CEDIS_RATE));
+
     return total;
   }
 
 
-  let convertPayout = function(amount, display = false, type = 'sell') {
+  let showOtherPayout = function(amount, display = false, type = 'sell') {
     if (!display) return $(`#${type}-payout-box`).hide();
-    // create a formatter
-    var formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'GHS'
-    })
-
-    $(`#${type}-payout`).text(formatter.format(amount));
     $(`#${type}-payout-box`).show();
   }
 
