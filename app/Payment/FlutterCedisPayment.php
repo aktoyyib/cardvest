@@ -100,10 +100,10 @@ class FlutterCedisPayment implements Payment
         $banks = Flutterwave::banks()->ghana();
         // Filter out normal banks and leave mobile banks
         $mobileBanks = array_filter($banks['data'], function($bank) {
-            return !is_numeric($bank['code']);
+            return ctype_alpha($bank['code']);
         });
-
-        return $mobileBanks;
+        $banks['data'] = $mobileBanks;
+        return $banks;
     }
 
     public function resolveAccount(string $accountnumber, string $bank)
