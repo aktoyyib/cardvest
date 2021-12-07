@@ -122,7 +122,7 @@ class TransactionService
         $card = Card::find($request->card_id);
         $CONVERTION_RATE = $request->currency !== 'NGN' ? get_cedis_rate() : 1;
 
-        $amount = $card->rate * $request->amount * 100 * $CONVERTION_RATE;
+        $amount = ($card->rate * $request->amount * 100) / $CONVERTION_RATE;
         $unit = $request->amount;
         $bank = null;
 
