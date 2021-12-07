@@ -98,11 +98,21 @@ class FlutterCedisPayment implements Payment
     public function fetchBanks(): array
     {
         $banks = Flutterwave::banks()->ghana();
+
         // Filter out normal banks and leave mobile banks
+        // This returns an array with key
         $mobileBanks = array_filter($banks['data'], function($bank) {
             return ctype_alpha($bank['code']);
         });
-        $banks['data'] = $mobileBanks;
+
+        // Reconstructing the array without key
+        $mobileBanksArray = array();
+        foreach ($mobileBanks as $key => $value) {
+            $mobileBanksArray[] = $value;
+        }
+
+        $banks['data'] = $mobileBanksArray;
+
         return $banks;
     }
 
