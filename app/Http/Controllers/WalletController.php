@@ -36,7 +36,7 @@ class WalletController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'banknumber' => 'required|string|min:10|max:10',
+            'banknumber' => 'required|string|min:5|max:15',
             'bankname' => 'required|string|max:255',
             'accountname' => 'required|string|max:255',
             'currency' => 'required|string'
