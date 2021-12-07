@@ -120,6 +120,9 @@ class TransactionService
     public function sellCard(Request $request) {
         $user = auth()->user();
         $card = Card::find($request->card_id);
+        $CONVERTION_RATE = $request->currency !== 'NGN' ? get_cedis_rate() : 1;
+
+        dd($CONVERTION_RATE);
         $amount = $card->rate * $request->amount * 100;
         $unit = $request->amount;
         $bank = null;

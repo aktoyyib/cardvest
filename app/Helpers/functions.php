@@ -140,6 +140,6 @@ if (!function_exists('convert_to')) {
 if (!function_exists('get_cedis_rate')) {
     function get_cedis_rate() {
         $cedis_rate = Setting::where('key', 'cedis_to_naira')->first();
-        return $cedis_rate->value;
+        return floatval($cedis_rate->value);
     }
   }
