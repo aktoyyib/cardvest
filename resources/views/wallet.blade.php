@@ -36,7 +36,7 @@
                   placeholder="Amount" required>
               </div>
               <div class="input-item input-with-label">
-                <label class="input-item-label">Select Banking Account</label>
+                <label class="input-item-label">Select {{ $wallet->currency == "GHS" ? "Mobile Wallet" : "Bank" }} Account</label>
                 <div class="select-wrapper">
                   <select class="select select-block select-bordered" name="bank" required>
                     <option>Select</option>
@@ -136,12 +136,12 @@
         <div class="token-transaction card card-full-height">
           <div class="card-innr">
             <div class="card-head has-aside">
-              <h4 class="card-title">Bank Accounts</h4>
+              <h4 class="card-title">{{ $wallet->currency == "GHS" ? "Mobile Money" : "Bank" }} Accounts</h4>
             </div>
             <table class="data-table user-tnx">
               <thead>
                 <tr class="data-item data-head">
-                  <th class="data-col dt-tnxno">Bank Name</th>
+                  <th class="data-col dt-tnxno">{{ $wallet->currency == "GHS" ? "Mobile Money" : "Bank" }} Name</th>
                   <th class="data-col dt-token">Account Number </th>
                   <th class="data-col dt-amount">Account Name</th>
                   <th class="data-col"></th>
@@ -194,7 +194,7 @@
         <div class="token-calculator card card-full-height">
           <div class="card-innr">
             <div class="card-head">
-              <h4 class="card-title">Add Bank Account</h4>
+              <h4 class="card-title">Add {{ $wallet->currency == "GHS" ? "Mobile Money" : "Bank" }} Account</h4>
             </div>
             @if($banks->count() < 3)
             <form action="{{ route('wallet.store') }}" method="post">
@@ -204,7 +204,7 @@
                     <small>For mobile banking, enter the phone number of your mobile wallet</small>
                 </div>
                 <div class="input-item input-with-label">
-                    <label class="input-item-label">Select Bank Account <span class="fa fa-spinner fa-spin" id="bank-loader"
+                    <label class="input-item-label">Select {{ $wallet->currency == "GHS" ? "Mobile Money" : "Bank" }} Account <span class="fa fa-spinner fa-spin" id="bank-loader"
                         style="diplay: none;"></span></label>
                     <div class="select-wrapper">
                     <select class="select select-block select-bordered" name="bankname" id="bank-list">

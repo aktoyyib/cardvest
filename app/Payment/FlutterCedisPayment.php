@@ -23,7 +23,7 @@ class FlutterCedisPayment implements Payment
             $data = [
                 "account_bank" => $bank->code, //MTN, TIGO, VODAFONE, AIRTEL | GH280100
                 "account_number" => $bank->banknumber, //233xxxxxxxxxx | 0031625807099
-                "amount" => $withdrawal->amount,
+                "amount" => $withdrawal->amount/100, //Amount no in kobo like naira
                 "currency" => $withdrawal->currency,
                 "beneficiary_name" => $bank->accountname,
                 // "destination_branch_code" => "GH280103", // For Bank transfers
