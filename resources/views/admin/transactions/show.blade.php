@@ -82,7 +82,7 @@
               </li><!-- li -->
               <li>
                 <div class="data-details-head">Total Amount</div>
-                <div class="data-details-des"><span>&#8358;{{ to_naira($transaction->amount) }}</span> <span></span>
+                <div class="data-details-des"><span>{!! cur_symbol($transaction->currency) !!}{{ to_naira($transaction->amount) }}</span> <span></span>
                 </div>
               </li><!-- li -->
               <li>
@@ -92,12 +92,12 @@
               @else
               <li>
                 <div class="data-details-head">Amount</div>
-                <div class="data-details-des"><span>&#8358;{{ to_naira($transaction->amount) }}</span> <span></span>
+                <div class="data-details-des"><span>{!! cur_symbol($transaction->currency) !!}{{ to_naira($transaction->amount) }}</span> <span></span>
                 </div>
               </li><!-- li -->
               <li>
                 <div class="data-details-head">New Balance</div>
-                <div class="data-details-des"><span>&#8358;{{ to_naira($transaction->balance) }}</span> <span></span>
+                <div class="data-details-des"><span>{!! cur_symbol($transaction->currency) !!}{{ to_naira($transaction->balance) }}</span> <span></span>
                 </div>
               </li><!-- li -->
               @endif
@@ -195,7 +195,7 @@
                           @if($transaction->type == 'sell')
                           <div class="input-item input-with-label">
                             <label class="input-item-label">Amount Payable <span class="text-warning">(Default:
-                                &#8358;{{ to_naira($transaction->amount) }})</span></label>
+                                {!! cur_symbol($transaction->currency) !!}{{ to_naira($transaction->amount) }})</span></label>
                             <input type="number" placeholder="Enter amount" inputmode="numeric" name="amount"
                               class="input-bordered">
                           </div>

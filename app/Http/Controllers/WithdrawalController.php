@@ -9,7 +9,7 @@ use App\Services\TransactionService;
 class WithdrawalController extends Controller
 {
     protected $transactionService;
-    
+
     public function __construct(TransactionService $transactionService)
     {
         $this->transactionService = $transactionService;
@@ -24,12 +24,13 @@ class WithdrawalController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:0',
-            'bank' => 'required'
+            'bank' => 'required',
+            'currency' => 'required|string'
         ]);
 
         $user = auth()->user();
 
-        if (!$user->isSufficient($request->amount)) {
+        if (!$user->isSufficient($request->amount * 100, $request->currency)) {
             return back()->with('error', 'Your withdrawal wallet is insufficient!');
         }
 

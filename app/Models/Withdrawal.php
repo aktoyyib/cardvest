@@ -62,4 +62,9 @@ class Withdrawal extends Model
     {
         $query->where('status', 'pending');
     }
+
+    public function scopeCurrency($query, $currency)
+    {
+        $query->where('currency', $currency);
+    }
 }

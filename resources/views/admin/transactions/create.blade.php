@@ -25,6 +25,17 @@
                   required>
               </div>
 
+              <div class="input-item input-with-label">
+                <label class="input-item-label">Payout Wallet</label>
+                <div class="select-wrapper">
+                  <select class="select select-block select-bordered" id="currency" name="currency">
+                    <option value="NGN">NGN</option>
+                    <option value="GHS">GHS</option>
+                  </select>
+                </div>
+                <span class="error"></span>
+              </div>
+
               <div class="input-item">
                 <input type="checkbox" name="debit" id="debit"
                   class="input-checkbox input-checkbox-md">
@@ -32,7 +43,7 @@
                   Debit users account
                 </label>
               </div>
-              
+
               <div class="input-item input-with-label">
                 <label class="input-item-label">Enter users email address</label>
                 <input class="input-bordered" type="email" name="email" placeholder="Email Address" required>
@@ -76,7 +87,7 @@
                   </td>
                   <td class="data-col dt-token">
                     <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
-                    <span class="sub sub-symbol">NGN</span>
+                    <span class="sub sub-symbol">{{ $transaction->currency }}</span>
                   </td>
                   <td class="data-col dt-token">
                     <span class="sub sub-symbol">{{ $transaction->payout_to->email }}</span>

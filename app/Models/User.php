@@ -113,4 +113,5 @@ class User extends Authenticatable
     {
         return 'https://hooks.slack.com/services/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';
     }
+    
 }

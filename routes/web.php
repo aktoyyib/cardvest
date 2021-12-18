@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\WithdrawalController as Withdrawals;
 use App\Http\Controllers\Admin\CategoryController as Categories;
 use App\Http\Controllers\Admin\CardController as Cards;
 use App\Http\Controllers\Admin\PushNotificationController;
+use App\Http\Controllers\Admin\SettingController;
+
 
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use App\Jobs\SendWelcomeMail;
@@ -100,7 +102,8 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
 
     Route::post('withdraw-funds', [WithdrawalController::class, 'store'])->name('withdraw');
 
-    Route::get('wallet', [WalletController::class, 'index'])->name('wallet.index');
+    Route::get('wallet/set-default-currency', [WalletController::class, 'setDefaultCurrency'])->name('wallet.set-currency');
+    Route::get('wallet/{currency}', [WalletController::class, 'show'])->name('wallet.show');
     Route::post('wallet/bank/add', [WalletController::class, 'store'])->name('wallet.store');
     Route::delete('wallet/bank/remove/{bank}', [WalletController::class, 'destroy'])->name('wallet.removebank');
 
@@ -125,6 +128,8 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
 
             Route::get('activities', [\App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activities.index');
             Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics');
+            Route::get('general-settings', [SettingController::class, 'index'])->name('settings');
+            Route::post('general-settings', [SettingController::class, 'store'])->name('settings.store');
         });
 
         Route::get('transactions/search', [Transactions::class, 'search'])->name('transactions.search');

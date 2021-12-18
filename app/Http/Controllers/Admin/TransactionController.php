@@ -79,24 +79,25 @@ class TransactionController extends Controller
         $request->validate([
             'email' => ['required', 'string',  'max:255'],
             'amount' => ['required', 'numeric', 'min:1.00'],
+            'currency' => ['required', 'string']
         ]);
 
         $amount = $request->amount;
         $user = auth()->user();
         $recipient = User::search($request->email)->first();
 
-        if (!$user->isSufficient($amount) && $request->role == 'funder') {
+        if (!$user->isSufficient($amount, $request->currency) && $request->role == 'funder') {
             return back()->with('error', 'Your wallet balance is insufficient for this transaction.');
         }
         // dd($recipient);
         if (!$recipient || $request->email === $user->email) {
-            return back()->with('error', 'There is no such user with the email: ' .$request->email);
+            return back()->with('error', 'Could not be completed');
         }
 
         $this->transactionService->makeTransfer($request, $user, $recipient);
 
         $amount = to_naira($amount*100);
-        return back()->with('success', 'You have successfully transferred ($) ' .$amount. ' to ' .$request->email. '\'s wallet.');
+        return back()->with('success', 'You have successfully transferred ('.$request->currency.') ' .$amount. ' to ' .$request->email. '\'s wallet.');
     }
 
     /**
@@ -180,7 +181,12 @@ class TransactionController extends Controller
         if ($userIsToBePaid) {
             // Credit a user with a payout
             $recipient = $transaction->user;
-            $this->transactionService->makeTransfer($request->merge(['role' => 'admin', 'admin_comment' => 'Card Payout', 'amount' => $amount/100]), auth()->user(), $recipient);
+            $this->transactionService->makeTransfer($request->merge([
+                'role' => 'admin',
+                'admin_comment' => 'Card Payout',
+                'amount' => $amount/100,
+                'currency' => $transaction->currency
+            ]), auth()->user(), $recipient);
         }
 
         // Settle the referrer of the owner of the transaction

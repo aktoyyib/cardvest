@@ -3,11 +3,19 @@
 
 namespace App\Traits;
 
+use App\Models\Wallet;
+
 
 trait HasWallet
 {
+    // Returns the default wallet
     public function wallet() {
-        return $this->hasOne('App\Models\Wallet');
+        return $this->hasOne('App\Models\Wallet')->where('isDefault', true);
+    }
+
+    // Returns all wallets
+    public function fiat_wallets() {
+        return $this->hasMany('App\Models\Wallet')->where('type', 'fiat');
     }
 
     /**
@@ -15,9 +23,11 @@ trait HasWallet
      * @param  integer $amount (in kobo)
      * @return boolean
      */
-    public function isSufficient($amount)
+    public function isSufficient($amount, string $currency = null)
     {
-        return $this->wallet->balance >= $amount;
+        $wallet = $this->getWallet($currency);
+
+        return $wallet->balance >= $amount;
     }
 
     /**
@@ -25,11 +35,13 @@ trait HasWallet
      * @param  integer $amount
      * @return boolean
      */
-    public function isAbsolutelySufficient($amount)
+    public function isAbsolutelySufficient($amount, string $currency = null)
     {
+        $wallet = $this->getWallet($currency);
+
         // Get the total balance (Balance + Bonus)
-        $balance = $this->wallet->balance;
-        $bonus = $this->wallet->bonus;
+        $balance = $wallet->balance;
+        $bonus = $wallet->bonus;
         return ($balance + $bonus) >= $amount;
     }
 
@@ -38,14 +50,16 @@ trait HasWallet
      * @param integer $amount (in kobo)
      * @param bool $bonus
      */
-    public function credit($amount, $bonus = false)
+    public function credit($amount, string $currency = null, $bonus = false)
     {
+        $wallet = $this->getWallet($currency);
+
         if ($bonus) {
-            $balance = $this->wallet->bonus + $amount;
-            $this->wallet()->update(['bonus' => $balance]);
+            $balance = $wallet->bonus + $amount;
+            $wallet->update(['bonus' => $balance]);
         } else {
-            $balance = $this->wallet->balance + $amount;
-            $this->wallet()->update(['balance' => $balance]);
+            $balance = $wallet->balance + $amount;
+            $wallet->update(['balance' => $balance]);
         }
     }
 
@@ -54,10 +68,12 @@ trait HasWallet
      * @param integer $amount (in kobo)
      * @param bool $bonus
      */
-    public function debit($amount, $bonus = false)
+    public function debit($amount, string $currency = null, $bonus = false)
     {
-        $balance = $this->wallet->balance;
-        $bonusBal = $this->wallet->bonus;
+        $wallet = $this->getWallet($currency);
+
+        $balance = $wallet->balance;
+        $bonusBal = $wallet->bonus;
 
         // To know if the bonus will be spent
         // Negative value indicates that Main Balance can bear the charges
@@ -68,29 +84,42 @@ trait HasWallet
         // If not debit the bonus wallet too.
         if ($bonus && ($deficit > 0)) {
             // For Bonus to be considered, then balance is not enough and should now be 0
-            $this->wallet()->update(['balance' => 0]);
+            $wallet->update(['balance' => 0]);
 
             // Deduct the deficit from the bonus
             $bonusBalance = $bonusBal - $deficit;
 
-            $this->wallet()->update(['bonus' => $bonusBalance]);
+            $wallet->update(['bonus' => $bonusBalance]);
         } else {
-            $balance = $this->wallet->balance - $amount;
+            $balance = $wallet->balance - $amount;
 
-            $this->wallet()->update(['balance' => $balance]);
+            $wallet->update(['balance' => $balance]);
         }
 
 
     }
 
-    public function balance() {
-        return $this->wallet->balance;
+    public function balance(string $currency = null) {
+        $wallet = $this->getWallet($currency);
+
+        return $wallet->balance;
     }
 
-    public function getTotalBalance() {
-        $balance = $this->wallet->balance;
-        $bonus = $this->wallet->bonus;
+    public function getTotalBalance(string $currency = null) {
+        $wallet = $this->getWallet($currency);
+
+        $balance = $wallet->balance;
+        $bonus = $wallet->bonus;
         return ($balance + $bonus);
     }
 
+    public function curency() {
+        return $this->wallet->currency;
+    }
+
+    protected function getWallet(string $currency = null) : Wallet
+    {
+        if (is_null($currency)) return $this->wallet;
+        else return $this->fiat_wallets()->currency($currency)->first();
+    }
 }

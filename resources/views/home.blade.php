@@ -15,14 +15,41 @@
                 <img src="images/logo-sm.png" alt="logo">
               </div>
               <div class="token-balance-text">
-                <h6 class="card-sub-title">Wallet Balance</h6>
-                <span class="lead">{{ to_naira($user->balance()) }} <span>NGN</span></span>
+                <h6 class="card-sub-title">Main Balance</h6>
+                <span class="lead">{{ to_naira($user->balance()) }} <span>{{ auth()->user()->wallet->currency }}</span></span>
               </div>
+              <div class="token-pay-currency border-0">
+                <a href="#" class="link ucap link-light toggle-tigger toggle-caret text-white">{{ auth()->user()->wallet->currency }}</a>
+                <div class="toggle-class dropdown-content" style="right: -40%; left: unset;">
+                    <ul class="dropdown-list">
+                        @foreach($wallets as $wallet)
+                        <li><a href="{{ route('wallet.set-currency') }}" onclick="event.preventDefault();
+                                                document.getElementById('{{ $wallet->currency }}').submit();">{{ $wallet->currency }}</a></li>
+                        <form id="{{ $wallet->currency }}" action="{{ route('wallet.set-currency') }}">
+                          <input type="hidden" name="currency" value="{{ $wallet->currency }}">
+                        </form>
+                        @endforeach
+                    </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="token-balance token-balance-s2">
+              <hr class="bg-warning">
+              <!-- <h6 class="card-sub-title">Your Wallets</h6> -->
+              <ul class="token-balance-list justify-content-between">
+                  @foreach ($wallets as $wallet)
+                  <li class="token-balance-sub">
+                      <span class="lead">{{ to_naira($wallet->balance) }}</span>
+                      <span class="sub"><a href="{{ route('wallet.show', $wallet->currency) }}">{!! cur_symbol($wallet->currency) !!} <span class="text-uppercase">({{ $wallet->name }}) </span> <i class="fa fa-external-link"></i></a> </span>
+                  </li>
+                  @endforeach
+              </ul>
             </div>
           </div>
         </div>
 
-        <div class="token-transaction card d-none d-lg-block" style="height: calc(100% - 170px)">
+        <div class="token-transaction card d-none d-lg-block" >
           <div class="card-innr">
             <div class="card-head has-aside">
               <h4 class="card-title">Transaction History</h4>
@@ -51,7 +78,7 @@
                       </div>
                       <div>
                         <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
-                        <span class="sub sub-symbol">NGN</span>
+                        <span class="sub sub-symbol">{{ $transaction->currency }}</span>
                       </div>
                   </td>
                   <td class="data-col dt-type">
@@ -80,7 +107,7 @@
       </div>
 
       <div class="col-xl-8">
-        <div class="content-area card">
+        <div class="content-area card card-full-height">
           <div class="card-innr">
             <div class="card-head">
               <h4 class="card-title">Rate Calculator</h4>
@@ -118,21 +145,35 @@
 
                   </div>
                   <div class="col-md-6">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="input-item input-with-label">
-                          <label class="input-item-label">Amount</label>
-                          <input class="input-bordered" type="number" id="gift-card-amount" placeholder="Amount in USD">
-                        </div>
-                      </div>
+                    <div class="input-item input-with-label">
+                      <label class="input-item-label">Amount</label>
+                      <input class="input-bordered" type="number" id="gift-card-amount" placeholder="Amount in USD">
                     </div>
+
+                    <span>
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">Currency</label>
+                        <div class="select-wrapper">
+                          <select class="select select-block select-bordered" id="currency" name="currency">
+                            @foreach($wallets as $wallet)
+                            <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} ({!! cur_symbol($wallet->currency) !!})</option>
+                            @endforeach
+                          </select>
+                        </div>
+                        <span class="error"></span>
+                      </div>
+                    </span>
+
                     <div class="token-overview-wrap mt-0">
                       <div class="token-overview">
                         <div class="row">
                           <div class="col">
-                            <div class="token-bonus token-bonus-sale pt-1">
+                            <div class="token-bonus-sale pt-1 mb-0">
                               <span class="token-overview-title"> = </span>
                               <span class="token-overview-value bonus-on-sale" id="gift-card-equiv">0.00</span>
+                            </div>
+                            <div class="token-bonus token-bonus-sale pt-1" id="sell-payout-box" style="display: none;">
+                              <span class="token-overview-value bonus-on-sale">(<span id="sell-payout">0.00</span>)</span>
                             </div>
                           </div>
                         </div>
@@ -166,24 +207,39 @@
                       </select>
                     </div>
 
+                    <div class="input-item input-with-label">
+                      <label class="input-item-label">Amount</label>
+                      <input class="input-bordered" type="number" id="buy-gift-card-amount"
+                        placeholder="Amount in USD">
+                    </div>
+
                   </div>
                   <div class="col-md-6">
-                    <div class="row">
-                      <div class="col-12">
-                        <div class="input-item input-with-label">
-                          <label class="input-item-label">Amount</label>
-                          <input class="input-bordered" type="number" id="buy-gift-card-amount"
-                            placeholder="Amount in USD">
+
+                    <span>
+                      <div class="input-item input-with-label">
+                        <label class="input-item-label">Currency</label>
+                        <div class="select-wrapper">
+                          <select class="select select-block select-bordered" id="currency-buy" name="currency">
+                            @foreach($wallets as $wallet)
+                            <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} ({!! cur_symbol($wallet->currency) !!})</option>
+                            @endforeach
+                          </select>
                         </div>
+                        <span class="error"></span>
                       </div>
-                    </div>
+                    </span>
+
                     <div class="token-overview-wrap mt-0">
                       <div class="token-overview">
                         <div class="row">
                           <div class="col">
-                            <div class="token-bonus token-bonus-sale pt-1">
+                            <div class="token-bonus-sale pt-1 mb-0">
                               <span class="token-overview-title"> = </span>
                               <span class="token-overview-value bonus-on-sale" id="buy-gift-card-equiv">0.00</span>
+                            </div>
+                            <div class="token-bonus token-bonus-sale pt-1" id="buy-payout-box" style="display: none;">
+                              <span class="token-overview-value bonus-on-sale">(<span id="buy-payout">0.00</span>)</span>
                             </div>
                           </div>
                         </div>
@@ -271,20 +327,28 @@
             <form action="{{ route('withdraw') }}" method="post">
               @csrf
               <div class="input-item input-with-label">
+                <label class="input-item-label">Select Wallet</label>
+                <div class="select-wrapper">
+                  <select class="select select-block select-bordered" id="withdrawal-wallet" name="currency" required>
+                    @foreach($wallets as $wallet)
+                    <option value="{{ $wallet->currency }}" {{ $wallet->isDefault ? 'selected' : '' }}>{{ $wallet->name }} ({!! cur_symbol($wallet->currency) !!} {{ to_naira($wallet->balance) }})</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+              <div class="input-item input-with-label">
                 <label class="input-item-label">Enter amount to withdraw</label>
-                <input class="input-bordered input-with-hint" type="number" min="0" step="0.01" name="amount"
+                <input class="input-bordered" type="number" min="0" step="0.01" name="amount"
                   placeholder="Amount" required>
               </div>
               <div class="input-item input-with-label">
-                <label class="input-item-label">Select Bank Account</label>
+                <label class="input-item-label">Select Banking Account</label>
                 <div class="select-wrapper">
-                  <select class="select select-block select-bordered" name="bank" required>
-                    <option>Select</option>
-                    @forelse($user->wallet->bank_accounts as $bank)
-                    <option value="{{ $bank->id }}">{{ $bank->bankname }} - {{$bank->banknumber}}</option>
-                    @empty
-                    <option>---</option>
-                    @endforelse
+                  <select class="select select-block select-bordered" name="bank" id="withdrawal-banks" required>
+                    <option value="">Select</option>
+                    @foreach($banks as $bank)
+                    <option value="{{ $bank->id }}">{{ $bank->bankname }}</option>
+                    @endforeach
                   </select>
                 </div>
               </div>
@@ -311,7 +375,7 @@
               <thead>
                 <tr class="data-item data-head">
                   <th class="data-col dt-tnxno">Bank Details</th>
-                  <th class="data-col dt-token">Amount <small>NGN</small></th>
+                  <th class="data-col dt-token">Amount</th>
                   <th class="data-col dt-amount">Date</th>
                   <th class="data-col"></th>
                 </tr>
@@ -329,7 +393,7 @@
                   </td>
                   <td class="data-col dt-token">
                     <span class="lead token-amount">{{ to_naira($withdrawal->amount) }}</span>
-                    <span class="sub sub-symbol">{{ to_naira($withdrawal->amount) }} <small>(NGN)</small></span>
+                    <span class="sub sub-symbol">{{ to_naira($withdrawal->amount) }} <small>({{ $withdrawal->currency }})</small></span>
                   </td>
                   <td class="dt-type-md data-col dt-amount">
                     <span class="lead amount-pay">{{ $withdrawal->getDate() }}</span>
@@ -361,7 +425,7 @@
     </div><!-- .row -->
 
     <div class="row">
-      <div class="col-lg-5">
+      <div class="col-lg-8">
         <div class="token-transaction card card-full-height">
           <div class="card-innr">
             <div class="card-head has-aside">
@@ -419,48 +483,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-3">
-        <div class="token-calculator card card-full-height">
-          <div class="card-innr">
-            <div class="card-head">
-              <h4 class="card-title">Add Bank Account</h4>
-            </div>
-            @if($banks->count() < 3) <form action="{{ route('wallet.store') }}" method="post">
-              @csrf
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Number</label>
-                <input class="input-bordered input-with-hint" type="text" id="banknumber" name="banknumber"
-                  placeholder="Acc No">
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Select Bank Account <span class="fa fa-spinner fa-spin" id="bank-loader"
-                    style="diplay: none;"></span></label>
-                <div class="select-wrapper">
-                  <select class="input-bordered" name="bankname" id="bank-list">
 
-                  </select>
-                </div>
-              </div>
-              <input type="hidden" name="accountname" id="accountname">
-              <input type="hidden" name="code" id="bank-code">
-              <span class="fa fa-spinner fa-spin" id="verify-loader" style="diplay: none;"></span>
-
-              <div class="d-block">
-                <button type="button" class="btn btn-primary btn-block" id="verify-account">Check</button>
-              </div>
-              <div class="input-item input-with-label">
-                <label class="input-item-label">Account Name</label>
-                <input class="input-bordered input-with-hint" type="text" id="account-name" placeholder="Acc Name"
-                  disabled>
-              </div>
-              <div class="token-buy d-block">
-                <button type="submit" class="btn btn-primary" id="add-account" disabled>Add Account</button>
-              </div>
-              </form>
-              @endif
-          </div>
-        </div>
-      </div>
       <div class="col-xl-4">
         <div class="token-sales card card-full-height">
           <div class="card-innr">
@@ -486,30 +509,35 @@ $.ajaxSetup({
 });
 
 $(document).ready(function() {
-  $('#bank-loader').show()
-  $('#bank-list').prop('disabled', true);
+  // $('#bank-loader').show()
+  // $('#bank-list').prop('disabled', true);
 
-  $.get("{{ route('banks') }}", function(data, status) {
-    // var data = data.json()
+  // $.get("{{ route('banks') }}", function(data, status) {
+  //   // var data = data.json()
 
-    if (data.status === 'success') {
-      loadBanks(data.data)
-    }
-  })
+  //   if (data.status === 'success') {
+  //     loadBanks(data.data)
+  //   }
+  // })
 
-  let banknumber = $('#banknumber')
-  let bankname = $('#bank-list')
-  let verify = $('#verify-account')
+  // let banknumber = $('#banknumber')
+  // let bankname = $('#bank-list')
+  // let verify = $('#verify-account')
 
-  verify.click(function(event) {
-    // !banknumber.val() || !bankname.val()
-    if (!banknumber.val() || (!bankname.val() || bankname.val() === 'null')) {
-      return
-    }
-    var bank = JSON.parse(bankname.val())
-    verifyAccount(banknumber.val(), bank.code)
-  })
+  // verify.click(function(event) {
+  //   // !banknumber.val() || !bankname.val()
+  //   if (!banknumber.val() || (!bankname.val() || bankname.val() === 'null')) {
+  //     return
+  //   }
+  //   var bank = JSON.parse(bankname.val())
+  //   verifyAccount(banknumber.val(), bank.code)
+  // })
 
+  // *************************** //
+  // Rate Calculator widget begins here
+  // ============================== //
+  let sellTotal = 0;
+  let buyTotal = 0;
   let categories = @json($categories);
   let cardBox = $('#gift-card');
   let cardCategoryBox = $('#gift-card-category');
@@ -520,6 +548,7 @@ $(document).ready(function() {
   let amountBuyBox = $('#buy-gift-card-amount');
   amountBuyBox.prop('disabled', true)
   let totalBuyBox = $('#buy-gift-card-equiv');
+  const CEDIS_RATE = @json(App\Models\Setting::where('key', 'cedis_to_naira')->first()).value;
 
   let currentCategory = null
 
@@ -539,7 +568,7 @@ $(document).ready(function() {
     })
     // console.log(curCard);
     var rate = curCard.rate
-    calculateRate(amt, rate)
+    sellTotal = calculateRate(amt, rate)
   });
 
   let loadCard = function(categories, id) {
@@ -554,7 +583,7 @@ $(document).ready(function() {
 
 
 
-    var cardOptions = `<option>Select</option>`
+    var cardOptions = `<option value="">Select</option>`
     // Load the category cards into the card select input
     currentCategory.cards.forEach((card) => {
       cardOptions += `<option value="${card.id}">${card.name} - (${card.rate}/$)</option>`
@@ -566,7 +595,7 @@ $(document).ready(function() {
     // console.log(cardOptions)
   }
 
-  // For the BUy Card 
+  // For the BUy Card
   // ********************************* //
   var buyRate = undefined
 
@@ -582,13 +611,56 @@ $(document).ready(function() {
     if (buyRate == undefined) return
     var amount = this.value
 
-    calculateRate(amount, buyRate, totalBuyBox)
+    buyTotal = calculateRate(amount, buyRate, totalBuyBox, tradetype = 'buy')
+  })
+
+  // ***********************
+  // Wallet Feature
+
+  // Wallets
+  let wallets = @json($wallets);
+  // Wallet inputs
+  let currencyInput = $('#currency'); // For Card Sale
+  let buyCurrencyInput = $('#currency-buy'); // For Card Buying
+
+  let buildSelect = function(banks, key = 'id', value = 'bankname') {
+    var selectOptions = `<option value="">Select</option>`
+    // Load the category cards into the card select input
+    banks.forEach((bank) => {
+      selectOptions += `<option value="${bank[key]}">${bank[value]}</option>`
+    })
+
+    return selectOptions;
+  }
+
+
+  // FOr Sell CaRD
+  currencyInput.change(function() {
+    let _currency = this.value;
+
+
+    if (_currency !== 'NGN') {
+      showOtherPayout(sellTotal, true);
+    } else {
+      showOtherPayout(sellTotal, false);
+    }
   })
 
 
+  // For Buy Card
+  buyCurrencyInput.change(function() {
+    let _currency = this.value;
+
+    if (_currency !== 'NGN') {
+      showOtherPayout(buyTotal, true, type = 'buy');
+    } else {
+      showOtherPayout(buyTotal, false, type = 'buy');
+    }
+  })
+
   // ******************************** //
 
-  let calculateRate = function(amount, rate, element = null) {
+  let calculateRate = function(amount, rate, element = null, tradetype = 'sell') {
     // console.log(rate)
     var total = Number(amount) * rate
 
@@ -602,52 +674,86 @@ $(document).ready(function() {
       totalBox.text(formatter.format(total))
     else
       element.text(formatter.format(total))
+
+    // create a formatter
+    let cedisFormatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'GHS'
+    })
+    // If currency is not NGN
+    $(`#${tradetype}-payout`).text(cedisFormatter.format(total / CEDIS_RATE));
+
+    return total;
   }
-});
 
-let loadBanks = function(banks) {
-  var options = '<option value="null">Select Bank</option>'
 
-  banks.forEach(bank => {
-    options += '<option value=\'' + JSON.stringify(bank) + '\'>' + bank.name + '</option>'
+  let showOtherPayout = function(amount, display = false, type = 'sell') {
+    if (!display) return $(`#${type}-payout-box`).hide();
+    $(`#${type}-payout-box`).show();
+  }
+
+  // *************************** //
+  // Rate Calculator widget Ends here
+  // ============================== //
+
+  // *************************** //
+  // Withdrawal Widget Begins Here
+  // ============================== //
+  let withdrawalWalletInput = $('#withdrawal-wallet');
+  let withdrawalBanksInput = $('#withdrawal-banks');
+
+  withdrawalWalletInput.change(function() {
+    let _wallet = wallets.find(w => w.currency === this.value);
+    let _banks = _wallet.bank_accounts;
+    let _bankOptions = buildSelect(_banks);
+    withdrawalBanksInput.empty().append(_bankOptions);
   });
 
-  $('#bank-list').append(options);
-  $('#bank-list').prop('disabled', false);
+});
 
-  $('#bank-loader').hide()
-}
+// let loadBanks = function(banks) {
+//   var options = '<option value="null">Select Bank</option>'
 
-let verifyloader = $('#verify-loader');
-let accountNameInput = $('#accountname');
-let displayName = $('#account-name');
-let codeInput = $('#bank-code');
-let submitAccount = $('#add-account');
-verifyloader.hide();
+//   banks.forEach(bank => {
+//     options += '<option value=\'' + JSON.stringify(bank) + '\'>' + bank.name + '</option>'
+//   });
 
-let verifyAccount = function(acc_num, bnk_name) {
-  verifyloader.show();
+//   $('#bank-list').append(options);
+//   $('#bank-list').prop('disabled', false);
 
-  $.post("{{ route('verify') }}", {
-      'banknumber': acc_num,
-      'bankname': bnk_name
-    },
-    function(data, status) {
-      verifyloader.hide();
-      data = JSON.parse(data)
+//   $('#bank-loader').hide()
+// }
 
-      if (data.status === 'success') {
-        data = data.data
-        displayName.val(data.account_name)
-        accountNameInput.val(data.account_name)
-        submitAccount.prop('disabled', false)
-      } else {
-        displayName.val(data.message)
-        accountNameInput.val('')
-        accountNameInput.prop('disabled', true)
-        submitAccount.prop('disabled', true)
-      }
-    })
-}
+// let verifyloader = $('#verify-loader');
+// let accountNameInput = $('#accountname');
+// let displayName = $('#account-name');
+// let codeInput = $('#bank-code');
+// let submitAccount = $('#add-account');
+// verifyloader.hide();
+
+// let verifyAccount = function(acc_num, bnk_name) {
+//   verifyloader.show();
+
+//   $.post("{{ route('verify') }}", {
+//       'banknumber': acc_num,
+//       'bankname': bnk_name
+//     },
+//     function(data, status) {
+//       verifyloader.hide();
+//       data = JSON.parse(data)
+
+//       if (data.status === 'success') {
+//         data = data.data
+//         displayName.val(data.account_name)
+//         accountNameInput.val(data.account_name)
+//         submitAccount.prop('disabled', false)
+//       } else {
+//         displayName.val(data.message)
+//         accountNameInput.val('')
+//         accountNameInput.prop('disabled', true)
+//         submitAccount.prop('disabled', true)
+//       }
+//     })
+// }
 </script>
 @endpush

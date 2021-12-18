@@ -15,6 +15,7 @@ class Wallet extends Model
      * @var array
      */
     protected $with = ['bank_accounts'];
+    protected $guarded = ['id'];
 
     public function user()
     {
@@ -34,5 +35,22 @@ class Wallet extends Model
     public function getRawBankName()
     {
         return $this->banks[$this->bankname];
+    }
+
+    public function makeDefault()
+    {
+        $this->isDefault = true;
+        $this->save();
+    }
+
+    public function removeDefault()
+    {
+        $this->isDefault = false;
+        $this->save();
+    }
+
+    public function scopeCurrency($query, $currency)
+    {
+        $query->where('currency', $currency)->first();
     }
 }

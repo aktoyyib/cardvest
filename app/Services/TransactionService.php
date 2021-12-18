@@ -10,9 +10,7 @@ use App\Models\Bank;
 use App\Models\Withdrawal;
 use App\Models\Transaction;
 use App\Models\User;
-use Auth;
 use Illuminate\Http\Request;
-use DB;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
@@ -21,6 +19,9 @@ use Illuminate\Support\Facades\Log;
 use App\Notifications\Order;
 use App\Notifications\OrderProcessed;
 use Illuminate\Support\Facades\Notification;
+use App\Payment\PaymentGateway;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class TransactionService
 {
@@ -39,8 +40,15 @@ class TransactionService
         // Generate transaction reference code
         $ref = 'REFERRAL_BONUS';
 
+        // Get the users default currency
+        $currency = auth()->user()->currency();
+
+        // Convert the referral bonus to the respective currency
+        $bonus_amount = convert_to($bonus_amount, $currency);
+
+
         // Credit the referrer
-        $recipient->credit($bonus_amount);
+        $recipient->credit($bonus_amount, $currency);
 
         Transaction::create([
             'user_id'=> $recipient->id,
@@ -49,7 +57,8 @@ class TransactionService
             'reference' => $ref,
             'status' => 'succeed',
             'amount' => $bonus_amount,
-            'unit' => 0
+            'unit' => 0,
+            'currency' => $currency
         ]);
 
         $user->referrer_settled = true;
@@ -58,29 +67,17 @@ class TransactionService
 
     public  function makeWithdrawal(Request $request) {
         $amount = $request->amount;
+        $currency = $request->currency;
         $user = Auth::user();
 
         $bank = Bank::find($request->bank);
         // Create Reference Code
-        $reference = Flutterwave::generateReference();
+        $reference = PaymentGateway::currency($currency)->generateReference();
 
         DB::beginTransaction();
 
         try {
-            // Make transfer here with flutterwave api
-            $data = [
-                "account_bank"=> $bank->code,
-                "account_number"=> $bank->banknumber,
-                "amount"=> $amount,
-                "narration"=> "Cardvest - Funds withdrawal ".$reference,
-                "currency"=>"NGN",
-                "debit_currency"=>"NGN",
-                'reference' => $reference
-            ];
-
-            // If not successful, status of withdrawal remains pending
-
-            $user->debit($amount*100);
+            $user->debit($amount*100, $currency);
             $user->refresh();
 
             $amount = $amount * 100;
@@ -90,7 +87,8 @@ class TransactionService
             $user->withdrawals()->save($withdrawal);
 
             // Send the money to the user
-            $transfer = Flutterwave::transfers()->initiate($data);
+            $transfer = PaymentGateway::currency($currency)->withdraw($withdrawal);
+            // $transfer = Flutterwave::transfers()->initiate($data);
 
             if ($transfer['status'] !== 'success') {
                 $withdrawal->update(['status' => 'pending']);
@@ -122,7 +120,9 @@ class TransactionService
     public function sellCard(Request $request) {
         $user = auth()->user();
         $card = Card::find($request->card_id);
-        $amount = $card->rate * $request->amount * 100;
+        $CONVERTION_RATE = $request->currency !== 'NGN' ? get_cedis_rate() : 1;
+
+        $amount = ($card->rate * $request->amount * 100) / $CONVERTION_RATE;
         $unit = $request->amount;
         $bank = null;
 
@@ -165,6 +165,7 @@ class TransactionService
             $transaction->save();
 
         } catch (Throwable $e) {
+            report($e);
             DB::rollback();
             return back()->with('error', 'An error occured!');
         }
@@ -186,7 +187,8 @@ class TransactionService
 
         // Debit the user
         //This generates a payment reference
-        $reference = Flutterwave::generateReference();
+        $reference = PaymentGateway::currency($request->currency)->generateReference();
+        // $reference = Flutterwave::generateReference();
 
         DB::beginTransaction();
 
@@ -200,30 +202,7 @@ class TransactionService
                 'admin_comment' => 'Payment pending!',
             ]);
 
-            // Initialize Payment
-            // Enter the details of the payment
-            $data = [
-                'amount' => $transaction->amount/100,
-                'email' => $user->email,
-                'tx_ref' => $reference,
-                "auth_model" => "USSD",
-                'currency' => "NGN",
-                'redirect_url' => route('callback'),
-                'customer' => [
-                    'email' => $user->email,
-                    "phone_number" => $user->phonenumber,
-                    "name" => $user->username
-                ],
-
-                "customizations" => [
-                    "title" => "Cardvest",
-                    "description" => "Buy $".$transaction->unit." ".$card->name." at ".$card->rate."/$",
-                    "logo" => asset('images/logo-sm.png')
-                ]
-            ];
-
-            $payment = Flutterwave::initializePayment($data);
-
+            $payment = PaymentGateway::currency($request->currency)->makePayment($transaction, route('callback'));
 
             if ($payment['status'] !== 'success') {
                 // notify something went wrong
@@ -245,6 +224,7 @@ class TransactionService
 
     public function makeTransfer(Request $request, User $sender, User $recipient) {
         $amount = $request->amount * 100;
+        $currency = $request->currency;
 
         if (isset($request->role)) {
             $role = $request->role;
@@ -257,21 +237,21 @@ class TransactionService
             if ($request->has('debit')) {
                 // Credit users wallet with the amount (Only if the role is user or funder)
                 if ($role == 'user') {
-                    $sender->credit($amount);
+                    $sender->credit($amount, $currency);
                     $sender->refresh();
                 }
                 // Debit the recipients wallet with the amount
-                $recipient->debit($amount);
+                $recipient->debit($amount, $currency);
                 // Create Reference Code
                 $ref = $this->createReference('reversal');
             } else {
                 // Credit users wallet with the amount (Only if the role is user or funder)
                 if ($role == 'user') {
-                    $sender->debit($amount);
+                    $sender->debit($amount, $currency);
                     $sender->refresh();
                 }
                 // Debit the recipients wallet with the amount
-                $recipient->credit($amount);
+                $recipient->credit($amount, $currency);
                 // Create Reference Code
                 $ref = $this->createReference('transfer');
             }
@@ -294,16 +274,19 @@ class TransactionService
     }
 
     public function callback() {
+        $reference = request()->has('tx_ref') ? request()->tx_ref : request()->transaction_id;
+        // Get the transaction from your DB using the transaction reference
+        $transaction = Transaction::where('reference', $reference)->first();
+        if (is_null($transaction)) return redirect()->route('transaction.index')->with('error', 'Payment invalid and could not be processed!');
+
         if (request()->has('status') && request()->status == 'cancelled') {
-            // Get the transaction from your DB using the transaction reference (txref)
-            $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
-            if (!is_null($transaction)) $transaction->delete();
+            $transaction->delete();
             return redirect()->route('transaction.index')->with('error', 'Payment cancelled please try again.');
         }
 
-        $transactionID = Flutterwave::getTransactionIDFromCallback();
+        // $transactionID = Flutterwave::getTransactionIDFromCallback();
 
-        $data = Flutterwave::verifyTransaction($transactionID);
+        $data = PayentGateway::currency($transaction->currency)->verifyTransaction();
 
         return $this->processCharge($data);
     }
@@ -357,41 +340,24 @@ class TransactionService
     }
 
     protected function createReference($type) {
-
-        $random = Str::random(10);
-
-        switch ($type) {
-            case 'withdrawal':
-                $reference = 'CVT'. $random .'WTH';
-                break;
-            case 'buy':
-                $reference = 'CVT'. $random .'INV';
-                break;
-            case 'sell':
-                $reference = 'CVT'. $random .'SEL';
-                break;
-            case 'deposit':
-                $reference = 'CVT'. $random .'CDR';
-                break;
-            case 'reversal':
-                $reference = 'CVT'. $random .'-RVS';
-                break;
-            default:
-                $reference = 'CVT'. $random .'-PAY';
-                break;
-        }
+        $reference = "CV" . Str::random(10);
         return strtoupper($reference);
     }
 
     protected function processCharge($data, $isWebhook = false) {
         Log::info(request()->all());
 
+
         if ($isWebhook) {
             // Get the transaction from your DB using the transaction reference (txref)
             $transaction = Transaction::where('reference', request()->data['tx_ref'])->first();
         } else {
+            $reference = request()->has('tx_ref') ? request()->tx_ref : request()->transaction_id;
+            // Get the transaction from your DB using the transaction reference
+            $transaction = Transaction::where('reference', $reference)->first();
+
             // Get the transaction from your DB using the transaction reference (txref)
-            $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
+            // $transaction = Transaction::where('reference', request()->query('tx_ref'))->first();
         }
 
         // Handle when transaction is null. In case webhook is ahead of direct callback or vice-versa
@@ -404,22 +370,32 @@ class TransactionService
             return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('success', 'Payment successful! Check the transaction tab for update. It should take 15-20 minutes!');
         }
 
+        // ************ Old implementation ************** //
         // Confirm that the $data['data']['status'] is 'successful'
-        if ($data['data']['status']  !== 'successful') {
+        // if ($data['data']['status']  !== 'successful') {
+        //     $transaction->delete();
+        //     return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed!');
+        // }
+        // // Confirm that the currency on your db transaction is equal to the returned currency
+        // if ($data['data']['currency']  !== 'NGN') {
+        //     $transaction->delete();
+        //     return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [CE]');
+        // }
+        // // Confirm that the db transaction amount is equal to the returned amount
+        // $amt = $transaction->amount/100;
+        // if ($data['data']['amount']  !== $amt) {
+        //     $transaction->delete();
+        //     return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [AE]');
+        // }
+        // *************** Ends Here ***** //
+
+        // ***** New Implementation ******** //
+        if (!PaymentGateway::currency($transaction->currency)->isSuccessfulAndValid($data, $transaction)) {
             $transaction->delete();
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed!');
+            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment not successful');
         }
-        // Confirm that the currency on your db transaction is equal to the returned currency
-        if ($data['data']['currency']  !== 'NGN') {
-            $transaction->delete();
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [CE]');
-        }
-        // Confirm that the db transaction amount is equal to the returned amount
-        $amt = $transaction->amount/100;
-        if ($data['data']['amount']  !== $amt) {
-            $transaction->delete();
-            return $isWebhook ===  true ? exit() : redirect()->route('transaction.index')->with('error', 'Payment failed! [AE]');
-        }
+        // ******** Ends Here ********* //
+
         // Update the db transaction record (including parameters that didn't exist before the transaction is completed. for audit purpose)
         // Give value for the transaction
         // Update the transaction to note that you have given value for the transaction

@@ -10,21 +10,21 @@ use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 use App\Services\TransactionService;
 
-use DB;
 use App\Models\Wallet;
 use App\Jobs\SendWelcomeMail;
+use Illuminate\Support\Facades\DB;
 
 class CreateNewUser implements CreatesNewUsers
 {
     use PasswordValidationRules;
 
     protected $transactionService;
-    
+
     public function __construct(TransactionService $transactionService)
     {
         $this->transactionService = $transactionService;
     }
-    
+
     /**
      * Validate and create a newly registered user.
      *
@@ -46,10 +46,10 @@ class CreateNewUser implements CreatesNewUsers
             ],
             'password' => $this->passwordRules(),
         ])->validate();
-        
+
         // Referral System
         $referrer = null;
-        
+
         // Check if there is this user was referred
         if (request()->hasCookie('cardvest_referrer')) {
             $referrer = User::whereUsername(request()->cookie('cardvest_referrer'))->first();
@@ -61,7 +61,7 @@ class CreateNewUser implements CreatesNewUsers
         DB::beginTransaction();
 
         try {
-            
+
             $user = User::create([
                 'username' => $input['username'],
                 'phonenumber' => $input['phonenumber'],
@@ -69,23 +69,37 @@ class CreateNewUser implements CreatesNewUsers
                 'password' => Hash::make($input['password']),
                 'referrer_id' => $referrer_id,
             ]);
-    
-            $wallet = Wallet::create([]);
-    
-            $wallet->user()->associate($user);
-            $wallet->save();
+
+            // $nairWallet->user()->associate($user);
+            // $nairWallet->save();
+
+            // $cedisWallet->user()->associate($user);
+            // $cedisWallet->save();
+
+            // OR
+            $user->fiat_wallets()->createMany([
+                [
+                    'currency' => 'NGN',
+                    'name' => 'Naira',
+                    'isDefault' => true // Making naira the default wallet
+                ],
+                [
+                    'currency' => 'GHS',
+                    'name' => 'Cedis'
+                ]
+            ]);
 
         } catch (\Throwable $e) {
             DB::rollback();
-            dd($e);
+            return null;
         }
 
         DB::commit();
-        
+
         // Delete the referral cookie only if the registration was successful
         if (request()->hasCookie('cardvest_referrer')) {
             cookie()->queue(cookie()->forget('cardvest_referrer'));
-            
+
             //  Attach the referrer to the user
             $user->referrer()->associate($referrer);
             $user->save();

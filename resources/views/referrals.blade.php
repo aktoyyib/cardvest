@@ -13,9 +13,38 @@
                 <img src="images/logo-sm.png" alt="logo">
               </div>
               <div class="token-balance-text">
-                <h6 class="card-sub-title">Wallet Balance</h6>
-                <span class="lead">{{ to_naira($user->balance()) }} <span>NGN</span></span>
+                <h6 class="card-sub-title">Main Balance</h6>
+                <span class="lead">{{ to_naira($user->balance()) }} <span>{{ auth()->user()->wallet->currency }}</span></span>
               </div>
+              <div class="token-pay-currency border-0">
+                <a href="#" class="link ucap link-light toggle-tigger toggle-caret text-white">{{ auth()->user()->wallet->currency }}</a>
+                <div class="toggle-class dropdown-content" style="right: -40%; left: unset;">
+                    <ul class="dropdown-list">
+                        @foreach($wallets as $wallet)
+                        <li><a href="{{ route('wallet.set-currency') }}" onclick="event.preventDefault();
+                                                document.getElementById('{{ $wallet->currency }}').submit();">{{ $wallet->currency }}</a></li>
+                        <form id="{{ $wallet->currency }}" action="{{ route('wallet.set-currency') }}">
+                          <input type="hidden" name="currency" value="{{ $wallet->currency }}">
+                        </form>
+                        @endforeach
+                    </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="token-balance token-balance-s2">
+              <hr class="bg-warning">
+              <!-- <h6 class="card-sub-title">Your Wallets</h6> -->
+              <ul class="token-balance-list justify-content-between">
+                  <li class="token-balance-sub">
+                      <span class="lead">2,646</span>
+                      <span class="sub"><a href="{{ route('wallet.show', 'GHS') }}">&#8373; (CEDIS) <i class="fa fa-external-link"></i></a> </span>
+                  </li>
+                  <li class="token-balance-sub">
+                      <span class="lead">1,265</span>
+                      <span class="sub"><a href="{{ route('wallet.show', 'NGN') }}">&#8358; (NAIRA) <i class="fa fa-external-link"></i></a> </span>
+                  </li>
+              </ul>
             </div>
           </div>
         </div>
