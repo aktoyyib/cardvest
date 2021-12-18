@@ -5,7 +5,7 @@
 <div class="page-content">
   <div class="container">
     <div class="row">
-      <div class="aside sidebar-right col-lg-4 d-flex flex-column justify-content-center">
+      <div class="aside sidebar-right col-lg-4 d-flex flex-column justify-content-center mb-4">
 
         <h1 class="font-weight-bold">
           Our Rates:
@@ -15,6 +15,28 @@
           We give you good value for your cards every time you choose
           Cardvest.
         </p>
+
+        <hr>
+        <p class="text-subtext1 leading-33" data-v-d79bb0ec="">
+            Get more by downloading our mobile app today.
+        </p>
+
+        <div class="d-flex justify-content-start">
+            <a href="https://play.google.com/store/apps/details?id=com.flipdigitals.cardvest" target="_blank" class="btn btn-primary btn-outline d-inline-flex align-items-center my-2">
+                <em class="fab fa-google-play fa-2x mr-2"></em>
+                <span class="text-left ml-0 pl-0 lh-1-2">
+                    <small class="d-block p-0">Get it on</small>
+                    Google Play
+                </span>
+            </a>
+            {{-- <a href="#" class="btn btn-primary btn-outline d-inline-flex align-items-center my-2" target="_blank">
+                <em class="fab fa-apple fa-2x mr-2"></em>
+                <span class="text-left ml-0 pl-0 lh-1-2">
+                    <small class="d-block p-0">Available on the</small>
+                    App Store
+                </span>
+            </a> --}}
+        </div>
 
       </div><!-- .col -->
       <div class="main-content col-lg-8">
@@ -208,7 +230,7 @@ $(document).ready(function() {
     // console.log(cardOptions)
   }
 
-  // For the BUy Card 
+  // For the BUy Card
   // ********************************* //
   var buyRate = undefined
 
