@@ -50,7 +50,7 @@ class GenerateCedisWallet extends Command
         $users = User::all();
 
         if (strtolower($currency) === 'count') {
-            $this->comment('Currently we have '.$user->count(). ' users!');
+            $this->comment('Currently we have '.$users->count(). ' users!');
             return 0;
         }
 
@@ -60,11 +60,31 @@ class GenerateCedisWallet extends Command
 
         // Make all users Naira wallet default
         $wallets = Wallet::where('currency', 'NGN')->get();
+
+        // Show a comment to display the current action being performed
+        $this->info('Making Naira Wallet the default for all users...');
+
+        $defaultBar = $this->output->createProgressBar(count($users));
+
+        $defaultBar->start();
+
         foreach ($wallets as $wallet) {
             $wallet->isDefault = true;
             $wallet->name = "Naira";
             $wallet->save();
+
+            $defaultBar->advance();
         }
+
+        $defaultBar->finish();
+
+        $this->newLine(2);
+
+        $this->info('Generating Cedis Wallet for all users ...');
+
+        $cedisBar = $this->output->createProgressBar(count($users));
+
+        $cedisBar->start();
 
         foreach ($users as $user) {
             if (is_null($user->fiat_wallets()->currency($currency)->first())) {
@@ -75,8 +95,14 @@ class GenerateCedisWallet extends Command
 
                 $wallet->user()->associate($user);
                 $wallet->save();
+
             }
+            $cedisBar->advance();
         }
+
+        $cedisBar->finish();
+
+        $this->newLine(2);
 
         $this->comment(ucfirst($name) . ' wallet created for all users successfully!');
         return 0;
