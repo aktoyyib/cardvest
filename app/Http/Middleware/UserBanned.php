@@ -21,6 +21,11 @@ class UserBanned
             return redirect()->route('banned');
         }
 
+        // Redirect users to the landing page
+        if (!auth()->user()->hasRole(['admin', 'super admin'])) {
+            return redirect()->away('https://cardvest.ng');
+        }
+
         return $next($request);
     }
 }
