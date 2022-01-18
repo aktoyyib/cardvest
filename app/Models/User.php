@@ -6,7 +6,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-
+use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\Traits\CausesActivity;
 use Spatie\Permission\Traits\HasRoles;
@@ -17,7 +18,7 @@ use App\Traits\MobilePushId;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasWallet, HasRoles, Referral, CausesActivity, Banning, MobilePushId;
+    use HasApiTokens, HasFactory, Notifiable, HasWallet, HasRoles, Referral, CausesActivity, Banning, MobilePushId, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -99,7 +100,8 @@ class User extends Authenticatable
         return $this->transactions()->cardSale()->sum('amount');
     }
 
-    public function getTotalBought() {
+    public function getTotalBought() 
+    {
         return $this->transactions()->cardPurchase()->sum('amount');
     }
 
@@ -112,6 +114,21 @@ class User extends Authenticatable
     public function routeNotificationForSlack($notification)
     {
         return 'https://hooks.slack.com/services/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';
+    }
+
+    public function confirmTwoFactorAuth($code)
+    {
+        $codeIsValid = app(TwoFactorAuthenticationProvider::class)
+            ->verify(decrypt($this->two_factor_secret), $code);
+
+         if ($codeIsValid) {
+            $this->two_factor_confirmed = true;
+            $this->save();
+
+            return true;
+        }
+
+        return false;
     }
     
 }

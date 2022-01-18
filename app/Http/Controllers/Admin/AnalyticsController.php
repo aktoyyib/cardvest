@@ -12,11 +12,12 @@ class AnalyticsController extends Controller
         // Calculate total held by all users
         $totalHeld = 0;
 
-        $users = User::all();
+        $usersBalance = User::all();
+        $users = User::paginate(25);
 
-        foreach ($users as $user) {
+        foreach ($usersBalance as $user) {
             $totalHeld += $user->balance();
         }
-        return view('admin.analytics', compact('totalHeld'));
+        return view('admin.analytics', compact('totalHeld', 'users'));
     }
 }

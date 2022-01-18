@@ -175,7 +175,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         // Fortify
-        App\Providers\FortifyServiceProvider ::class,
+        App\Providers\FortifyServiceProvider::class,
         // Flutterwave Package
         KingFlamez\Rave\RaveServiceProvider::class,
 

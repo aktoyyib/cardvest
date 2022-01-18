@@ -88,6 +88,7 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/dashboard', [HomeController::class, 'index']);
     Route::get('profile', [HomeController::class, 'profile'])->name('profile');
+    Route::post('/2fa-confirm', [HomeController::class, 'confirm'])->name('two-factor.confirm');
 
     Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
     Route::get('referrals', [HomeController::class, 'referral'])->name('referrals');
@@ -117,7 +118,7 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
         Route::get('users/search', [Users::class, 'search'])->name('users.search');
         Route::resource('users', Users::class)->only('index', 'show');
 
-        Route::group(['middleware' => ['role:Super Admin']], function() {
+        Route::group(['middleware' => ['role:super admin']], function() {
             // Assign and Remove Role
             Route::get('roles/search', [RoleController::class, 'search'])->name('roles.search');
             Route::post('roles/store/{user}', [RoleController::class, 'store'])->name('roles.store');

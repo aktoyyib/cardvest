@@ -94,15 +94,13 @@ trait HasWallet
             $balance = $wallet->balance - $amount;
 
             $wallet->update(['balance' => $balance]);
-        }
-
-
+        }  
     }
 
     public function balance(string $currency = null) {
         $wallet = $this->getWallet($currency);
 
-        return $wallet->balance;
+        return $wallet->balance ?? 0;
     }
 
     public function getTotalBalance(string $currency = null) {
@@ -117,8 +115,8 @@ trait HasWallet
         return $this->wallet->currency;
     }
 
-    protected function getWallet(string $currency = null) : Wallet
-    {
+    protected function getWallet(string $currency = null) : Wallet |  null
+    { 
         if (is_null($currency)) return $this->wallet;
         else return $this->fiat_wallets()->currency($currency)->first();
     }

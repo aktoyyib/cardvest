@@ -6,6 +6,16 @@
   <div class="container">
     <div class="row">
       <div class="main-content col-lg-8">
+        @if (session('status') == 'two-factor-authentication-enabled') 
+            <div class="alert alert-success">
+              <p>Two factor authentication has been enabled.</p>
+            </div>
+        @endif
+        @if (session('status') == 'success_msg') 
+            <div class="alert alert-success">
+              <p>Two factor authentication has been activated successfully.</p>
+            </div>
+        @endif
         <div class="token-statistics card card-token height-auto d-lg-none">
           <div class="card-innr">
             <div class="token-balance token-balance-with-icon">
@@ -31,6 +41,9 @@
               </li>
               <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#password">Password</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#security">Security</a>
               </li>
             </ul><!-- .nav-tabs-line -->
             <div class="tab-content" id="profile-details">
@@ -103,6 +116,54 @@
                   <div class="gaps-2x d-sm-none"></div>
                   <!-- <span class="text-success"><em class="ti ti-check-box"></em> Changed Password</span> -->
                 </div>
+              </div><!-- .tab-pane -->
+              <div class="tab-pane fade" id="security"> 
+                <h6 class="card-title card-title-sm">TWO FACTOR AUTHENTIICATION</h6> 
+                
+                <div class="mt-3">
+                    @if(auth()->user()->two_factor_confirmed)
+                    <h6 class="card-title card-title-sm">BACKUP CODES</h6>
+                    <p class=" pdb-0-5x">Backup codes are useful if you lose access to the connected TFA app.</p> 
+                    <div class="card-opt">
+                      <a href="" class="link ucap">Backup Codes <em class="fas fa-angle-right ml-2"></em></a>
+                      <ul>
+                         @if(count(auth()->user()->recoveryCodes()) > 0)
+                          @foreach(auth()->user()->recoveryCodes() as $backupCode)
+                            <li class="mb-2">{{ $backupCode }} </li>
+                          @endforeach
+                         @endif 
+                       </ul>
+                    </div>
+                    <div class="gaps-1x"></div><!-- 10px gap -->
+                        <form action="{{ url('/user/two-factor-authentication') }}" method="post">
+                            @csrf
+                            @method('delete')
+                            <button type="submit" class="btn btn-primary">Disable 2FA</button>
+                        </form>
+                    <!-- 2FA enabled but not yet confirmed, we show the QRcode and ask for confirmation : -->
+                    @elseif(auth()->user()->two_factor_secret)
+                      <div class="d-sm-flex justify-content-between align-items-center">
+                        <p class=" pdb-0-5x">TFA is not active on your account. <br>
+                        Validate 2FA by scanning the following QRcode and entering the TOTP</p>  
+                      </div>
+                      <div class="d-sm-flex justify-content-between align-items-center">
+                        {!! auth()->user()->twoFactorQrCodeSvg() !!}
+                        <form action="{{route('two-factor.confirm')}}" method="post">
+                            @csrf
+                            <input name="code" required/>
+                            <button type="submit" class="btn btn-primary">Validate 2FA</button>
+                        </form>
+                      </div>
+                    <!-- 2FA not enabled at all, we show an 'enable' button  : -->
+                    @else 
+                        <p class=" pdb-0-5x">TFA is not active on your account</p> 
+                        <form action="{{ url('/user/two-factor-authentication') }}" method="post">
+                            @csrf 
+                            <button type="submit" class="btn btn-primary">Enable 2FA</button>
+                        </form>
+                    @endif 
+                    <div class="gaps-2x d-sm-none"></div> 
+                  </div> 
               </div><!-- .tab-pane -->
             </div><!-- .tab-content -->
           </div><!-- .card-innr -->
