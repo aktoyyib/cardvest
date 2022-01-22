@@ -9,15 +9,18 @@ use App\Models\User;
 use App\Models\Card;
 use App\Models\Transaction;
 use App\Services\TransactionService;
+use App\Services\ActivitylogService;
 use Spatie\Activitylog\Models\Activity;
 
 class TransactionController extends Controller
 {
     protected $transactionService;
 
-    public function __construct(TransactionService $transactionService)
+    public function __construct(TransactionService $transactionService, ActivitylogService $activitylogService)
     {
         $this->transactionService = $transactionService;
+        $this->activitylogService = $activitylogService;
+
     }
     /**
      * Display a listing of the resource.
@@ -28,7 +31,7 @@ class TransactionController extends Controller
     {
 //        The searched_transaction and param comes from the search function of this controller
 //        This is to enable search result to be displayed on the normal
-        $transactions = Transaction::desc()->paginate(25);
+        $transactions = Transaction::with(['queryLogs.activity_log'])->desc()->paginate(25);  
 
         // Transaction Types - Sell | Buy | Payout
         // Transactions should actually show only card sales or purchase (Sell - Pending / Success / Rejected |  Buy - Successful payment)
@@ -214,5 +217,7 @@ class TransactionController extends Controller
             'admin_images' => $fileName
         ]);
     }
+
+    
 
 }

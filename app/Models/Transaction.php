@@ -114,6 +114,11 @@ class Transaction extends Model
         return $this->belongsTo(Bank::class);
     }
 
+    public function queryLogs()
+    {
+        return $this->hasMany('App\Models\ActivityLogsQueries', 'transaction_reference', 'reference')->where('status', 'open');
+    }
+
     public function scopeDesc($query)
     {
         return $query->orderBy('created_at', 'desc');

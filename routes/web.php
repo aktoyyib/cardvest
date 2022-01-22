@@ -128,10 +128,12 @@ Route::group(['middleware' => ['auth', 'ban']], function () {
             Route::get('transactions/create', [Transactions::class, 'create'])->name('transactions.create');
 
             Route::get('activities', [\App\Http\Controllers\Admin\ActivityController::class, 'index'])->name('activities.index');
+            Route::any('activity/close-query/{activity}', [\App\Http\Controllers\Admin\ActivityController::class, 'closeQuery'])->name('transactions.close-query');
             Route::get('analytics', [AnalyticsController::class, 'index'])->name('analytics');
             Route::get('general-settings', [SettingController::class, 'index'])->name('settings');
             Route::post('general-settings', [SettingController::class, 'store'])->name('settings.store');
         });
+        Route::any('activity/query/{activity}', [\App\Http\Controllers\Admin\ActivityController::class, 'queryTransactionLogs'])->name('transactions.query'); 
 
         Route::get('transactions/search', [Transactions::class, 'search'])->name('transactions.search');
         Route::post('transactions/admin-comment-image/{transaction}', [Transactions::class, 'adminCommentImageUpload'])->name('transactions.upload');

@@ -25,6 +25,8 @@
                                         <th class="data-col activity-device"><span>Admin</span></th>
                                         <th class="data-col activity-device"><span>Transaction</span></th>
                                         <th class="data-col activity-browser"><span>Changes</span></th>
+                                        <th class="data-col activity-browser"><span>Query status</span></th>
+                                        <th class="data-col activity-browser"><span>Action</span></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -62,6 +64,10 @@
                                             @endforeach
                                             @endif
                                         </td>
+                                        <td>
+                                            <span class="badge badge-primary">None</span>
+                                        </td>
+                                        <td><a href="{{ url('admin/activity/query/'.$activity->id) }}">Query</a></td>
                                     </tr>
                                 @endforeach
                                 </tbody>

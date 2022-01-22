@@ -44,6 +44,7 @@
                                         <th class="data-col dt-amount">Details</th>
                                         <th class="data-col dt-usd-amount">Type</th>
                                         <th class="data-col dt-account">By/From</th>
+                                        <th class="data-col dt-query">Query</th>
                                         <th class="data-col dt-type">
                                             <div class="dt-type-text">Type</div>
                                         </th>
@@ -78,12 +79,16 @@
                                             @endif
                                         </td>
                                         <td class="data-col dt-type">
-                    <span
-                        class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
+                                            <span class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
                                         </td>
                                         <td class="data-col dt-account">
                                             <span class="lead user-info">{{ $transaction->user->username }}</span>
                                             <span class="sub sub-date">08 Jul, 18 10:20PM</span>
+                                        </td>
+                                        <td class="data-col dt-query">
+                                            @if(count($transaction['queryLogs']) > 0)
+                                            <span class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">View query</span>
+                                            @endif
                                         </td>
                                         <td class="data-col text-right">
                                             <div class="relative d-inline-block">
@@ -127,8 +132,9 @@
                   <th class="data-col dt-tnxno">Tranx NO</th>
                   <th class="data-col dt-token">Amount</th>
                   <th class="data-col dt-amount">Details</th>
-                  <th class="data-col dt-usd-amount">Type</th>
+                  <th class="data-col dt-usd-amount">Types</th>
                   <th class="data-col dt-account">By/From</th>
+                  <th class="data-col dt-query">Query</th>
                   <th class="data-col dt-type">
                     <div class="dt-type-text">Type</div>
                   </th>
@@ -138,53 +144,61 @@
               <tbody>
                 @forelse($transactions as $transaction)
                 <tr class="data-item">
-                  <td class="data-col dt-tnxno">
-                    <div class="d-flex align-items-center">
-                      <div class="data-state data-state-{{ get_state($transaction->status) }}">
-                        <span class="d-none text-uppercase">{{ $transaction->status }}</span>
-                      </div>
-                      <div class="fake-class">
-                        <span class="lead tnx-id">{{ $transaction->reference }}</span>
-                        <span class="sub sub-date">{{ $transaction->getDate() }} {{ $transaction->getTime() }}</span>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="data-col dt-token">
-                    <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
-                    <span class="sub sub-symbol">{{ $transaction->currency }}</span>
-                  </td>
-                  <td class="data-col dt-token">
-                    @if($transaction->type !== 'payout')
-                    <span class="lead token-amount">{{ $transaction->card->category->name }}</span>
-                    <span class="sub sub-symbol">{{ $transaction->card->name }}</span>
-                    @else
-                    <span class="sub sub-symbol">Payout to:</span>
-                    <span class="lead token-amount">{{ $transaction->payout_to->username ?? 'Me' }}</span>
-                    @endif
-                  </td>
-                  <td class="data-col dt-type">
-                    <span
-                      class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
-                  </td>
-                  <td class="data-col dt-account">
-                    <span class="lead user-info">{{ $transaction->user->username }}</span>
-                    <span class="sub sub-date">08 Jul, 18 10:20PM</span>
-                  </td>
-                  <td class="data-col text-right">
-                    <div class="relative d-inline-block">
-                      <a href="#" class="btn btn-light-alt btn-xs btn-icon toggle-tigger"><em
-                          class="ti ti-more-alt"></em></a>
-                      <div class="toggle-class dropdown-content dropdown-content-top-left">
-                        <ul class="dropdown-list">
-                          <li><a href="{{ route('transactions.show', $transaction) }}"><em class="ti ti-eye"></em> View
-                              Details</a></li>
-                          <!-- <li><a href="#"><em class="ti ti-check-box"></em> Approve</a></li>
-                      <li><a href="#"><em class="ti ti-na"></em> Cancel</a></li>
-                      <li><a href="#"><em class="ti ti-trash"></em> Delete</a></li> -->
-                        </ul>
-                      </div>
-                    </div>
-                  </td>
+                    <td class="data-col dt-tnxno">
+                        <div class="d-flex align-items-center">
+                          <div class="data-state data-state-{{ get_state($transaction->status) }}">
+                            <span class="d-none text-uppercase">{{ $transaction->status }}</span>
+                          </div>
+                          <div class="fake-class">
+                            <span class="lead tnx-id">{{ $transaction->reference }}</span>
+                            <span class="sub sub-date">{{ $transaction->getDate() }} {{ $transaction->getTime() }}</span>
+                          </div>
+                        </div>
+                    </td>
+                    <td class="data-col dt-token">
+                        <span class="lead token-amount">{{ to_naira($transaction->amount) }}</span>
+                        <span class="sub sub-symbol">{{ $transaction->currency }}</span>
+                    </td>
+                    <td class="data-col dt-token">
+                        @if($transaction->type !== 'payout')
+                        <span class="lead token-amount">{{ $transaction->card->category->name }}</span>
+                        <span class="sub sub-symbol">{{ $transaction->card->name }}</span>
+                        @else
+                        <span class="sub sub-symbol">Payout to:</span>
+                        <span class="lead token-amount">{{ $transaction->payout_to->username ?? 'Me' }}</span>
+                        @endif
+                    </td>
+                    <td class="data-col dt-type">
+                        <span class="dt-type-md badge badge-outline badge-{{ $transaction->getDescription() }} badge-md text-capitalize">{{ $transaction->type }}</span>
+                    </td>
+                    <td class="data-col dt-account">
+                        <span class="lead user-info">{{ $transaction->user->username }}</span>
+                        <span class="sub sub-date">08 Jul, 18 10:20PM</span>
+                    </td>
+                    <td class="data-col dt-query">
+                            @isset($transaction['queryLogs'])
+                                @if(count($transaction['queryLogs']) > 0)
+                                    @if((auth()->user()->hasRole('super admin')) || ($transaction['queryLogs'][0]['activity_log']['causer_id'] == auth()->user()->id))
+                                        <a href="{{ url('admin/activity/query/'.$transaction['queryLogs'][0]['activity_log']['id']) }}" class="dt-type-md badge badge-outline badge-md text-capitalize">View query</a>
+                                    @endif
+                                @endif
+                            @endisset
+                    </td>
+                    <td class="data-col text-right">
+                        <div class="relative d-inline-block">
+                          <a href="#" class="btn btn-light-alt btn-xs btn-icon toggle-tigger"><em
+                              class="ti ti-more-alt"></em></a>
+                          <div class="toggle-class dropdown-content dropdown-content-top-left">
+                            <ul class="dropdown-list">
+                              <li><a href="{{ route('transactions.show', $transaction) }}"><em class="ti ti-eye"></em> View
+                                  Details</a></li>
+                              <!-- <li><a href="#"><em class="ti ti-check-box"></em> Approve</a></li>
+                          <li><a href="#"><em class="ti ti-na"></em> Cancel</a></li>
+                          <li><a href="#"><em class="ti ti-trash"></em> Delete</a></li> -->
+                            </ul>
+                          </div>
+                        </div>
+                    </td>
                 </tr><!-- .data-item -->
                 @empty
                 <tr class="data-item">
