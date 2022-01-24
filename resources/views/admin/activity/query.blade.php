@@ -171,14 +171,14 @@
                   <div class="data-details-head">New query</div>
                   <div class="data-details-des">
                     @if($query->status == 'closed')
-                    <button type="button" class="btn btn-primary mt-1 mr-3">Closed</button> 
+                    <!-- <button type="button" class="btn btn-primary mt-1 mr-3">Closed</button>  -->
                     @else
                     <form method="post" action="{{ url('admin/activity/query/'.$activity->id) }}" id="transaction-update" class="w-100 row">
                       @csrf   
                         <textarea name="comment" id="admin_comment" class="input-textarea input-bordered"
                             placeholder="Your comment here"></textarea>  
                         <button class="btn btn-primary mt-1 mr-3">Submit</button>  
-                        <a href="{{ url('admin/activity/close-query/'.$activity->id) }}" class="btn btn-info mt-1">Close Query</a>   
+                        <!-- <a href="{{ url('admin/activity/close-query/'.$activity->id) }}" class="btn btn-info mt-1">Close Query</a>    -->
                     </form>
                     @endif
                   </div>
@@ -192,7 +192,7 @@
                       <textarea name="comment" id="admin_comment" class="input-textarea input-bordered"
                           placeholder="Your comment here"></textarea>  
                       <button class="btn btn-primary mt-1 mr-3">Submit</button>  
-                      <a href="{{ url('admin/activity/close-query/'.$activity->id) }}" class="btn btn-info mt-1">Close Query</a>   
+                      <!-- <a href="{{ url('admin/activity/close-query/'.$activity->id) }}" class="btn btn-info mt-1">Close Query</a>    -->
                   </form> 
                 </div>
               </li>
